@@ -1,4 +1,4 @@
 User-agent: *
 Disallow:
 
-Sitemap: https://scary4you.lovestoblog.com/sitemap.xml
+Sitemap: https://matrixreal.github.io/sitemap.xml
