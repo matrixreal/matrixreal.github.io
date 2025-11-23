@@ -1,0 +1,2076 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Countryball - Territory War Mobile</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            -webkit-tap-highlight-color: transparent;
+            touch-action: manipulation;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #1e3c72; /* Fond bleu uni */
+            height: 100vh;
+            overflow: hidden;
+            touch-action: none;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        #roomSelection {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #1e3c72; /* Fond bleu uni */
+            z-index: 2000;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .carousel-container {
+            width: 100%;
+            max-width: 350px;
+            height: 600px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .carousel-track {
+            display: flex;
+            transition: transform 0.3s ease;
+            height: 100%;
+        }
+
+        .room-card {
+            min-width: 100%;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .room-preview {
+            width: 280px;
+            height: 450px;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            position: relative;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+            cursor: pointer;
+            transition: transform 0.2s;
+            overflow: hidden;
+        }
+
+        .room-preview:active {
+            transform: scale(0.95);
+        }
+
+        .room-player-count {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: rgba(0, 0, 0, 0.7);
+            color: white;
+            padding: 5px 12px;
+            border-radius: 15px;
+            font-size: 14px;
+            font-weight: bold;
+            z-index: 10;
+        }
+
+        .room-grid {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            border-radius: 20px;
+            overflow: hidden;
+        }
+
+        .room-team-icon {
+            position: absolute;
+            font-size: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .room-team-icon img {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            border: 2px solid white;
+            object-fit: cover;
+        }
+
+        .carousel-dots {
+            display: flex;
+            gap: 8px;
+            margin-top: 20px;
+        }
+
+        .dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.4);
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .dot.active {
+            background: white;
+            width: 30px;
+            border-radius: 5px;
+        }
+
+        .carousel-title {
+            color: white;
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+        }
+
+        .carousel-subtitle {
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 14px;
+            margin-bottom: 20px;
+        }
+
+        #gameContainer {
+            display: none;
+            width: 100%;
+            height: 100vh;
+            flex-direction: column;
+            background: #1e3c72; /* Fond bleu uni */
+        }
+
+        .top-section {
+            height: 100px;
+            background: rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(10px);
+        }
+
+        .ad-space {
+            height: 50px;
+            background: rgba(255, 255, 255, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 12px;
+        }
+
+        .game-header {
+            height: 50px;
+            display: flex;
+            flex-direction: column;
+            padding: 5px 10px;
+        }
+
+        .header-top-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 5px;
+        }
+
+        .btn-back {
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 10px;
+            font-size: 12px;
+            cursor: pointer;
+            backdrop-filter: blur(10px);
+        }
+
+        .btn-back:active {
+            transform: scale(0.95);
+        }
+
+        .timer-row {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #ffff80;
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .selected-team-display {
+            text-align: center;
+            color: white;
+            font-size: 14px;
+            margin-bottom: 3px;
+            min-height: 18px;
+        }
+
+        .territory-bar {
+            height: 20px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+            overflow: hidden;
+            display: flex;
+            margin: 0 10px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .territory-segment {
+            height: 100%;
+            transition: width 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 10px;
+            color: white;
+            font-weight: bold;
+        }
+
+        .game-section {
+            flex: 1;
+            position: relative;
+            overflow: hidden;
+        }
+
+        #gameArea {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            background: linear-gradient(to right, #ffcccc 0%, #ccccff 100%);
+            overflow: hidden;
+        }
+
+        .bottom-section {
+            height: 80px;
+            background: rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(10px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0 5px;
+        }
+
+        .game-buttons {
+            display: flex;
+            gap: 5px;
+            width: 100%;
+            max-width: 500px;
+        }
+
+        .game-buttons button {
+            flex: 1;
+            height: 65px;
+            border: none;
+            border-radius: 15px;
+            color: white;
+            font-weight: bold;
+            font-size: 13px;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 3px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+            transition: transform 0.1s;
+        }
+
+        .game-buttons button:active {
+            transform: scale(0.95);
+        }
+
+        .btn-spawn1 {
+            background: linear-gradient(45deg, #4ecdc4, #44a08d);
+        }
+
+        .btn-spawn10 {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+        }
+
+        .btn-shield {
+            background: linear-gradient(45deg, #00d2ff, #3a7bd5);
+        }
+
+        .btn-boost {
+            background: linear-gradient(45deg, #fdbb2d, #ff6b6b);
+        }
+
+        .btn-maxboost {
+            background: linear-gradient(45deg, #ff6b6b, #ee5a52);
+        }
+
+        .button-icon {
+            font-size: 20px;
+        }
+
+        .button-label {
+            font-size: 11px;
+        }
+
+        .countryball {
+            width: 25px;
+            height: 25px;
+            border-radius: 50%;
+            position: absolute;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-weight: bold;
+            color: white;
+            z-index: 10;
+            font-size: 10px;
+            border: 2px solid white;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+            will-change: transform;
+            transform: translateZ(0);
+        }
+
+        .grid-cell {
+            position: absolute;
+            width: 15px;
+            height: 15px;
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            box-sizing: border-box;
+            will-change: transform;
+            transform: translateZ(0);
+        }
+
+        .red-cell {
+            background-color: rgba(255, 107, 107, 0.6);
+        }
+
+        .blue-cell {
+            background-color: rgba(76, 201, 196, 0.6);
+        }
+
+        .green-cell {
+            background-color: rgba(149, 225, 211, 0.6);
+        }
+
+        .yellow-cell {
+            background-color: rgba(252, 227, 138, 0.6);
+        }
+
+        .purple-cell {
+            background-color: rgba(210, 153, 194, 0.6);
+        }
+
+        .orange-cell {
+            background-color: rgba(253, 187, 45, 0.6);
+        }
+
+        .pink-cell {
+            background-color: rgba(255, 159, 243, 0.6);
+        }
+
+        .cyan-cell {
+            background-color: rgba(84, 160, 255, 0.6);
+        }
+
+        .lime-cell {
+            background-color: rgba(123, 237, 159, 0.6);
+        }
+
+        .brown-cell {
+            background-color: rgba(165, 94, 234, 0.6);
+        }
+
+        .gray-cell {
+            background-color: rgba(116, 125, 140, 0.6);
+        }
+
+        .gold-cell {
+            background-color: rgba(255, 165, 2, 0.6);
+        }
+
+        .neutral-cell {
+            background-color: rgba(200, 200, 200, 0.3);
+        }
+
+        .spawn-marker {
+            position: absolute;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            border: 2px solid white;
+            z-index: 15;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+            transition: all 0.3s ease;
+            will-change: transform;
+            transform: translateZ(0);
+            cursor: pointer;
+            background: transparent;
+        }
+
+        .spawn-marker.shielded {
+            border-color: #00ffff;
+            box-shadow: 0 0 25px rgba(0, 255, 255, 0.8);
+            animation: shield-pulse 1s infinite;
+        }
+
+        @keyframes shield-pulse {
+            0%, 100% {
+                box-shadow: 0 0 25px rgba(0, 255, 255, 0.8);
+            }
+            50% {
+                box-shadow: 0 0 35px rgba(0, 255, 255, 1);
+            }
+        }
+
+        .life-counter {
+            position: absolute;
+            bottom: -25px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0, 0, 0, 0.7);
+            color: white;
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-size: 12px;
+            font-weight: bold;
+            white-space: nowrap;
+        }
+
+        .toast {
+            position: fixed;
+            top: 110px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0, 0, 0, 0.9);
+            color: white;
+            padding: 12px 24px;
+            border-radius: 25px;
+            font-size: 14px;
+            font-weight: bold;
+            z-index: 3000;
+            animation: slideDown 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+        }
+
+        @keyframes slideDown {
+            from {
+                transform: translateX(-50%) translateY(-20px);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(-50%) translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .game-over {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 4000;
+            backdrop-filter: blur(10px);
+        }
+
+        .game-over-content {
+            background: #1e3c72; /* Fond bleu uni */
+            padding: 30px;
+            border-radius: 20px;
+            text-align: center;
+            color: white;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            max-width: 300px;
+        }
+
+        .winner-display {
+            font-size: 2em;
+            margin: 20px 0;
+        }
+
+        .countdown {
+            font-size: 1.5em;
+            color: #ffff80;
+            margin: 15px 0;
+        }
+
+        .carousel-arrow {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(0, 0, 0, 0.7);
+            color: white;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            font-size: 24px;
+            cursor: pointer;
+            z-index: 10;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .carousel-arrow:active {
+            transform: translateY(-50%) scale(0.95);
+        }
+
+        .carousel-arrow-left {
+            left: 10px;
+        }
+
+        .carousel-arrow-right {
+            right: 10px;
+        }
+
+        .btn-settings {
+            background: rgba(100, 100, 100, 0.8);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 8px 15px;
+            font-size: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-settings:active {
+            transform: scale(0.95);
+            background: rgba(80, 80, 80, 0.9);
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background: #1e3c72; /* Fond bleu uni */
+            padding: 30px;
+            border-radius: 20px;
+            width: 90%;
+            max-width: 400px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+        }
+
+        .modal-content h2 {
+            color: white;
+            text-align: center;
+            margin-bottom: 25px;
+            font-size: 24px;
+        }
+
+        .settings-form {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .settings-form label {
+            color: white;
+            font-weight: bold;
+            font-size: 16px;
+        }
+
+        .settings-form input[type="text"] {
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            background: rgba(255, 255, 255, 0.9);
+        }
+
+        .settings-form input[type="file"] {
+            padding: 10px;
+            border: 2px dashed rgba(255, 255, 255, 0.5);
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            cursor: pointer;
+        }
+
+        #imagePreview {
+            min-height: 40px;
+            text-align: center;
+            margin-top: 10px;
+        }
+
+        #imagePreview img {
+            width: 64px;
+            height: 64px;
+            border-radius: 50%;
+            border: 3px solid white;
+            object-fit: cover;
+        }
+
+        .modal-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .modal-buttons button {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .modal-buttons button:first-child {
+            background: #4caf50;
+            color: white;
+        }
+
+        .modal-buttons button:last-child {
+            background: #f44336;
+            color: white;
+        }
+
+        .modal-buttons button:active {
+            transform: scale(0.95);
+        }
+
+        /* Optimisations pour mobile */
+        @media (max-width: 480px) {
+            .carousel-container {
+                height: 500px;
+            }
+            
+            .room-preview {
+                width: 250px;
+                height: 400px;
+            }
+            
+            .game-buttons button {
+                height: 60px;
+                font-size: 12px;
+            }
+            
+            .button-icon {
+                font-size: 18px;
+            }
+            
+            .button-label {
+                font-size: 10px;
+            }
+            
+            .carousel-arrow {
+                width: 40px;
+                height: 40px;
+                font-size: 20px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div id="roomSelection">
+        <div class="carousel-title">🏆 Territory War</div>
+        <div class="carousel-subtitle">Choisissez votre salon</div>
+
+        <button class="carousel-arrow carousel-arrow-left" id="arrowLeft" onclick="goToRoom(currentRoomIndex - 1)">◀</button>
+
+        <div class="carousel-container">
+            <div class="carousel-track" id="carouselTrack"></div>
+        </div>
+
+        <button class="carousel-arrow carousel-arrow-right" id="arrowRight" onclick="goToRoom(currentRoomIndex + 1)">▶</button>
+
+        <div class="carousel-dots" id="carouselDots"></div>
+    </div>
+
+    <div id="gameContainer">
+        <div class="top-section">
+            <div class="ad-space">Espace publicitaire (50px)</div>
+            <div class="game-header">
+                <div class="header-top-row">
+                    <button class="btn-back" onclick="goBackToRooms()">⬅️ Retour</button>
+                    <div class="timer-row">⏱️ <span id="timeLeft">02:00</span></div>
+                    <button class="btn-settings" onclick="openPlayerSettings()">⚙️</button>
+                </div>
+                <div class="selected-team-display" id="selectedTeamDisplay"></div>
+            </div>
+        </div>
+        <div class="territory-bar" id="territoryBar"></div>
+        <div class="game-section">
+            <div id="gameArea"></div>
+        </div>
+
+        <div class="bottom-section">
+            <div class="game-buttons">
+                <button class="btn-spawn1" onclick="spawnBall(1)">
+                    <div class="button-icon">⚪</div>
+                    <div class="button-label">x1</div>
+                </button>
+                <button class="btn-spawn10" onclick="spawnBall(10)">
+                    <div class="button-icon">⚪⚪</div>
+                    <div class="button-label">x10</div>
+                </button>
+                <button class="btn-shield" onclick="activateShield()">
+                    <div class="button-icon">🛡️</div>
+                    <div class="button-label">Bouclier</div>
+                </button>
+                <button class="btn-boost" onclick="boostBalls(false)">
+                    <div class="button-icon">⚡</div>
+                    <div class="button-label">Boost</div>
+                </button>
+                <button class="btn-maxboost" onclick="boostBalls(true)">
+                    <div class="button-icon">⚡⚡</div>
+                    <div class="button-label">Max</div>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div id="playerSettingsModal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <h2>⚙️ Paramètres du joueur</h2>
+            <div class="settings-form">
+                <label for="playerName">Nom du joueur :</label>
+                <input type="text" id="playerName" maxlength="20" placeholder="Votre nom">
+
+                <label for="playerImage">Image du joueur :</label>
+                <input type="file" id="playerImage" accept="image/*">
+                <div id="imagePreview"></div>
+
+                <div class="modal-buttons">
+                    <button onclick="savePlayerSettings()">✅ Valider</button>
+                    <button onclick="closePlayerSettings()">❌ Annuler</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let playerName = '';
+        let playerImageUrl = '';
+
+        function openPlayerSettings() {
+            document.getElementById('playerSettingsModal').style.display = 'flex';
+            document.getElementById('playerName').value = playerName;
+        }
+
+        function closePlayerSettings() {
+            document.getElementById('playerSettingsModal').style.display = 'none';
+        }
+
+        function savePlayerSettings() {
+            const nameInput = document.getElementById('playerName');
+            const imageInput = document.getElementById('playerImage');
+
+            playerName = nameInput.value || '';
+
+            if (imageInput.files && imageInput.files[0]) {
+                // Redimensionner l'image à 32x32 pour optimiser les performances
+                resizeImage(imageInput.files[0], 32, 32, function (resizedImage) {
+                    playerImageUrl = resizedImage;
+
+                    // Afficher la prévisualisation
+                    const preview = document.getElementById('imagePreview');
+                    preview.innerHTML = `<img src="${resizedImage}" alt="Aperçu">`;
+
+                    closePlayerSettings();
+                    showToast('✅ Paramètres sauvegardés !');
+                });
+            } else {
+                closePlayerSettings();
+                showToast('✅ Paramètres sauvegardés !');
+            }
+        }
+        const teamColors = {
+            red: { name: "Rouge", color: "#ff6b6b", symbol: "🔴" },
+            blue: { name: "Bleu", color: "#4ecdc4", symbol: "🔵" },
+            green: { name: "Vert", color: "#95e1d3", symbol: "🟢" },
+            yellow: { name: "Jaune", color: "#fce38a", symbol: "🟡" },
+            purple: { name: "Violet", color: "#d299c2", symbol: "🟣" },
+            orange: { name: "Orange", color: "#fdbb2d", symbol: "🟠" },
+            pink: { name: "Rose", color: "#ff9ff3", symbol: "🩷" },
+            cyan: { name: "Cyan", color: "#54a0ff", symbol: "🔷" },
+            lime: { name: "Vert clair", color: "#7bed9f", symbol: "💚" },
+            brown: { name: "Marron", color: "#a55eea", symbol: "🤎" },
+            gray: { name: "Gris", color: "#747d8c", symbol: "⚫" },
+            gold: { name: "Or", color: "#ffa502", symbol: "🟨" }
+        };
+
+        const teamImages = {
+
+            "salon1_equipe1": "https://flagcdn.com/fr.svg",
+            "salon1_equipe2": "https://flagcdn.com/de.svg",
+
+
+            "salon2_equipe1": "https://flagcdn.com/es.svg",
+            "salon2_equipe2": "https://flagcdn.com/it.svg",
+
+
+            "salon3_equipe1": "https://flagcdn.com/br.svg",
+            "salon3_equipe2": "https://flagcdn.com/ar.svg",
+            "salon3_equipe3": "https://flagcdn.com/pt.svg",
+            "salon3_equipe4": "https://flagcdn.com/be.svg",
+
+
+            "salon4_equipe1": "https://flagcdn.com/gb.svg",
+            "salon4_equipe2": "https://flagcdn.com/nl.svg",
+            "salon4_equipe3": "https://flagcdn.com/pl.svg",
+            "salon4_equipe4": "https://flagcdn.com/ch.svg",
+
+
+            "salon5_equipe1": "https://flagcdn.com/ua.svg",
+            "salon5_equipe2": "https://flagcdn.com/se.svg",
+            "salon5_equipe3": "https://flagcdn.com/no.svg",
+            "salon5_equipe4": "https://flagcdn.com/dk.svg",
+            "salon5_equipe5": "https://flagcdn.com/fi.svg",
+            "salon5_equipe6": "https://flagcdn.com/is.svg",
+
+
+            "salon6_equipe1": "https://flagcdn.com/tr.svg",
+            "salon6_equipe2": "https://flagcdn.com/gr.svg",
+            "salon6_equipe3": "https://flagcdn.com/cz.svg",
+            "salon6_equipe4": "https://flagcdn.com/hu.svg",
+            "salon6_equipe5": "https://flagcdn.com/ro.svg",
+            "salon6_equipe6": "https://flagcdn.com/bg.svg",
+
+
+            "salon7_equipe1": "https://flagcdn.com/jp.svg",
+            "salon7_equipe2": "https://flagcdn.com/kr.svg",
+            "salon7_equipe3": "https://flagcdn.com/cn.svg",
+            "salon7_equipe4": "https://flagcdn.com/in.svg",
+            "salon7_equipe5": "https://flagcdn.com/th.svg",
+            "salon7_equipe6": "https://flagcdn.com/vn.svg",
+
+
+            "salon8_equipe1": "https://flagcdn.com/eg.svg",
+            "salon8_equipe2": "https://flagcdn.com/za.svg",
+            "salon8_equipe3": "https://flagcdn.com/ng.svg",
+            "salon8_equipe4": "https://flagcdn.com/ma.svg",
+            "salon8_equipe5": "https://flagcdn.com/sn.svg",
+            "salon8_equipe6": "https://flagcdn.com/gh.svg",
+
+
+            "salon9_equipe1": "https://flagcdn.com/us.svg",
+            "salon9_equipe2": "https://flagcdn.com/ca.svg",
+            "salon9_equipe3": "https://flagcdn.com/mx.svg",
+            "salon9_equipe4": "https://flagcdn.com/au.svg",
+            "salon9_equipe5": "https://flagcdn.com/nz.svg",
+            "salon9_equipe6": "https://flagcdn.com/ru.svg",
+            "salon9_equipe7": "https://flagcdn.com/by.svg",
+            "salon9_equipe8": "https://flagcdn.com/kz.svg",
+
+
+            "salon10_equipe1": "https://flagcdn.com/sa.svg",
+            "salon10_equipe2": "https://flagcdn.com/ae.svg",
+            "salon10_equipe3": "https://flagcdn.com/qa.svg",
+            "salon10_equipe4": "https://flagcdn.com/dz.svg",
+            "salon10_equipe5": "https://flagcdn.com/ir.svg",
+            "salon10_equipe6": "https://flagcdn.com/iq.svg",
+            "salon10_equipe7": "https://flagcdn.com/lb.svg",
+            "salon10_equipe8": "https://flagcdn.com/sy.svg"
+        };
+
+        const teamList = Object.keys(teamColors);
+
+        const rooms = [
+            { id: 1, teams: 2, players: 100 },
+            { id: 2, teams: 2, players: 100 },
+            { id: 3, teams: 4, players: 100 },
+            { id: 4, teams: 4, players: 100 },
+            { id: 5, teams: 6, players: 100 },
+            { id: 6, teams: 6, players: 100 },
+            { id: 7, teams: 6, players: 100 },
+            { id: 8, teams: 6, players: 100 },
+            { id: 9, teams: 8, players: 100 },
+            { id: 10, teams: 8, players: 100 }
+        ];
+
+        let currentRoomIndex = 0;
+        let selectedRoom = null;
+        let selectedTeam = null;
+        let spawnMarkers = {};
+        let teamLives = {};
+        let teamShields = {};
+        let protectedCells = {};
+        let grid = [];
+        let activeBalls = [];
+        let lastSpawnedBalls = [];
+        let gameStarted = false;
+        let gameEnded = false;
+        let gameTimer = 300;
+        let timerInterval = null;
+        let currentTeams = 2;
+
+        const GRID_CELL_SIZE = 15;
+        const MAX_SPEED = 10;
+        const BALL_SIZE = 25;
+        let GRID_COLS, GRID_ROWS;
+
+        const gameArea = document.getElementById("gameArea");
+        const carouselTrack = document.getElementById("carouselTrack");
+        const carouselDots = document.getElementById("carouselDots");
+
+        function createRoomCards() {
+            rooms.forEach((room, index) => {
+                const card = document.createElement('div');
+                card.className = 'room-card';
+
+                const preview = document.createElement('div');
+                preview.className = 'room-preview';
+                preview.onclick = () => selectRoom(index);
+
+                const playerCount = document.createElement('div');
+                playerCount.className = 'room-player-count';
+                playerCount.textContent = room.players;
+                preview.appendChild(playerCount);
+
+                const roomGrid = document.createElement('div');
+                roomGrid.className = 'room-grid';
+
+                const positions = getRoomPreviewPositions(room.teams);
+                positions.forEach((pos, i) => {
+                    const icon = document.createElement('div');
+                    icon.className = 'room-team-icon';
+                    icon.style.left = pos.x + '%';
+                    icon.style.top = pos.y + '%';
+
+                    const imageKey = `salon${room.id}_equipe${i + 1}`;
+                    const imageUrl = teamImages[imageKey] || '';
+                    if (imageUrl) {
+                        icon.innerHTML = `<img src="${imageUrl}" alt="${teamColors[teamList[i]].name}" style="width: 50px; height: 50px; border-radius: 50%;">`;
+                    } else {
+                        icon.textContent = teamColors[teamList[i]].symbol;
+                    }
+
+                    roomGrid.appendChild(icon);
+                });
+
+                preview.appendChild(roomGrid);
+                card.appendChild(preview);
+                carouselTrack.appendChild(card);
+
+                const dot = document.createElement('div');
+                dot.className = 'dot' + (index === 0 ? ' active' : '');
+                dot.onclick = () => goToRoom(index);
+                carouselDots.appendChild(dot);
+            });
+        }
+
+        function getRoomPreviewPositions(teamCount) {
+            const positions = [];
+            const teamsPerRow = 2;
+            const rows = Math.ceil(teamCount / teamsPerRow);
+
+            // Taille des icônes en pourcentage par rapport au conteneur
+            const iconSizePercent = 18; // 50px / 280px ≈ 18%
+
+            // Calculer l'espace disponible après déduction de la taille des icônes
+            const availableWidth = 100 - (teamsPerRow * iconSizePercent);
+            const availableHeight = 100 - (rows * iconSizePercent);
+
+            // Répartir l'espace disponible équitablement
+            const horizontalSpacing = availableWidth / (teamsPerRow + 1);
+            const verticalSpacing = availableHeight / (rows + 1);
+
+            for (let row = 0; row < rows; row++) {
+                const teamsInThisRow = Math.min(teamsPerRow, teamCount - row * teamsPerRow);
+
+                for (let i = 0; i < teamsInThisRow; i++) {
+                    // Position X: marge + (index * (espacement + taille icône))
+                    const x = horizontalSpacing + i * (horizontalSpacing + iconSizePercent);
+
+                    // Position Y: marge + (row * (espacement + taille icône))
+                    const y = verticalSpacing + row * (verticalSpacing + iconSizePercent);
+
+                    positions.push({ x, y });
+                }
+            }
+
+            return positions;
+        }
+
+
+        function goToRoom(index) {
+            // Limiter l'index
+            if (index < 0) index = 0;
+            if (index >= rooms.length) index = rooms.length - 1;
+
+            currentRoomIndex = index;
+            carouselTrack.style.transform = `translateX(-${index * 100}%)`;
+            document.querySelectorAll('.dot').forEach((dot, i) => {
+                dot.classList.toggle('active', i === index);
+            });
+
+            // Gérer la visibilité des flèches
+            const arrowLeft = document.getElementById('arrowLeft');
+            const arrowRight = document.getElementById('arrowRight');
+
+            if (arrowLeft) {
+                arrowLeft.style.opacity = index === 0 ? '0.3' : '1';
+                arrowLeft.style.pointerEvents = index === 0 ? 'none' : 'auto';
+            }
+
+            if (arrowRight) {
+                arrowRight.style.opacity = index === rooms.length - 1 ? '0.3' : '1';
+                arrowRight.style.pointerEvents = index === rooms.length - 1 ? 'none' : 'auto';
+            }
+        }
+
+        function selectRoom(index) {
+            selectedRoom = rooms[index];
+            currentTeams = selectedRoom.teams;
+            document.getElementById('roomSelection').style.display = 'none';
+            document.getElementById('gameContainer').style.display = 'flex';
+            setupGame();
+        }
+
+        let touchStartX = 0;
+        let touchEndX = 0;
+
+        carouselTrack.addEventListener('touchstart', (e) => {
+            touchStartX = e.changedTouches[0].screenX;
+        });
+
+        carouselTrack.addEventListener('touchend', (e) => {
+            touchEndX = e.changedTouches[0].screenX;
+            handleSwipe();
+        });
+
+        function handleSwipe() {
+            if (touchStartX - touchEndX > 50 && currentRoomIndex < rooms.length - 1) {
+                goToRoom(currentRoomIndex + 1);
+            }
+            if (touchEndX - touchStartX > 50 && currentRoomIndex > 0) {
+                goToRoom(currentRoomIndex - 1);
+            }
+        }
+
+        function showToast(message) {
+            const existing = document.querySelector('.toast');
+            if (existing) existing.remove();
+
+            const toast = document.createElement('div');
+            toast.className = 'toast';
+            toast.textContent = message;
+            document.body.appendChild(toast);
+
+            setTimeout(() => {
+                toast.remove();
+            }, 2000);
+        }
+
+        function updateSelectedTeamDisplay() {
+            const display = document.getElementById('selectedTeamDisplay');
+            if (selectedTeam) {
+                const teamData = teamColors[selectedTeam];
+                display.innerHTML = `${teamData.symbol} ${teamData.name}`;
+                display.style.color = teamData.color;
+            } else {
+                display.innerHTML = '';
+            }
+        }
+
+        function spawnBall(count) {
+            if (!gameStarted || gameEnded) return;
+            if (!selectedTeam) {
+                showToast('⚠️ Choisissez une équipe d\'abord !');
+                return;
+            }
+
+            lastSpawnedBalls = [];
+
+            if (count === 1) {
+                createSingleBall(selectedTeam);
+            } else {
+                createMultipleBalls(selectedTeam, count);
+            }
+        }
+
+        function createSingleBall(team) {
+            const ball = document.createElement("div");
+            ball.className = "countryball";
+            if (playerImageUrl) {
+                ball.style.backgroundImage = `url(${playerImageUrl})`;
+                ball.style.backgroundSize = 'cover';
+                ball.style.backgroundPosition = 'center';
+            } else {
+                ball.style.backgroundColor = teamColors[team].color;
+                ball.textContent = team.charAt(0).toUpperCase();
+            }
+
+            const position = getRandomPositionInTerritory(team);
+            ball.style.transform = `translate3d(${position.x}px, ${position.y}px, 0)`;
+            gameArea.appendChild(ball);
+
+            // FORCER la vitesse initiale à 1
+            const speed = 1;
+            const angle = Math.random() * Math.PI * 2;
+            let dx = Math.cos(angle) * speed;
+            let dy = Math.sin(angle) * speed;
+
+            const ballObj = { element: ball, x: position.x, y: position.y, dx, dy, team, boosted: false };
+
+            // S'assurer que la vitesse est bien limitée au départ
+            limitSpeed(ballObj);
+            activeBalls.push(ballObj);
+            lastSpawnedBalls.push(ballObj);
+        }
+
+        function createMultipleBalls(team, count) {
+            const directions = [
+                { dx: 1, dy: 1 },
+                { dx: -1, dy: 1 },
+                { dx: 1, dy: -1 },
+                { dx: -1, dy: -1 }
+            ];
+
+            let ballIndex = 0;
+            const interval = setInterval(() => {
+                if (ballIndex >= count) {
+                    clearInterval(interval);
+                    return;
+                }
+
+                const ball = document.createElement("div");
+                ball.className = "countryball";
+                if (playerImageUrl) {
+                    ball.style.backgroundImage = `url(${playerImageUrl})`;
+                    ball.style.backgroundSize = 'cover';
+                    ball.style.backgroundPosition = 'center';
+                } else {
+                    ball.style.backgroundColor = teamColors[team].color;
+                    ball.textContent = team.charAt(0).toUpperCase();
+                }
+
+                const position = getRandomPositionInTerritory(team);
+                const dir = directions[ballIndex % 4];
+                const offset = Math.floor(ballIndex / 4) * 5;
+
+                ball.style.transform = `translate3d(${position.x}px, ${position.y}px, 0)`;
+                gameArea.appendChild(ball);
+
+                // FORCER la vitesse initiale à 1
+                const speed = 1;
+                const ballObj = {
+                    element: ball,
+                    x: position.x + (dir.dx * offset),
+                    y: position.y + (dir.dy * offset),
+                    dx: dir.dx * speed,// Utiliser speed au lieu de dir.dx directement
+                    dy: dir.dy * speed,// Utiliser speed au lieu de dir.dy directement
+                    team,
+                    boosted: false
+                };
+
+                limitSpeed(ballObj);
+                activeBalls.push(ballObj);
+                lastSpawnedBalls.push(ballObj);
+
+                ballIndex++;
+            }, 50);
+        }
+
+        function boostBalls(isMax) {
+            if (!gameStarted || gameEnded) return;
+            if (!selectedTeam) {
+                showToast('⚠️ Choisissez une équipe d\'abord !');
+                return;
+            }
+
+            // TOUJOURS utiliser uniquement les dernières balles spawnées
+            const ballsToBoost = lastSpawnedBalls.filter(ball => ball.team === selectedTeam);
+
+            ballsToBoost.forEach(ball => {
+                if (activeBalls.includes(ball)) {
+                    // Si boost max, réinitialiser d'abord à la vitesse de base puis appliquer MAX_SPEED
+                    if (isMax) {
+                        const currentSpeed = Math.sqrt(ball.dx * ball.dx + ball.dy * ball.dy);
+                        const angle = Math.atan2(ball.dy, ball.dx);
+                        ball.dx = Math.cos(angle) * MAX_SPEED;
+                        ball.dy = Math.sin(angle) * MAX_SPEED;
+                    } else {
+                        ball.dx *= 1.3;
+                        ball.dy *= 1.3;
+                        limitSpeed(ball);
+                    }
+                    ball.boosted = true;
+                }
+            });
+
+
+        }
+
+        function activateShield() {
+            if (!gameStarted || gameEnded) return;
+            if (!selectedTeam) {
+                showToast('⚠️ Choisissez une équipe d\'abord !');
+                return;
+            }
+
+            if (teamLives[selectedTeam] <= 0) return;
+            if (teamShields[selectedTeam]) return;
+
+            teamShields[selectedTeam] = true;
+            if (spawnMarkers[selectedTeam]) {
+                spawnMarkers[selectedTeam].classList.add('shielded');
+            }
+
+            setTimeout(() => {
+                teamShields[selectedTeam] = false;
+                if (spawnMarkers[selectedTeam]) {
+                    spawnMarkers[selectedTeam].classList.remove('shielded');
+                }
+            }, 10000);
+        }
+
+        function calculateGridDimensions() {
+            GRID_COLS = Math.floor(gameArea.clientWidth / GRID_CELL_SIZE);
+            GRID_ROWS = Math.floor(gameArea.clientHeight / GRID_CELL_SIZE);
+        }
+
+        function getTeamStartPositions(teamCount) {
+            const positions = [];
+            const teamsPerRow = 2; // 2 équipes par ligne
+            const rows = Math.ceil(teamCount / teamsPerRow);
+            const territorySize = 3;
+
+            for (let row = 0; row < rows; row++) {
+                const teamsInThisRow = Math.min(teamsPerRow, teamCount - row * teamsPerRow);
+
+                // Calcul de l'espacement horizontal avec la règle : distance entre équipes = 2 * distance aux murs
+                const totalHorizontalSpace = GRID_COLS - (teamsInThisRow * territorySize);
+                const marginX = totalHorizontalSpace / (teamsInThisRow * 2); // espace entre bord et équipe
+                const spacingX = marginX * 2; // espace entre les équipes
+
+                for (let i = 0; i < teamsInThisRow; i++) {
+                    const startCol = Math.floor(marginX + i * (territorySize + spacingX));
+
+                    // Calcul de l'espacement vertical avec la même logique
+                    const totalVerticalSpace = GRID_ROWS - (rows * territorySize);
+                    const marginY = totalVerticalSpace / (rows * 2);
+                    const spacingY = marginY * 2;
+                    const startRow = Math.floor(marginY + row * (territorySize + spacingY));
+
+                    positions.push({
+                        startRow: Math.max(0, Math.min(startRow, GRID_ROWS - territorySize)),
+                        startCol: Math.max(0, Math.min(startCol, GRID_COLS - territorySize)),
+                        size: territorySize
+                    });
+                }
+            }
+            return positions;
+        }
+
+
+
+        function clearGame() {
+            gameArea.innerHTML = '';
+            activeBalls = [];
+            lastSpawnedBalls = [];
+            grid = [];
+            spawnMarkers = {};
+            teamLives = {};
+            teamShields = {};
+            protectedCells = {};
+        }
+
+        function createGrid() {
+            calculateGridDimensions();
+            const teamPositions = getTeamStartPositions(currentTeams);
+
+            for (let row = 0; row < GRID_ROWS; row++) {
+                grid[row] = [];
+                for (let col = 0; col < GRID_COLS; col++) {
+                    grid[row][col] = "neutral";
+                }
+            }
+
+            for (let row = 0; row < GRID_ROWS; row++) {
+                for (let col = 0; col < GRID_COLS; col++) {
+                    const cell = document.createElement("div");
+                    cell.className = "grid-cell neutral-cell";
+
+                    for (let teamIndex = 0; teamIndex < currentTeams; teamIndex++) {
+                        const territory = teamPositions[teamIndex];
+                        if (row >= territory.startRow && row < territory.startRow + territory.size &&
+                            col >= territory.startCol && col < territory.startCol + territory.size) {
+                            const teamName = teamList[teamIndex];
+                            cell.className = `grid-cell ${teamName}-cell`;
+                            grid[row][col] = teamName;
+                            break;
+                        }
+                    }
+
+                    cell.style.left = `${col * GRID_CELL_SIZE}px`;
+                    cell.style.top = `${row * GRID_CELL_SIZE}px`;
+
+                    cell.addEventListener('click', () => {
+                        const cellTeam = grid[row][col];
+                        if (cellTeam !== 'neutral' && teamList.slice(0, currentTeams).includes(cellTeam)) {
+                            selectedTeam = cellTeam;
+                            updateSelectedTeamDisplay();
+                        }
+                    });
+
+                    gameArea.appendChild(cell);
+                }
+            }
+        }
+
+        function createSpawnMarkers() {
+            for (const team in spawnMarkers) {
+                if (spawnMarkers[team]) {
+                    spawnMarkers[team].remove();
+                }
+            }
+            spawnMarkers = {};
+            protectedCells = {};
+
+            for (let i = 0; i < currentTeams; i++) {
+                const teamName = teamList[i];
+                const teamData = teamColors[teamName];
+
+                const marker = document.createElement('div');
+                marker.className = 'spawn-marker';
+                marker.style.backgroundColor = teamData.color;
+                const imageKey = `salon${selectedRoom.id}_equipe${i + 1}`;
+                const imageUrl = teamImages[imageKey] || '';
+                if (imageUrl) {
+                    marker.innerHTML = `<img src="${imageUrl}" alt="${teamData.name}" style="width: 40px; height: 40px; border-radius: 50%;">`;
+                } else {
+                    marker.innerHTML = '🎯';
+                }
+
+                const center = calculateTerritoryCenter(teamName);
+                marker.style.left = `${center.x}px`;
+                marker.style.top = `${center.y}px`;
+
+                marker.addEventListener('click', () => {
+                    selectedTeam = teamName;
+                    updateSelectedTeamDisplay();
+                });
+
+                gameArea.appendChild(marker);
+                spawnMarkers[teamName] = marker;
+
+                teamLives[teamName] = 50;
+                teamShields[teamName] = false;
+                protectedCells[teamName] = getProtectedCells(teamName);
+
+                updateLifeCounter(teamName);
+            }
+        }
+
+        function getProtectedCells(team) {
+            const center = calculateTerritoryCenter(team);
+            const centerX = center.x + 15;
+            const centerY = center.y + 15;
+            const centerCol = Math.floor(centerX / GRID_CELL_SIZE);
+            const centerRow = Math.floor(centerY / GRID_CELL_SIZE);
+            const protectedCells = [];
+
+            for (let dr = -1; dr <= 1; dr++) {
+                for (let dc = -1; dc <= 1; dc++) {
+                    const row = centerRow + dr;
+                    const col = centerCol + dc;
+                    if (row >= 0 && row < GRID_ROWS && col >= 0 && col < GRID_COLS) {
+                        protectedCells.push({ row, col });
+                    }
+                }
+            }
+            return protectedCells;
+        }
+
+        function updateLifeCounter(team) {
+            if (spawnMarkers[team]) {
+                let counter = spawnMarkers[team].querySelector('.life-counter');
+                if (!counter) {
+                    counter = document.createElement('div');
+                    counter.className = 'life-counter';
+                    spawnMarkers[team].appendChild(counter);
+                }
+                counter.textContent = `❤️ ${teamLives[team]}`;
+                if (teamLives[team] <= 10) {
+                    counter.style.background = 'rgba(255,0,0,0.9)';
+                } else if (teamLives[team] <= 25) {
+                    counter.style.background = 'rgba(255,165,0,0.9)';
+                } else {
+                    counter.style.background = 'rgba(0,0,0,0.7)';
+                }
+            }
+        }
+
+        function calculateTerritoryCenter(team) {
+            let totalX = 0;
+            let totalY = 0;
+            let count = 0;
+
+            for (let row = 0; row < GRID_ROWS; row++) {
+                for (let col = 0; col < GRID_COLS; col++) {
+                    if (grid[row][col] === team) {
+                        totalX += col * GRID_CELL_SIZE + GRID_CELL_SIZE / 2;
+                        totalY += row * GRID_CELL_SIZE + GRID_CELL_SIZE / 2;
+                        count++;
+                    }
+                }
+            }
+
+            if (count === 0) {
+                const teamIndex = teamList.indexOf(team);
+                const teamPositions = getTeamStartPositions(currentTeams);
+                const territory = teamPositions[teamIndex];
+                return {
+                    x: territory.startCol * GRID_CELL_SIZE + (territory.size * GRID_CELL_SIZE) / 2 - 22, // Ajusté -15 à -22
+                    y: territory.startRow * GRID_CELL_SIZE + (territory.size * GRID_CELL_SIZE) / 2 - 22// Ajusté -15 à -22
+                };
+            }
+
+            return {
+                x: (totalX / count) - 22, // Ajusté -15 à -22
+                y: (totalY / count) - 22// Ajusté -15 à -22
+            };
+        }
+
+        function getRandomPositionInTerritory(team) {
+            const center = calculateTerritoryCenter(team);
+            const centerX = center.x + 15;
+            const centerY = center.y + 15;
+            const angle = Math.random() * Math.PI * 2;
+            const radius = Math.random() * 20;
+
+            return {
+                x: Math.max(0, Math.min(centerX + Math.cos(angle) * radius - BALL_SIZE / 2, GRID_COLS * GRID_CELL_SIZE - BALL_SIZE)),
+                y: Math.max(0, Math.min(centerY + Math.sin(angle) * radius - BALL_SIZE / 2, GRID_ROWS * GRID_CELL_SIZE - BALL_SIZE))
+            };
+        }
+
+        function updateTerritory() {
+            const totalCells = GRID_ROWS * GRID_COLS;
+            const territoryCounts = {};
+
+            for (let i = 0; i < currentTeams; i++) {
+                territoryCounts[teamList[i]] = 0;
+            }
+
+            for (let row = 0; row < GRID_ROWS; row++) {
+                for (let col = 0; col < GRID_COLS; col++) {
+                    const cellTeam = grid[row][col];
+                    if (territoryCounts.hasOwnProperty(cellTeam)) {
+                        territoryCounts[cellTeam]++;
+                    }
+                }
+            }
+
+            updateTerritoryBar(territoryCounts, totalCells);
+
+            for (let i = 0; i < currentTeams; i++) {
+                const teamName = teamList[i];
+                if (spawnMarkers[teamName]) {
+                    const center = calculateTerritoryCenter(teamName);
+                    spawnMarkers[teamName].style.left = `${center.x}px`;
+                    spawnMarkers[teamName].style.top = `${center.y}px`;
+
+                    if (teamLives[teamName] > 0) {
+                        protectedCells[teamName] = getProtectedCells(teamName);
+                        for (const cell of protectedCells[teamName]) {
+                            if (grid[cell.row][cell.col] !== teamName) {
+                                grid[cell.row][cell.col] = teamName;
+                                const cellIndex = cell.row * GRID_COLS + cell.col;
+                                const cellElement = gameArea.children[cellIndex];
+                                for (const otherTeam of teamList) {
+                                    cellElement.classList.remove(`${otherTeam}-cell`);
+                                }
+                                cellElement.classList.remove('neutral-cell');
+                                cellElement.classList.add(`${teamName}-cell`);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        function updateTerritoryBar(territoryCounts, totalCells) {
+            const territoryBar = document.getElementById('territoryBar');
+            territoryBar.innerHTML = '';
+
+            for (let i = 0; i < currentTeams; i++) {
+                const teamName = teamList[i];
+                const percentage = Math.round((territoryCounts[teamName] / totalCells) * 100);
+                const teamData = teamColors[teamName];
+
+                const segment = document.createElement('div');
+                segment.className = 'territory-segment';
+                segment.style.backgroundColor = teamData.color;
+                segment.style.width = `${percentage}%`;
+                segment.textContent = percentage > 5 ? `${percentage}%` : '';
+
+                territoryBar.appendChild(segment);
+            }
+        }
+
+
+        function conquereCell(x, y, team) {
+            const col = Math.floor(x / GRID_CELL_SIZE);
+            const row = Math.floor(y / GRID_CELL_SIZE);
+
+            if (row >= 0 && row < GRID_ROWS && col >= 0 && col < GRID_COLS) {
+                const currentOwner = grid[row][col];
+
+                for (const otherTeam in protectedCells) {
+                    if (otherTeam !== team && teamLives[otherTeam] > 0) {
+                        const isProtected = protectedCells[otherTeam].some(
+                            cell => cell.row === row && cell.col === col
+                        );
+                        if (isProtected) {
+                            if (!teamShields[otherTeam]) {
+                                teamLives[otherTeam]--;
+                                updateLifeCounter(otherTeam);
+                                if (teamLives[otherTeam] <= 0) {
+                                    eliminateTeam(otherTeam);
+                                }
+                            }
+                            return false;
+                        }
+                    }
+                }
+
+                if (grid[row][col] !== team) {
+                    const cellIndex = row * GRID_COLS + col;
+                    const cell = gameArea.children[cellIndex];
+
+                    for (const teamName of teamList) {
+                        cell.classList.remove(`${teamName}-cell`);
+                    }
+                    cell.classList.remove('neutral-cell');
+                    cell.classList.add(`${team}-cell`);
+                    grid[row][col] = team;
+
+
+                    conqueredCellsCount[team]++;
+
+
+                    if (conqueredCellsCount[team] >= 40) {
+                        conqueredCellsCount[team] = 0;
+                        updateTerritory();
+                    } else {
+
+                        const totalCells = GRID_ROWS * GRID_COLS;
+                        const territoryCounts = {};
+
+                        for (let i = 0; i < currentTeams; i++) {
+                            territoryCounts[teamList[i]] = 0;
+                        }
+
+                        for (let r = 0; r < GRID_ROWS; r++) {
+                            for (let c = 0; c < GRID_COLS; c++) {
+                                const cellTeam = grid[r][c];
+                                if (territoryCounts.hasOwnProperty(cellTeam)) {
+                                    territoryCounts[cellTeam]++;
+                                }
+                            }
+                        }
+
+                        updateTerritoryBar(territoryCounts, totalCells);
+                    }
+
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        function limitSpeed(ball) {
+            const speed = Math.sqrt(ball.dx * ball.dx + ball.dy * ball.dy);
+            if (speed > MAX_SPEED) {
+                const factor = MAX_SPEED / speed;
+                ball.dx *= factor;
+                ball.dy *= factor;
+            }
+            if (Math.abs(ball.dx) < 0.3) ball.dx = (ball.dx >= 0 ? 0.3 : -0.3);
+            if (Math.abs(ball.dy) < 0.3) ball.dy = (ball.dy >= 0 ? 0.3 : -0.3);
+        }
+
+        function checkBallCollisions(currentBall) {
+            for (let i = 0; i < activeBalls.length; i++) {
+                const otherBall = activeBalls[i];
+                if (otherBall === currentBall) continue;
+
+
+                if (currentBall.team === otherBall.team) continue;
+
+                const dx = (currentBall.x + BALL_SIZE / 2) - (otherBall.x + BALL_SIZE / 2);
+                const dy = (currentBall.y + BALL_SIZE / 2) - (otherBall.y + BALL_SIZE / 2);
+                const distance = Math.sqrt(dx * dx + dy * dy);
+
+                if (distance < BALL_SIZE) {
+                    const overlap = BALL_SIZE - distance;
+                    const separationX = (dx / distance) * (overlap / 2);
+                    const separationY = (dy / distance) * (overlap / 2);
+
+                    currentBall.x += separationX;
+                    currentBall.y += separationY;
+                    otherBall.x -= separationX;
+                    otherBall.y -= separationY;
+
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        function checkCollisionWithWalls(ball) {
+            let collided = false;
+            const maxX = GRID_COLS * GRID_CELL_SIZE - BALL_SIZE;
+            const maxY = GRID_ROWS * GRID_CELL_SIZE - BALL_SIZE;
+
+            if (ball.y <= 0) {
+                ball.y = 0;
+                ball.dy = Math.abs(ball.dy);
+                collided = true;
+            }
+            if (ball.y >= maxY) {
+                ball.y = maxY;
+                ball.dy = -Math.abs(ball.dy);
+                collided = true;
+            }
+            if (ball.x <= 0) {
+                ball.x = 0;
+                ball.dx = Math.abs(ball.dx);
+                collided = true;
+            }
+            if (ball.x >= maxX) {
+                ball.x = maxX;
+                ball.dx = -Math.abs(ball.dx);
+                collided = true;
+            }
+
+            if (collided) {
+                limitSpeed(ball);
+            }
+            return collided;
+        }
+
+        function checkCollisionWithCell(ball) {
+            const checkPoints = [
+                { x: ball.x, y: ball.y },
+                { x: ball.x + BALL_SIZE, y: ball.y },
+                { x: ball.x, y: ball.y + BALL_SIZE },
+                { x: ball.x + BALL_SIZE, y: ball.y + BALL_SIZE },
+                { x: ball.x + BALL_SIZE / 2, y: ball.y + BALL_SIZE / 2 }
+            ];
+
+            for (const point of checkPoints) {
+                const col = Math.floor(point.x / GRID_CELL_SIZE);
+                const row = Math.floor(point.y / GRID_CELL_SIZE);
+
+                if (row >= 0 && row < GRID_ROWS && col >= 0 && col < GRID_COLS) {
+                    if (grid[row][col] !== ball.team) {
+                        const cellCenterX = col * GRID_CELL_SIZE + GRID_CELL_SIZE / 2;
+                        const cellCenterY = row * GRID_CELL_SIZE + GRID_CELL_SIZE / 2;
+                        const ballCenterX = ball.x + BALL_SIZE / 2;
+                        const ballCenterY = ball.y + BALL_SIZE / 2;
+
+                        const dx = ballCenterX - cellCenterX;
+                        const dy = ballCenterY - cellCenterY;
+                        const impactAngle = Math.atan2(dy, dx);
+
+                        const speed = Math.sqrt(ball.dx * ball.dx + ball.dy * ball.dy);
+                        ball.dx = Math.cos(impactAngle) * speed;
+                        ball.dy = Math.sin(impactAngle) * speed;
+
+                        limitSpeed(ball);
+                        conquereCell(point.x, point.y, ball.team);
+                        return true;
+                    } else if (grid[row][col] === ball.team) {
+                        conquereCell(point.x, point.y, ball.team);
+                    }
+                }
+            }
+            return false;
+        }
+
+        function moveBalls() {
+            if (!gameStarted || gameEnded) return;
+
+            for (let i = 0; i < activeBalls.length; i++) {
+                const ball = activeBalls[i];
+                checkBallCollisions(ball);
+                limitSpeed(ball);
+
+                const steps = Math.ceil(Math.max(Math.abs(ball.dx), Math.abs(ball.dy)) / 1);
+                const stepX = ball.dx / steps;
+                const stepY = ball.dy / steps;
+
+                for (let s = 0; s < steps; s++) {
+                    ball.x += stepX;
+                    ball.y += stepY;
+
+                    if (checkCollisionWithWalls(ball)) {
+                        break;
+                    }
+                    checkCollisionWithCell(ball);
+                }
+
+                ball.element.style.transform = `translate3d(${ball.x}px, ${ball.y}px, 0)`;
+            }
+
+            requestAnimationFrame(moveBalls);
+        }
+
+        function startTimer() {
+            gameTimer = 120;
+            updateTimerDisplay();
+
+            timerInterval = setInterval(() => {
+                gameTimer--;
+                updateTimerDisplay();
+
+                const timerDisplay = document.querySelector('.timer-row');
+                if (gameTimer <= 30) {
+                    timerDisplay.style.color = '#ff6b6b';
+                } else {
+                    timerDisplay.style.color = '#ffff80';
+                }
+
+                if (gameTimer <= 0) {
+                    endGame();
+                }
+            }, 1000);
+        }
+
+        function updateTimerDisplay() {
+            const minutes = Math.floor(gameTimer / 60);
+            const seconds = gameTimer % 60;
+            const formattedTime = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+            document.getElementById('timeLeft').textContent = formattedTime;
+        }
+
+        function endGame() {
+            gameEnded = true;
+            gameStarted = false;
+            if (timerInterval) {
+                clearInterval(timerInterval);
+            }
+
+            const totalCells = GRID_ROWS * GRID_COLS;
+            const territoryCounts = {};
+
+            for (let i = 0; i < currentTeams; i++) {
+                territoryCounts[teamList[i]] = 0;
+            }
+
+            for (let row = 0; row < GRID_ROWS; row++) {
+                for (let col = 0; col < GRID_COLS; col++) {
+                    const cellTeam = grid[row][col];
+                    if (territoryCounts.hasOwnProperty(cellTeam)) {
+                        territoryCounts[cellTeam]++;
+                    }
+                }
+            }
+
+            let winner = teamList[0];
+            let maxTerritory = territoryCounts[winner];
+            for (let i = 1; i < currentTeams; i++) {
+                const team = teamList[i];
+                if (territoryCounts[team] > maxTerritory) {
+                    maxTerritory = territoryCounts[team];
+                    winner = team;
+                }
+            }
+
+            const winnerPercentage = Math.round((maxTerritory / totalCells) * 100);
+            showGameOverScreen(winner, winnerPercentage);
+        }
+
+        function showGameOverScreen(winner, percentage) {
+            showVictoryScreen(winner, percentage, 'territory');
+        }
+
+        function showVictoryScreen(winner, percentage, victoryType) {
+            const gameOverDiv = document.createElement('div');
+            gameOverDiv.className = 'game-over';
+
+            let victoryMessage = '';
+            if (victoryType === 'domination') {
+                victoryMessage = '<p><strong>🏆 VICTOIRE PAR DOMINATION TOTALE ! 🏆</strong></p>';
+            } else {
+                victoryMessage = `<p><strong>Gagnant avec ${percentage}% du territoire !</strong></p>`;
+            }
+
+            gameOverDiv.innerHTML = `
+<div class="game-over-content">
+<h2>🎉 Fin de la partie !</h2>
+<div class="winner-display">
+${teamColors[winner].symbol} ${teamColors[winner].name}
+</div>
+${victoryMessage}
+<div class="countdown">
+Nouvelle partie dans <span id="restartCountdown">10</span>s
+</div>
+</div>
+`;
+
+            document.body.appendChild(gameOverDiv);
+
+            let countdown = 10;
+            const countdownInterval = setInterval(() => {
+                countdown--;
+                const countdownElement = document.getElementById('restartCountdown');
+                if (countdownElement) {
+                    countdownElement.textContent = countdown;
+                }
+                if (countdown <= 0) {
+                    clearInterval(countdownInterval);
+                    document.body.removeChild(gameOverDiv);
+                    setupGame();
+                }
+            }, 1000);
+        }
+
+        function eliminateTeam(team) {
+            activeBalls = activeBalls.filter(ball => {
+                if (ball.team === team) {
+                    ball.element.remove();
+                    return false;
+                }
+                return true;
+            });
+
+            if (protectedCells[team]) {
+                delete protectedCells[team];
+            }
+            if (spawnMarkers[team]) {
+                spawnMarkers[team].remove();
+                delete spawnMarkers[team];
+            }
+
+
+            if (conqueredCellsCount[team]) {
+                delete conqueredCellsCount[team];
+            }
+
+            if (selectedTeam === team) {
+                selectedTeam = null;
+                updateSelectedTeamDisplay();
+            }
+
+            checkForWinner();
+        }
+
+        function checkForWinner() {
+            const aliveTeams = [];
+            for (let i = 0; i < currentTeams; i++) {
+                const teamName = teamList[i];
+                if (teamLives[teamName] > 0) {
+                    aliveTeams.push(teamName);
+                }
+            }
+
+            if (aliveTeams.length === 1) {
+                endGameWithWinner(aliveTeams[0]);
+            }
+            else if (aliveTeams.length === 0) {
+                endGameWithDraw();
+            }
+        }
+
+        function endGameWithWinner(winner) {
+            gameEnded = true;
+            gameStarted = false;
+            if (timerInterval) {
+                clearInterval(timerInterval);
+            }
+
+            const totalCells = GRID_ROWS * GRID_COLS;
+            let winnerTerritory = 0;
+            for (let row = 0; row < GRID_ROWS; row++) {
+                for (let col = 0; col < GRID_COLS; col++) {
+                    if (grid[row][col] === winner) {
+                        winnerTerritory++;
+                    }
+                }
+            }
+
+            const winnerPercentage = Math.round((winnerTerritory / totalCells) * 100);
+            showVictoryScreen(winner, winnerPercentage, 'domination');
+        }
+
+        function endGameWithDraw() {
+            gameEnded = true;
+            gameStarted = false;
+            if (timerInterval) {
+                clearInterval(timerInterval);
+            }
+            showDrawScreen();
+        }
+
+        function showDrawScreen() {
+            const gameOverDiv = document.createElement('div');
+            gameOverDiv.className = 'game-over';
+            gameOverDiv.innerHTML = `
+<div class="game-over-content">
+<h2>⚔️ Match nul !</h2>
+<div class="winner-display">
+🤝
+</div>
+<p><strong>Toutes les équipes ont été éliminées !</strong></p>
+<div class="countdown">
+Nouvelle partie dans <span id="restartCountdown">10</span>s
+</div>
+</div>
+`;
+
+            document.body.appendChild(gameOverDiv);
+
+            let countdown = 10;
+            const countdownInterval = setInterval(() => {
+                countdown--;
+                const countdownElement = document.getElementById('restartCountdown');
+                if (countdownElement) {
+                    countdownElement.textContent = countdown;
+                }
+                if (countdown <= 0) {
+                    clearInterval(countdownInterval);
+                    document.body.removeChild(gameOverDiv);
+                    setupGame();
+                }
+            }, 1000);
+        }
+        let conqueredCellsCount = {};
+        function setupGame() {
+            gameEnded = false;
+            selectedTeam = null;
+            updateSelectedTeamDisplay();
+            lastSpawnedBalls = [];
+            if (timerInterval) {
+                clearInterval(timerInterval);
+            }
+
+            clearGame();
+            createGrid();
+            createSpawnMarkers();
+            updateTerritory();
+
+
+            for (let i = 0; i < currentTeams; i++) {
+                conqueredCellsCount[teamList[i]] = 0;
+            }
+
+            const totalCells = GRID_ROWS * GRID_COLS;
+            const territoryCounts = {};
+
+            for (let i = 0; i < currentTeams; i++) {
+                territoryCounts[teamList[i]] = 0;
+            }
+
+            for (let row = 0; row < GRID_ROWS; row++) {
+                for (let col = 0; col < GRID_COLS; col++) {
+                    const cellTeam = grid[row][col];
+                    if (territoryCounts.hasOwnProperty(cellTeam)) {
+                        territoryCounts[cellTeam]++;
+                    }
+                }
+            }
+
+            updateTerritoryBar(territoryCounts, totalCells);
+
+            gameStarted = true;
+            startTimer();
+
+            if (activeBalls.length === 0) {
+                requestAnimationFrame(moveBalls);
+            }
+        }
+
+        window.addEventListener('load', () => {
+            createRoomCards();
+            goToRoom(0);
+        });
+
+        window.addEventListener('resize', () => {
+            if (gameStarted) {
+                setupGame();
+            }
+        });
+
+        function goBackToRooms() {
+            gameStarted = false;
+            gameEnded = false;
+
+            if (timerInterval) {
+                clearInterval(timerInterval);
+                timerInterval = null;
+            }
+
+            document.getElementById('gameContainer').style.display = 'none';
+            document.getElementById('roomSelection').style.display = 'flex';
+
+            // Réinitialiser la sélection
+            selectedTeam = null;
+            selectedRoom = null;
+        }
+
+        function resizeImage(file, maxWidth, maxHeight, callback) {
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                const img = new Image();
+                img.onload = function () {
+                    const canvas = document.createElement('canvas');
+                    canvas.width = maxWidth;
+                    canvas.height = maxHeight;
+
+                    const ctx = canvas.getContext('2d');
+                    ctx.drawImage(img, 0, 0, maxWidth, maxHeight);
+
+                    const resizedDataUrl = canvas.toDataURL('image/png');
+                    callback(resizedDataUrl);
+                };
+                img.src = e.target.result;
+            };
+            reader.readAsDataURL(file);
+        }
+
+        document.addEventListener('DOMContentLoaded', function () {
+            const imageInput = document.getElementById('playerImage');
+            if (imageInput) {
+                imageInput.addEventListener('change', function (e) {
+                    if (e.target.files && e.target.files[0]) {
+                        resizeImage(e.target.files[0], 32, 32, function (resizedImage) {
+                            const preview = document.getElementById('imagePreview');
+                            preview.innerHTML = `<img src="${resizedImage}" alt="Aperçu">`;
+                        });
+                    }
+                });
+            }
+        });
+    </script>
+</body>
+
+</html>
