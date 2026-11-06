@@ -47,6 +47,18 @@ input{font-family:inherit;-webkit-user-select:text;user-select:text}
 #reset,#ver{z-index:6}
 :root{--hbg:#d6f1de;--hcard1:#6fbef7;--hcard2:#0681f0;--hpill:#44a3f3;--hbar:#9eb8e9;--coin:#6882df;--play:#5265de;--logo:#6e9390}
 body.neon{--hbg:#070714;--hcard1:#7a3cff;--hcard2:#18a8ff;--hpill:rgba(255,255,255,.2);--hbar:#12142e;--coin:#2a2f6a;--play:#3a4bff;--logo:#18e4ff}
+/* ---- page de chargement : c'est l'accueil sans ses boutons → le logo et le cube restent exactement à la même place et gardent la même animation ---- */
+#homeTop,#dRow,#dots,#frz,#progress,#play{transition:opacity .45s ease}
+body.boot #homeTop,body.boot #dRow,body.boot #dots,body.boot #frz,body.boot #progress,body.boot #play{opacity:0;pointer-events:none}
+body.boot:not(.logoReady) #logoText{visibility:hidden}
+#bootWrap{position:absolute;z-index:2;left:50%;transform:translateX(-50%);bottom:calc(44px + env(safe-area-inset-bottom,0px));width:min(68%,280px);text-align:center;opacity:0;pointer-events:none;transition:opacity .3s}
+body.boot #bootWrap{opacity:1}
+#bootTrack{height:8px;border-radius:4px;background:rgba(25,33,89,.14);overflow:hidden}
+#bootFill{height:100%;width:0;border-radius:4px;background:linear-gradient(90deg,var(--play),var(--hcard1));transition:width .35s ease-out}
+#bootMsg{margin-top:10px;font-weight:800;font-size:13px;color:var(--logo);opacity:.9}
+body.neon #bootTrack{background:rgba(24,228,255,.14)}
+body.neon #bootFill{background:linear-gradient(90deg,#18e4ff,#7a3cff);box-shadow:0 0 12px rgba(24,228,255,.7)}
+body.rm #bootFill{transition:none}
 /* ---- page d'accueil ---- */
 #home{position:fixed;inset:0;z-index:5;display:none;background:var(--hbg);overflow:hidden}
 body.home #home{display:block}
@@ -86,6 +98,9 @@ body.neon #play{box-shadow:0 0 20px rgba(58,75,255,.65)}
 #play:active,#dailyPlay:active{transform:scale(.97)}
 #toast{position:fixed;left:50%;bottom:calc(96px + env(safe-area-inset-bottom,0px));transform:translateX(-50%) translateY(16px);background:rgba(26,34,90,.93);color:#fff;padding:10px 18px;border-radius:18px;font-weight:700;font-size:14px;text-align:center;max-width:82vw;opacity:0;pointer-events:none;transition:opacity .25s,transform .25s;z-index:20}
 #toast.show{opacity:1;transform:translateX(-50%)}
+#praise{position:fixed;left:50%;top:46%;transform:translate(-50%,-50%) scale(.9);z-index:4;font-weight:900;font-size:clamp(20px,5.6vw,30px);color:#fff;letter-spacing:.5px;text-shadow:0 2px 14px rgba(20,30,90,.7);opacity:0;pointer-events:none;transition:opacity .25s,transform .35s}
+#praise.show{opacity:.95;transform:translate(-50%,-50%) scale(1)}
+body.neon #praise{text-shadow:0 0 14px #18e4ff,0 0 28px rgba(122,60,255,.7)}
 .card p{margin:0 0 12px;color:var(--ink);font-weight:700}
 .card.wide{width:min(86vw,360px);box-sizing:border-box}
 .card .lbl{margin:12px 0 6px;font-weight:800;font-size:13px;color:var(--ink);text-align:left}
@@ -256,6 +271,7 @@ body.neon .pp{background:#18e4ff;color:#070714}
 </style>
 </head>
 <body>
+<script>/* thème dès le premier affichage (évite un flash clair avant le script principal) */try{var o=JSON.parse(localStorage.getItem('cubeaway_opt')||'{}'),t=o.theme||'auto';if(t==='neon'||(t==='auto'&&matchMedia('(prefers-color-scheme: dark)').matches))document.body.classList.add('neon')}catch(e){}</script>
 <canvas id="c"></canvas><canvas id="glow"></canvas>
 <div id="home"><div id="homeIn">
   <div id="homeTop">
@@ -276,8 +292,10 @@ body.neon .pp{background:#18e4ff;color:#070714}
     <button id="gift" aria-label="Cadeau"><svg viewBox="0 0 48 48"><rect x="6" y="20" width="36" height="24" rx="4" fill="#ff7a1a"/><rect x="4" y="14" width="40" height="9" rx="3" fill="#ff9a1f"/><rect x="21" y="14" width="6" height="30" fill="#ffd23c"/><path d="M24 14c-6-9-14-6-11-1 2 3 8 2 11 1zM24 14c6-9 14-6 11-1-2 3-8 2-11 1z" fill="#ffd23c"/></svg></button>
   </div>
   <button id="play">Niveau 1</button>
-</div></div>
-<div id="toast"></div><div id="tuto"></div>
+</div>
+<!-- [BOOT-iOS] barre de la page de chargement (pilotée par le module Boot, voir « PAGE DE CHARGEMENT » dans le script) -->
+<div id="bootWrap"><div id="bootTrack"><div id="bootFill"></div></div><div id="bootMsg">Chargement…</div></div></div>
+<div id="toast"></div><div id="praise"></div><div id="tuto"></div>
 <div id="bar">
   <div id="bl"><button id="gear" aria-label="Menu"><svg viewBox="0 0 24 24"><path d="M19.4 13a7.7 7.7 0 0 0 0-2l2.1-1.6a.5.5 0 0 0 .1-.6l-2-3.5a.5.5 0 0 0-.6-.2l-2.5 1a7.3 7.3 0 0 0-1.7-1l-.4-2.6a.5.5 0 0 0-.5-.4h-4a.5.5 0 0 0-.5.4l-.4 2.6c-.6.2-1.2.6-1.7 1l-2.5-1a.5.5 0 0 0-.6.2l-2 3.5a.5.5 0 0 0 .1.6L4.6 11a7.700 7.700 0 0 0 0 2l-2.100 1.600a.5.5 0 0 0-.1.600l2 3.500c.1.200.4.300.6.200l2.500-1c.5.400 1.100.800 1.700 1l.4 2.600c0 .200.300.400.500.400h4c.2 0 .5-.2.500-.4l.4-2.600c.6-.3 1.200-.6 1.700-1l2.500 1c.2.100.5 0 .6-.2l2-3.500a.5.5 0 0 0-.1-.6zM12 15.500a3.500 3.500 0 1 1 0-7 3.500 3.500 0 0 1 0 7z"/></svg></button><button id="goHome" aria-label="Accueil"><svg viewBox="0 0 24 24"><path d="M12 3 2 12h3v9h5v-6h4v6h5v-9h3z"/></svg></button><button id="redo" aria-label="Recommencer"><svg viewBox="0 0 24 24"><path d="M12 4V1L8 5l4 4V6c3.31 0 6 2.69 6 6 0 1.01-.25 1.97-.7 2.8l1.46 1.46A7.93 7.93 0 0 0 20 12c0-4.42-3.58-8-8-8zm0 14c-3.31 0-6-2.69-6-6 0-1.01.25-1.97.7-2.8L5.24 7.74A7.93 7.93 0 0 0 4 12c0 4.42 3.58 8 8 8v3l4-4-4-4v3z"/></svg></button></div>
   <div id="hearts"></div><div id="tsc"><span id="title">Niveau : 1</span><span id="score">Score : 0</span></div>
@@ -288,6 +306,7 @@ body.neon .pp{background:#18e4ff;color:#070714}
   <span id="badge">2</span>
   <span class="hplay"><svg viewBox="0 0 24 24"><path d="M9.500 7.500l7 4.500-7 4.500z" fill="#fff"/></svg></span>
 </button>
+<!-- [PROD] bouton temporaire : à supprimer avant la sortie -->
 <button id="reset">Réinitialiser (temporaire)</button>
 <div id="ver">v25</div>
 <div id="win" class="ov"><div class="card wide"><h2 id="wTitle"></h2><div id="wStars"></div><div id="wStats"></div><p id="winMsg"></p><div id="wprogress"></div><button id="next">Niveau suivant</button><div class="mini"><button id="share" class="alt">Partager</button><button id="winHome" class="alt">Accueil</button></div></div><div id="conf"></div></div>
@@ -295,15 +314,41 @@ body.neon .pp{background:#18e4ff;color:#070714}
 
 <div id="settings" class="ov"><div class="card wide sc"><h2>Réglages</h2><div class="sg"><div class="sr" id="rLang"><span class="si"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18"/></svg></span><span class="sl">Langue</span><span class="sv" id="langV">français</span><span class="chev">›</span></div><div class="sr" id="rVib"><span class="si"><svg viewBox="0 0 24 24"><path d="M2 8c2-2 4-2 6 0s4 2 6 0 4-2 6 0M2 15c2-2 4-2 6 0s4 2 6 0 4-2 6 0"/></svg></span><span class="sl">Vibrations</span><span class="sw" id="swVib"></span></div><div class="sr" id="rMus"><span class="si"><svg viewBox="0 0 24 24"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg></span><span class="sl">Musique</span><span class="sw" id="swMus"></span></div><div class="sr" id="rSfx"><span class="si"><svg viewBox="0 0 24 24"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.5 8.5a5 5 0 0 1 0 7M19 5a10 10 0 0 1 0 14"/></svg></span><span class="sl">Sons</span><span class="sw" id="swSfx"></span></div><div class="sr" id="rCb"><span class="si"><svg viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></span><span class="sl">Mode daltonien</span><span class="sw" id="swCb"></span></div><div class="sr" id="rBloom" style="display:none"><span class="si"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9L7 7M17 17l2.1 2.1M4.9 19.1L7 17M17 7l2.1-2.1"/></svg></span><span class="sl">Bloom</span><span class="sw" id="swBloom"></span></div><div class="sr" id="rNeon"><span class="si"><svg viewBox="0 0 24 24"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg></span><span class="sl">Mode néon</span><span class="sw" id="swNeon"></span></div></div><!-- [IAP-iOS] achats : « Acheter des indices » ouvre la boutique (#shop) ; « Supprimer la publicité » et « Restaurer les achats » appellent IAP.buy / IAP.restore (voir le bloc ACHATS INTÉGRÉS dans le script) -->
 <div class="sg"><div class="sr" id="rBuy"><span class="si"><svg viewBox="0 0 24 24"><path d="M9 18h6M10 22h4M12 2a7 7 0 0 0-4 12.7c.6.5 1 1.2 1 2V17h6v-.3c0-.8.4-1.5 1-2A7 7 0 0 0 12 2z"/></svg></span><span class="sl">Acheter des indices</span><span class="chev">›</span></div><div class="sr" id="rNoAds"><span class="si"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M5.6 5.6l12.8 12.8"/></svg></span><span class="sl">Supprimer la publicité</span><span class="sv" id="noAdsV"></span></div><div class="sr" id="rRestore"><span class="si"><svg viewBox="0 0 24 24"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5"/></svg></span><span class="sl">Restaurer les achats</span></div></div>
+<!-- [LINKS-iOS] Les liens Confidentialité et Conditions pointent vers horror6apps.github.io : mettre les URLs finales de l'app (la politique de confidentialité est exigée par l'App Store Connect). -->
 <div class="sg"><div class="lk"><span class="si"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg></span><a href="https://horror6apps.github.io/privacy.html" target="_blank" rel="noopener">Confidentialité</a><span class="dash">-</span><a href="https://horror6apps.github.io/terms.html" target="_blank" rel="noopener">Conditions d'utilisation</a></div></div><button id="closeset" aria-label="Fermer">✕</button></div></div>
 <!-- ===== MENU BOUTIQUE (achats intégrés) — [IAP-iOS] SQUELETTE : les lignes sont générées par renderShop() à partir de IAP_PRODUCTS ; le design final sera appliqué ici ===== -->
 <div id="shop" class="ov"><div class="card wide"><h2>Acheter des indices</h2><div class="sg" id="shopList"></div><button id="closeshop" aria-label="Fermer">✕</button></div></div>
 <div id="profile" class="ov"><div class="card wide"><h2>Profil</h2><span id="pAvatar" class="av"></span><div class="nrow"><input id="pName" maxlength="14" placeholder="Nom du joueur" autocomplete="off"><span id="pen2"><svg viewBox="0 0 24 24" fill="none" stroke="#4f68b0" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H6a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-5"/><path d="M18.5 2.5a2.1 2.1 0 0 1 3 3L12 15l-4 1 1-4z"/></svg></span><span id="pPhoto"><svg viewBox="0 0 24 24" fill="none" stroke="#4f68b0" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg></span><input type="file" id="pFile" accept="image/*" style="display:none"></div><div class="lbl">Avatar</div><div id="pAvs" class="grid"></div><div class="lbl">Cadre</div><div id="pFrs" class="grid"></div><button id="pClose">OK</button></div></div>
 
+<!-- [WEB-iOS] three.min.js et logo.png sont des fichiers relatifs : les ajouter au bundle de l'app (Copy Bundle Resources) et charger index/cubeaway.html avec webView.loadFileURL(url, allowingReadAccessTo: dossier). Supprimer ensuite le repli CDN de la ligne suivante (le jeu doit marcher hors ligne). -->
 <script src="three.min.js"></script>
 <script>window.THREE||document.write('<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"><\/script>')</script>
 <script>
 (() => {
+  // =====================================================================================================
+  //  TÂCHES iOS (SWIFT) — INDEX
+  //  Chaque point est repéré dans le code par un tag [XXX-iOS]  →  Ctrl+F « -iOS] ».
+  //  Convention : quand tu écris « (ios) » dans une demande, j'ajoute un tag [XXX-iOS] à l'endroit concerné et je l'ajoute à cet index.
+  //  AVANT LA PRODUCTION : supprimer tous les commentaires contenant « -iOS] », cet index, et les éléments [PROD] ci-dessous.
+  //
+  //  DÉJÀ PRÉPARÉS CÔTÉ JS (il reste le côté Swift) :
+  //    [BOOT-iOS]    page de chargement + consentement UMP / GDPR + ATT + init des SDK pub     → handler « boot »
+  //    [IAP-iOS]     achats intégrés StoreKit 2 : boutique, suppression de la pub, restauration → handler « iap »
+  //    [ADS-iOS]     vidéo récompensée (indices, vies)                                         → handler « ads »
+  //    [HAPTIC-iOS]  vibrations                                                                → handler « haptic »
+  //    [SHARE-iOS]   partage du résultat (image + texte)                                       → handler « share » (à créer)
+  //    [STORAGE-iOS] sauvegarde de la progression                                              → handler « storage » (à créer)
+  //    [AUDIO-iOS]   session audio (silencieux / musique de l'utilisateur)
+  //    [ORIENT-iOS]  verrouillage de l'orientation
+  //    [WEB-iOS]     ressources locales (three.min.js, logo.png) et chargement de la page
+  //    [LINKS-iOS]   lien App Store, confidentialité, conditions
+  //  À AJOUTER PLUS TARD (pas encore dans le code) :
+  //    [REVIEW-iOS]  demande d'avis : après un beau résultat (ex. 3 étoiles au niveau 10), le JS enverra « review » au natif ;
+  //                  Swift : #available(iOS 18) → AppStore.requestReview(in: scene), sinon SKStoreReviewController.requestReview(in: scene) (iOS 15 minimum)
+  //    [NOTIF-iOS]   notifications (Firebase Messaging) : écran maison APRÈS le 1er niveau, puis UNUserNotificationCenter.requestAuthorization
+  //    [GC-iOS]      Game Center (classements, succès)
+  //  [PROD] à retirer avant la sortie : bouton « Réinitialiser (temporaire) » (#reset) et numéro de version (#ver).
+  // =====================================================================================================
   const $ = id => document.getElementById(id);
   // Logo du jeu : chemin de ton PNG (remplace simplement logo.png par ton image). Si le fichier est absent, le texte « Amaze Cube » s'affiche.
   const LOGO_SRC = 'logo.png';
@@ -394,6 +439,10 @@ body.neon .pp{background:#18e4ff;color:#070714}
   let fx = [], AC = null, soundOn = true, vibOn = true;
   function detectLang() { return /^fr/i.test((navigator.languages && navigator.languages[0]) || navigator.language || '') ? 'fr' : 'en'; }   // le jeu existe en français et en anglais
   let O = { v: 0, bloom: 0, theme: 'auto', lang: detectLang(), mus: 50, sfx: 100, sens: 100, inv: 0, cb: 0, rm: matchMedia('(prefers-reduced-motion: reduce)').matches ? 1 : 0, zen: 0 };
+  // [STORAGE-iOS] Tout est dans localStorage (WKWebView) : iOS peut le purger si le stockage manque, et il n'est pas synchronisé entre appareils.
+  //   Clés : cubeaway_opt (réglages), _level, _total, _hints, _streak, _daily, _profile, _sound, _vib, _tuto, _noads, _iaptx.
+  //   Pistes : handler « storage » (JS → natif : set/get par clé) qui garde une copie dans UserDefaults, ou NSUbiquitousKeyValueStore (iCloud) pour la progression ;
+  //   au lancement, le natif réinjecte les valeurs manquantes AVANT le script (WKUserScript atDocumentStart : localStorage.setItem(...)).
   try { Object.assign(O, JSON.parse(localStorage.getItem('cubeaway_opt'))); } catch (e) {}
   O.zen = 0; O.inv = 0; O.sens = 100; O.rm = matchMedia('(prefers-reduced-motion: reduce)').matches ? 1 : 0;
   const saveO = () => { try { localStorage.setItem('cubeaway_opt', JSON.stringify(O)); } catch (e) {} };
@@ -418,6 +467,10 @@ body.neon .pp{background:#18e4ff;color:#070714}
     c.getContext('2d').drawImage(canvas, (W - m) / 2, Math.max(0, (H - m) / 2 - H * 0.04), m, m, 0, 0, 700, 700);
     shotCv = c;
   }
+  // [ADS-iOS] Vidéo récompensée. JS → natif : webkit.messageHandlers.ads.postMessage('showRewarded') ; natif → JS (evaluateJavaScript) :
+  //   setRewardedLoaded(true|false)  à chaque changement d'état de la vidéo (Appodeal : callbacks de chargement)
+  //   onRewardedVideoFinished()      UNIQUEMENT quand la récompense est accordée (Appodeal : didReceiveReward / rewardedVideoDidFinish) — pas si le joueur ferme avant la fin
+  //   Penser à : couper le son du jeu pendant la vidéo et ne rien afficher si le consentement ne le permet pas (voir [BOOT-iOS]).
   const Ads = {
     native: () => window.webkit && webkit.messageHandlers && webkit.messageHandlers.ads,
     isLoaded() { return Ads.native() ? !!window.__rewardedLoaded : true; },   // natif : appeler setRewardedLoaded(true/false)
@@ -482,12 +535,11 @@ body.neon .pp{background:#18e4ff;color:#070714}
   const IAP = {
     native: () => window.webkit && webkit.messageHandlers && webkit.messageHandlers.iap,
     prices: {},                 // id → prix localisé reçu de StoreKit (« 0,99 € »)
-    done: [],                   // txId déjà livrés (anti-doublon : StoreKit peut renvoyer une transaction non finie)
+    done: (() => { try { return JSON.parse(localStorage.getItem('cubeaway_iaptx')) || []; } catch (e) { return []; } })(),   // txId déjà livrés (anti-doublon : StoreKit peut renvoyer une transaction non finie)
     restoring: false,           // vrai pendant un « Restaurer » demandé par le joueur (pour afficher le toast)
     post(msg) { const mh = IAP.native(); if (mh) { mh.postMessage(msg); return true; } return false; },
     price(id) { const p = IAP_PRODUCTS.find(x => x.id === id); return IAP.prices[id] || (IAP.native() ? '' : (p && p.mockPrice) || ''); },
     init() {
-      try { IAP.done = JSON.parse(localStorage.getItem('cubeaway_iaptx')) || []; } catch (e) {}
       updateIapUI();
       IAP.loadProducts();       // [IAP-iOS] prix au lancement (le natif répond via iapProducts)
     },
@@ -517,7 +569,7 @@ body.neon .pp{background:#18e4ff;color:#070714}
     if (txId) IAP.post({ action: 'finish', txId });                                    // [IAP-iOS] le natif peut maintenant faire transaction.finish()
   }
   // ----- natif → JS -----
-  window.iapProducts = list => { (list || []).forEach(p => { IAP.prices[p.id] = p.price; }); updateIapUI(); renderShop(); };
+  window.iapProducts = list => { (list || []).forEach(p => { IAP.prices[p.id] = p.price; }); updateIapUI(); renderShop(); if (typeof Boot !== 'undefined') Boot.resolve('iap'); };
   window.iapResult = r => {   // r = { id, status: 'purchased' | 'cancelled' | 'pending' | 'failed', txId }
     if (!r) return;
     if (r.status === 'purchased') iapGrant(r.id, r.txId);
@@ -542,39 +594,160 @@ body.neon .pp{background:#18e4ff;color:#070714}
       box.appendChild(r);
     });
   }
-  let boom = null;
-  function explode() {
-    if (O.rm) return false;
-    const grp = new THREE.Group(), bg = new THREE.BoxGeometry(1, 1, 1), cols = COL.exit;
-    for (let i = 0; i < 80; i++) {
-      const a = ['x', 'y', 'z'][Math.floor(Math.random() * 3)], sg = Math.random() < 0.5 ? -1 : 1;
-      const pos = new THREE.Vector3((Math.random() - 0.5) * DX, (Math.random() - 0.5) * DY, (Math.random() - 0.5) * DZ);
-      pos[a] = sg * { x: DX, y: DY, z: DZ }[a] / 2;
-      const m = new THREE.Mesh(bg, new THREE.MeshBasicMaterial({ color: cols[i % cols.length], transparent: true }));
-      m.position.copy(pos); m.scale.setScalar(0.3 + Math.random() * 0.35);
-      m.userData.v = pos.clone().normalize().multiplyScalar(2.5 + Math.random() * 4).add(new THREE.Vector3(0, 1.5, 0));
-      m.userData.r = [Math.random() * 6, Math.random() * 6];
-      grp.add(m);
+
+  // =====================================================================================================
+  //  PAGE DE CHARGEMENT + INITIALISATION                         Cherche « [BOOT-iOS] » pour chaque point à brancher
+  //  Au lancement, l'accueil s'affiche SANS ses boutons (classe body.boot) : logo + cube animé + barre de progression, en clair ou en néon.
+  //  Pendant ce temps, BOOT_STEPS s'exécute étape par étape ; à la fin la classe est retirée et l'accueil apparaît en fondu.
+  //  Navigateur : pas de natif → les étapes natives sont simulées (≈ 300 ms chacune) pour voir la barre.
+  //
+  //  CONTRAT AVEC LE NATIF — WKScriptMessageHandler nommé « boot »     (Swift) userContentController.add(self, name: "boot")
+  //    JS → natif :  webkit.messageHandlers.boot.postMessage({ step: 'ump' | 'att' | 'sdk' })      (une étape à la fois, dans cet ordre)
+  //    natif → JS :  webView.evaluateJavaScript("bootStepDone('ump', {canRequestAds:true})")        → l'étape suivante démarre
+  //    Si le natif ne répond pas, l'étape expire (délai `wait`) et le jeu démarre quand même.
+  //
+  //  Étapes natives [BOOT-iOS] (ordre conseillé : consentement → suivi → SDK pub ; à valider avec la doc AdMob / Appodeal) :
+  //    'ump' : Google User Messaging Platform (AdMob) : GDPR / consentement.
+  //            requestConsentInfoUpdate(with:) puis ConsentForm.loadAndPresentIfRequired(from: viewController) (noms exacts selon la version du SDK UMP)
+  //            → répondre bootStepDone('ump', { canRequestAds: <ConsentInformation.shared.canRequestAds> })
+  //    'att' : App Tracking Transparency : ATTrackingManager.requestTrackingAuthorization { status in … }   (iOS 14+)
+  //            Info.plist : clé NSUserTrackingUsageDescription obligatoire ; la fenêtre ne s'affiche que si l'app est active (attendre applicationState == .active).
+  //            → répondre bootStepDone('att', { status: 'authorized' | 'denied' | 'restricted' | 'notDetermined' })
+  //    'sdk' : initialiser Appodeal (et les autres SDK pub) avec le consentement obtenu ; Firebase.configure() peut rester dans l'AppDelegate.
+  //            → répondre bootStepDone('sdk', { ok: true })
+  //    Les notifications push (Firebase Messaging) NE se demandent PAS ici : à demander plus tard, après le 1er niveau terminé.
+  //  Étapes web (rien à faire côté Swift) : 'assets' (logo + polices prêts) et 'iap' (prix de la boutique, voir ACHATS INTÉGRÉS).
+  // =====================================================================================================
+  function bootAssets() {   // attend le logo (chargé ou en erreur) et les polices ; sécurité : 4 s max
+    const logo = new Promise(r => { const li = $('logoImg'); if (document.body.classList.contains('logoReady')) r(); else { li.addEventListener('load', () => r()); li.addEventListener('error', () => r()); } });
+    const fonts = document.fonts && document.fonts.ready ? document.fonts.ready : Promise.resolve();
+    return Promise.race([Promise.all([logo, fonts]), new Promise(r => setTimeout(r, 4000))]);
+  }
+  const BOOT_STEPS = [   // w = poids dans la barre ; wait = délai max (ms) d'attente de la réponse native
+    { id: 'assets', label: 'Chargement…',                   w: 2, run: bootAssets },
+    { id: 'ump',    label: 'Vérification du consentement…', w: 2, native: true, wait: 90000 },   // [BOOT-iOS] UMP / GDPR (délai long : le joueur lit et choisit)
+    { id: 'att',    label: 'Autorisation de suivi…',        w: 2, native: true, wait: 90000 },   // [BOOT-iOS] ATT (idem)
+    { id: 'sdk',    label: 'Initialisation…',               w: 2, native: true, wait: 12000 },   // [BOOT-iOS] Appodeal & co
+    { id: 'iap',    label: 'Préparation de la boutique…',   w: 1, run: () => { IAP.init(); return IAP.native() ? Boot.wait('iap', 4000) : Promise.resolve(); } }   // [IAP-iOS] prix StoreKit
+  ];
+  const Boot = {
+    done: false, pend: {}, info: {}, t0: performance.now(),
+    native: () => window.webkit && webkit.messageHandlers && webkit.messageHandlers.boot,
+    bar(v, slow) { const f = $('bootFill'); f.style.transitionDuration = slow ? '1.2s' : '.35s'; f.style.width = Math.round(Math.min(1, v) * 100) + '%'; },
+    wait(id, ms) { return new Promise(res => { Boot.pend[id] = res; if (ms) setTimeout(() => Boot.resolve(id, { timeout: true }), ms); }); },
+    resolve(id, info) { const r = Boot.pend[id]; if (!r) return; delete Boot.pend[id]; Boot.info[id] = info || {}; r(Boot.info[id]); },
+    async run() {
+      document.body.classList.add('boot');
+      const total = BOOT_STEPS.reduce((a, st) => a + st.w, 0); let acc = 0;
+      for (const st of BOOT_STEPS) {
+        $('bootMsg').textContent = st.label;
+        Boot.bar((acc + st.w * 0.85) / total, true);                 // la barre avance doucement pendant l'étape
+        try {
+          if (st.native && Boot.native()) { Boot.native().postMessage({ step: st.id }); await Boot.wait(st.id, st.wait); }   // [BOOT-iOS]
+          else if (st.run) await st.run();
+          else await new Promise(r => setTimeout(r, 300));           // navigateur : étape native simulée
+        } catch (e) {}
+        acc += st.w; Boot.bar(acc / total);
+      }
+      const rest = 1100 - (performance.now() - Boot.t0);             // affichage minimal : évite un flash si tout va très vite
+      if (rest > 0) await new Promise(r => setTimeout(r, rest));
+      document.body.classList.remove('boot'); Boot.done = true;
     }
+  };
+  window.bootStepDone = (id, info) => Boot.resolve(id, info);       // appelé par le natif à la fin de chaque étape native
+  // ---------- fin de niveau (comme la vidéo de référence) : le cube se matérialise en petits cubes, marque une pause, puis explose vers la caméra ----------
+  let boom = null;
+  const BOOM_COL = [0x78ab2a, 0xe58d40, 0x4a9190], BOOM_W = [0.45, 0.28, 0.27];   // vert / orange / turquoise (couleurs de la vidéo)
+  const BOOM = { form: 0.5, hold: 0.4, burst: 1.35 };                              // durées (s) : matérialisation, pause, explosion
+  function noiseBurst(dur, vol, f0, f1) {   // souffle d'explosion : bruit filtré dont la fréquence chute
+    vol *= O.sfx / 100; const a = audio(); if (!a || !soundOn || vol < 0.0005) return;
+    const len = Math.ceil(a.sampleRate * dur), buf = a.createBuffer(1, len, a.sampleRate), d = buf.getChannelData(0);
+    for (let i = 0; i < len; i++) d[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / len, 2);
+    const src = a.createBufferSource(), f = a.createBiquadFilter(), g = a.createGain(), t = a.currentTime;
+    src.buffer = buf; f.type = 'lowpass'; f.frequency.setValueAtTime(f0, t); f.frequency.exponentialRampToValueAtTime(f1, t + dur);
+    g.gain.setValueAtTime(vol, t); g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+    src.connect(f); f.connect(g); g.connect(a.destination); src.start(t);
+  }
+  function killBoom() {
+    if (!boom) return;
+    scene.remove(boom.grp); boom.geo.dispose(); boom.mats.forEach(m => m.dispose());
+    camera.position.x = 0; $('praise').classList.remove('show'); boom = null;
+  }
+  function explode(word) {
+    if (O.rm) return false;
+    killBoom();
+    const D = Math.max(DX, DY, DZ), n = 8, u = D / n, cx = Math.max(2, Math.round(DX / u)), cy = Math.max(2, Math.round(DY / u)), cz = Math.max(2, Math.round(DZ / u));
+    const P = [], ci = [];
+    for (let x = 0; x < cx; x++) for (let y = 0; y < cy; y++) for (let z = 0; z < cz; z++) {
+      if (x > 0 && x < cx - 1 && y > 0 && y < cy - 1 && z > 0 && z < cz - 1) continue;   // seulement la surface (l'intérieur ne se voit pas)
+      P.push(new THREE.Vector3((x + 0.5 - cx / 2) * u, (y + 0.5 - cy / 2) * u, (z + 0.5 - cz / 2) * u));
+      const r = Math.random(), blob = (Math.floor(x / 2) * 7 + Math.floor(y / 2) * 3 + Math.floor(z / 2) * 5) % 3;   // taches de couleur + un peu de hasard
+      ci.push(r < 0.3 ? (r < 0.1 ? 0 : r < 0.2 ? 1 : 2) : blob);
+    }
+    const g = new THREE.BoxGeometry(1, 1, 1), shade = [0.9, 0.75, 1, 0.6, 0.85, 0.7], ca = new Float32Array(24 * 3);   // faces ombrées : effet 3D sans lumière
+    for (let f = 0; f < 6; f++) for (let v = 0; v < 4; v++) ca.set([shade[f], shade[f], shade[f]], (f * 4 + v) * 3);
+    g.setAttribute('color', new THREE.BufferAttribute(ca, 3));
+    const cnt = [0, 0, 0], PK = ci.slice(), PJ = ci.map(k => cnt[k]++);                    // pièce i → mesh PK[i], instance PJ[i]
+    const mats = BOOM_COL.map(hex => new THREE.MeshBasicMaterial({ color: hex, vertexColors: true, transparent: true, opacity: 0.25 }));   // vert / orange / turquoise
+    const ims = mats.map((m, k) => { const im = new THREE.InstancedMesh(g, m, Math.max(1, cnt[k])); im.count = cnt[k]; im.frustumCulled = false; return im; });
+    const grp = new THREE.Group(); ims.forEach(im => grp.add(im));
     grp.position.copy(cube.position); grp.quaternion.copy(cube.quaternion); grp.scale.copy(cube.scale);
-    scene.add(grp); boom = { grp, t: 0 }; cube.visible = false;
-    tone(300, 60, 0.5, 'sawtooth', 0.08); vib(40);
+    scene.add(grp); cube.visible = false;
+    boom = { grp, ims, mats, mat: mats[0], PK, PJ, geo: g, P, u, D, t: 0, burst: false, q0: cube.quaternion.clone(), s0: cube.scale.x, word,
+             Q: P.map(() => new THREE.Quaternion()), V: P.map(() => new THREE.Vector3()), A: P.map(() => new THREE.Vector3()), R: P.map(() => 0), S: P.map(() => 1), praise: 0 };
+    updBoom(0);
+    tone(180, 900, 0.35, 'sawtooth', 0.05); tone(600, 1800, 0.3, 'sine', 0.06, 0.05); vib(15);   // « whoosh » de matérialisation
     return true;
   }
+  const _bm = new THREE.Matrix4(), _bs = new THREE.Vector3(), _bq = new THREE.Quaternion(), _by = new THREE.Vector3(0, 1, 0), _bx = new THREE.Vector3(1, 0, 0);
   function updBoom(dt) {
     if (!boom) return;
-    boom.t += dt;
-    boom.grp.children.forEach(m => { m.position.addScaledVector(m.userData.v, dt); m.userData.v.y -= 3 * dt; m.rotation.x += m.userData.r[0] * dt; m.rotation.y += m.userData.r[1] * dt; m.material.opacity = Math.max(0, 1 - boom.t / 1.1); });
-    if (boom.t > 1.15) { scene.remove(boom.grp); boom.grp.children.forEach(m => m.material.dispose()); boom = null; }
+    const b = boom, T1 = BOOM.form, T2 = T1 + BOOM.hold, T3 = T2 + BOOM.burst; b.t += dt; const t = b.t;
+    if (t < T2) {   // 1) matérialisation (cube translucide qui tourne et grossit) puis 2) pause : cube plein qui tourne lentement
+      const k = Math.min(1, t / T1), e = 1 - Math.pow(1 - k, 3), c1 = 1.70158, back = 1 + (c1 + 1) * Math.pow(k - 1, 3) + c1 * Math.pow(k - 1, 2);
+      b.mats.forEach(m => { m.opacity = 0.25 + 0.75 * e; m.transparent = k < 1; });
+      b.grp.scale.setScalar(b.s0 * (0.35 + 0.65 * back));
+      b.grp.quaternion.setFromAxisAngle(_by, -2.6 * (1 - e) + 0.7 * t).multiply(b.q0);
+      b.grp.quaternion.premultiply(_bq.setFromAxisAngle(_bx, Math.sin(t * 1.5) * 0.06));
+      for (let i = 0; i < b.P.length; i++) { _bs.setScalar(b.u * 0.97); _bm.compose(b.P[i], _bq.identity(), _bs); b.ims[b.PK[i]].setMatrixAt(b.PJ[i], _bm); }
+      b.ims.forEach(im => { im.instanceMatrix.needsUpdate = true; });
+      return;
+    }
+    if (!b.burst) {   // 3) explosion : chaque petit cube part vers l'extérieur ET vers la caméra, en tournoyant
+      b.burst = true; b.grp.updateMatrixWorld(true);
+      const ctr = b.grp.position.clone(), gs = b.grp.scale.x, gq = b.grp.quaternion.clone();
+      for (let i = 0; i < b.P.length; i++) {
+        const wp = b.P[i].clone().applyMatrix4(b.grp.matrixWorld), dir = wp.clone().sub(ctr).normalize(), r = Math.random();
+        b.V[i].copy(dir).multiplyScalar(b.D * (0.5 + 1.4 * r)); b.V[i].z += b.D * (0.25 + 1.6 * Math.random() * Math.random());
+        b.A[i].set(Math.random() - 0.5, Math.random() - 0.5, Math.random() - 0.5).normalize(); b.R[i] = 3 + Math.random() * 8;
+        b.Q[i].copy(gq); b.S[i] = b.u * gs * (0.75 + Math.random() * 0.5); b.P[i].copy(wp);
+      }
+      b.grp.position.set(0, 0, 0); b.grp.quaternion.identity(); b.grp.scale.setScalar(1);
+      b.mats.forEach(m => { m.opacity = 1; m.transparent = false; });
+      noiseBurst(0.7, 0.3, 6000, 160); tone(140, 40, 0.5, 'sine', 0.3); tone(300, 60, 0.5, 'sawtooth', 0.08); vib(60);
+    }
+    const tb = t - T2;
+    for (let i = 0; i < b.P.length; i++) {
+      b.P[i].addScaledVector(b.V[i], dt);
+      b.Q[i].premultiply(_bq.setFromAxisAngle(b.A[i], b.R[i] * dt));
+      _bs.setScalar(b.S[i]); _bm.compose(b.P[i], b.Q[i], _bs); b.ims[b.PK[i]].setMatrixAt(b.PJ[i], _bm);
+    }
+    b.ims.forEach(im => { im.instanceMatrix.needsUpdate = true; });
+    camera.position.x = tb < 0.35 ? Math.sin(tb * 90) * 0.012 * b.D * (1 - tb / 0.35) : 0;   // petite secousse
+    if (!b.praise && tb > 0.05) { b.praise = 1; $('praise').textContent = b.word || ''; $('praise').classList.add('show'); }
+    if (b.praise === 1 && tb > 0.6) { b.praise = 2; $('praise').classList.remove('show'); }
+    if (t > T3) killBoom();
   }
   // cube qui tourne sur l'accueil, derrière le logo
   const hcv = $('hcube'), hr = new THREE.WebGLRenderer({ canvas: hcv, alpha: true, antialias: true }), hs = new THREE.Scene(), hcam = new THREE.PerspectiveCamera(35, 1, 0.1, 50), hg = new THREE.Group();
   hr.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2)); hs.add(hg);
+  const HOME_EDGE = { light: 0x6580c0 };   // arêtes du cube d'accueil / chargement : un peu plus foncées en mode clair (le néon garde la couleur du thème)
+  const homeEdge = () => HOME_EDGE[theme] || THEMES[theme].edge;
   let hbox = null, hedge = null, hw = 0, hh = 0;
   function hbuild() {
-    if (hbox) { hbox.material.map.dispose(); hbox.material.map = tileTexture(); hbox.material.needsUpdate = true; hedge.material.color.set(THEMES[theme].edge); return; }
+    if (hbox) { hbox.material.map.dispose(); hbox.material.map = tileTexture(); hbox.material.needsUpdate = true; hedge.material.color.set(homeEdge()); return; }
     hbox = new THREE.Mesh(new THREE.BoxGeometry(3, 3, 3), new THREE.MeshBasicMaterial({ map: tileTexture() }));
-    hedge = new THREE.LineSegments(new THREE.EdgesGeometry(hbox.geometry), new THREE.LineBasicMaterial({ color: THEMES[theme].edge }));
+    hedge = new THREE.LineSegments(new THREE.EdgesGeometry(hbox.geometry), new THREE.LineBasicMaterial({ color: homeEdge() }));
     hg.add(hbox, hedge);
   }
   function homeStep(dt, now) {
@@ -584,7 +757,7 @@ body.neon .pp{background:#18e4ff;color:#070714}
     hr.render(hs, hcam);
   }
   // langue : dictionnaire FR → EN appliqué au texte affiché
-  const EN = { 'Défi quotidien': 'Daily challenge', 'Jouer': 'Play', 'Terminé ✓': 'Done ✓', 'Réussi ✓': 'Done ✓', '🔒 Niveau 1': '🔒 Level 1', 'Facile': 'Easy', 'Moyen': 'Medium', 'Difficile': 'Hard', 'Réglages': 'Settings', 'Acheter des indices': 'Buy tips', 'Supprimer la publicité': 'Remove ads', 'Restaurer les achats': 'Restore purchases', 'Déjà acheté ✓': 'Already purchased ✓', 'Publicité supprimée ✓': 'Ads removed ✓', 'Achats restaurés ✓': 'Purchases restored ✓', 'Aucun achat à restaurer': 'Nothing to restore', 'Achat annulé': 'Purchase cancelled', "Achat en attente d'approbation": 'Purchase pending approval', 'Achat impossible pour le moment': 'Purchase unavailable right now', 'Musique': 'Music', 'Effets': 'Effects', 'Profil': 'Profile', 'Cadre': 'Frame', 'Plus de vies': 'Out of lives', 'Réessayer': 'Retry', 'Accueil': 'Home', 'Niveau suivant': 'Next level', 'Partager': 'Share', 'Temps': 'Time', 'Erreurs': 'Errors', 'Défi': 'Challenge', 'Réinitialiser (temporaire)': 'Reset (temporary)', 'Télécharge le jeu': 'Download the game', 'Plus de vie !': 'Out of lives!', 'Obtenir plus de vies': 'Get more lives', 'Recommencer la partie': 'Restart the game', 'Langue': 'Language', 'Musique': 'Music', 'Sons': 'Sounds', 'Mode daltonien': 'Colorblind mode', 'Mode néon': 'Neon mode', 'Confidentialité': 'Privacy', "Conditions d'utilisation": 'Terms of use', 'Saurais-tu faire mieux ?': 'Can you do better?', 'Résultat copié !': 'Result copied!',
+  const EN = { 'Défi quotidien': 'Daily challenge', 'Jouer': 'Play', 'Terminé ✓': 'Done ✓', 'Réussi ✓': 'Done ✓', '🔒 Niveau 1': '🔒 Level 1', 'Facile': 'Easy', 'Moyen': 'Medium', 'Difficile': 'Hard', 'Réglages': 'Settings', 'Chargement…': 'Loading…', 'Vérification du consentement…': 'Checking consent…', 'Autorisation de suivi…': 'Tracking permission…', 'Initialisation…': 'Initializing…', 'Préparation de la boutique…': 'Preparing the shop…', 'Acheter des indices': 'Buy tips', 'Supprimer la publicité': 'Remove ads', 'Restaurer les achats': 'Restore purchases', 'Déjà acheté ✓': 'Already purchased ✓', 'Publicité supprimée ✓': 'Ads removed ✓', 'Achats restaurés ✓': 'Purchases restored ✓', 'Aucun achat à restaurer': 'Nothing to restore', 'Achat annulé': 'Purchase cancelled', "Achat en attente d'approbation": 'Purchase pending approval', 'Achat impossible pour le moment': 'Purchase unavailable right now', 'Musique': 'Music', 'Effets': 'Effects', 'Profil': 'Profile', 'Cadre': 'Frame', 'Plus de vies': 'Out of lives', 'Réessayer': 'Retry', 'Accueil': 'Home', 'Niveau suivant': 'Next level', 'Partager': 'Share', 'Temps': 'Time', 'Erreurs': 'Errors', 'Défi': 'Challenge', 'Réinitialiser (temporaire)': 'Reset (temporary)', 'Télécharge le jeu': 'Download the game', 'Plus de vie !': 'Out of lives!', 'Obtenir plus de vies': 'Get more lives', 'Recommencer la partie': 'Restart the game', 'Langue': 'Language', 'Musique': 'Music', 'Sons': 'Sounds', 'Mode daltonien': 'Colorblind mode', 'Mode néon': 'Neon mode', 'Confidentialité': 'Privacy', "Conditions d'utilisation": 'Terms of use', 'Saurais-tu faire mieux ?': 'Can you do better?', 'Résultat copié !': 'Result copied!',
     'Félicitations': 'Congratulations', 'Bien joué': 'Well done', 'Pas mal': 'Not bad', 'Belle persévérance': 'Great perseverance', 'Tu y es arrivé': 'You did it', 'Victoire': 'Victory', 'Joli effort': 'Nice effort', 'Très bien joué': 'Very well played', 'Beau travail': 'Nice work', 'Bien vu': 'Good eye', 'Belle réflexion': 'Smart thinking', 'Impressionnant': 'Impressive', 'Parfait': 'Perfect', 'Magnifique': 'Magnificent', 'Brillant': 'Brilliant', 'Génial': 'Awesome', 'Sans faute': 'Flawless', 'Époustouflant': 'Stunning', 'Tu es un génie': 'You are a genius', 'Légendaire': 'Legendary',
     'Glisse du doigt pour faire tourner le cube': 'Swipe to rotate the cube', 'Touche une flèche libre pour la faire sortir': 'Tap a free arrow to send it out', "Rouge = flèche bloquée : libère d'abord celle qui la gêne (3 ❤️)": 'Red = blocked arrow: free the one in the way first (3 ❤️)', "Besoin d'aide ? Le bouton 💡 te montre une flèche libre": 'Need help? The 💡 button shows a free arrow',
     'Prochain défi demain : +2 indices à gagner': 'Next challenge tomorrow: win +2 hints', '🔒 Termine le niveau 1 pour débloquer le défi du jour': '🔒 Finish level 1 to unlock the daily challenge', 'Gel de série ❄️ : un jour manqué consomme un gel au lieu de remettre la série à zéro. +1 gel tous les 7 jours (max 2).': 'Streak freeze ❄️: a missed day uses a freeze instead of resetting your streak. +1 every 7 days (max 2).' };
@@ -624,12 +797,14 @@ body.neon .pp{background:#18e4ff;color:#070714}
     else if (e === 'bump' && tuto <= 2) { tuto = 3; tutShow(2, 4500); setTimeout(() => tutShow(3, 4500), 5000); }
   }
   function shake() { if (O.rm) return; ['c', 'hearts'].forEach(id => { const el = $(id); el.classList.remove('shake'); void el.offsetWidth; el.classList.add('shake'); }); }
+  // [ORIENT-iOS] screen.orientation.lock n'existe pas sur iOS : verrouiller côté natif (Info.plist UISupportedInterfaceOrientations / supportedInterfaceOrientations). À décider : portrait seul sur iPhone ET iPad, ou paysage autorisé sur iPad.
   try { screen.orientation.lock('portrait').catch(() => {}); } catch (e) {}
   try { if (localStorage.getItem('cubeaway_sound') === '0') soundOn = false; if (localStorage.getItem('cubeaway_vib') === '0') vibOn = false; } catch (e) {}
   const SPARK = new THREE.SphereGeometry(0.07, 6, 6);
   const DISC = new THREE.CircleGeometry(0.22, 20);
   const WHITE = new THREE.Color(0xffffff);
   function audio() {
+    // [AUDIO-iOS] Web Audio dans WKWebView suit la session audio de l'app : AVAudioSession.sharedInstance().setCategory(.ambient) respecte le commutateur silencieux et se mélange à la musique de l'utilisateur ; .playback joue même en silencieux. Choix produit à confirmer. Vérifier aussi la reprise du son après une interruption (appel, vidéo pub).
     if (!AC) { try { AC = new (window.AudioContext || window.webkitAudioContext)(); } catch (e) {} }
     if (AC && AC.state === 'suspended') AC.resume();
     return AC;
@@ -664,6 +839,9 @@ body.neon .pp{background:#18e4ff;color:#070714}
     }
   }, 2200);
   // haptique : pont natif iOS (WKWebView : messageHandlers.haptic) sinon navigator.vibrate
+  // [HAPTIC-iOS] Vibrations. JS → natif : webkit.messageHandlers.haptic.postMessage('light' | 'medium' | 'heavy' | 'success' | 'error' | 'warning').
+  //   Swift : light/medium/heavy → UIImpactFeedbackGenerator(style:).impactOccurred() ; success/error/warning → UINotificationFeedbackGenerator().notificationOccurred(...).
+  //   Amélioration possible : Core Haptics (CHHapticEngine) pour des motifs plus riches sur les combos (l'iPad n'a pas de moteur haptique : ignorer sans erreur).
   function vib(p) {
     try {
       if (!vibOn) return;
@@ -944,7 +1122,7 @@ body.neon .pp{background:#18e4ff;color:#070714}
     drawHearts(); drawHints(); updScore();
     while (cube.children.length) { const o = cube.children[0]; cube.remove(o); disposeObj(o); }
     shotPend = true; shotCv = null;
-    cube.visible = true; if (boom) { scene.remove(boom.grp); boom = null; }
+    cube.visible = true; killBoom();
     hits = []; all = []; moving = []; bumping = []; flashing = []; fx = []; remaining = 0; rot = null;
     N = Math.min(12, 5 + Math.floor(L / 2)); [DX, DY, DZ] = shapeFor(L, N); N = Math.max(DX, DY, DZ); M = N - 1;
     const dens = Math.min(0.95, Math.min(0.8, 0.4 + 0.08 * L) + Math.max(0, L - 5) * 0.005);
@@ -1352,6 +1530,7 @@ body.neon .pp{background:#18e4ff;color:#070714}
   // ---------- écran de fin de niveau ----------
   const WORDS = [['Félicitations', 'Bien joué', 'Pas mal', 'Belle persévérance', 'Tu y es arrivé', 'Victoire', 'Joli effort'], ['Bravo', 'Très bien joué', 'Super', 'Beau travail', 'Bien vu', 'Belle réflexion', 'Impressionnant'], ['Excellent', 'Parfait', 'Magnifique', 'Brillant', 'Génial', 'Sans faute', 'Époustouflant', 'Tu es un génie', 'Légendaire']];
   let shareTxt = '', shareFile = null;
+  // [LINKS-iOS] Remplacer idXXXXXXXXX par l'App ID réel (App Store Connect). Même lien pour « Noter l'app » : ajouter ?action=write-review.
   const APP_URL = 'https://apps.apple.com/app/idXXXXXXXXX';   // À REMPLACER par le lien App Store (App ID)
   function makeShare(w, st, score, t, errs, dl, L0) {
     shareFile = null;
@@ -1383,12 +1562,12 @@ body.neon .pp{background:#18e4ff;color:#070714}
   }
   const fmt = t => Math.floor(t / 60) + ':' + pad2(t % 60);
   function showWin(msg) {
-    const ex = explode(), wd = ex ? 450 : 250;
     tuto = 9; tb.classList.remove('show'); try { localStorage.setItem('cubeaway_tuto', '1'); } catch (e) {}
     const dl = mode === 'daily', L0 = dl ? 0 : level - 1, errs = O.zen ? 0 : 3 - lives, t = Math.round(tm);
     const st = errs === 0 ? 3 : errs === 1 ? 2 : 1;
     const score = Math.max(100, Math.round(500 + 100 * (dl ? daily.lvl : L0) - 4 * t - 150 * errs));   // niveau, temps, erreurs
     const W = WORDS[st - 1]; let w; do { w = W[Math.floor(Math.random() * W.length)]; } while (w === lastW && W.length > 1); lastW = w;
+    const ex = explode(w), wd = ex ? Math.round((BOOM.form + BOOM.hold + 0.55) * 1000) : 250;   // le dialogue de victoire apparaît pendant l'explosion
     $('wTitle').textContent = w + ', ' + prof.name + ' !';
     total += score; try { localStorage.setItem('cubeaway_total', String(total)); } catch (e) {} updScore();
     $('wStars').innerHTML = [0, 1, 2].map(i => '<span class="' + (i < st ? 'on' : 'off') + '" style="animation-delay:' + (wd / 1000 + 0.35 + i * 0.35) + 's">★</span>').join('');
@@ -1549,10 +1728,10 @@ body.neon .pp{background:#18e4ff;color:#070714}
   $('dIcon').insertAdjacentHTML('afterbegin', $('hint').querySelector('svg').outerHTML);
   if (LOGO_SRC) {
     const li = $('logoImg');
-    li.onload = () => { li.hidden = false; $('logoText').hidden = true; };
-    li.onerror = () => { li.hidden = true; $('logoText').hidden = false; };
+    li.onload = () => { li.hidden = false; $('logoText').hidden = true; document.body.classList.add('logoReady'); };
+    li.onerror = () => { li.hidden = true; $('logoText').hidden = false; document.body.classList.add('logoReady'); };
     li.src = LOGO_SRC;
-  }
+  } else document.body.classList.add('logoReady');
 
   $('homeGear').addEventListener('click', () => $('settings').classList.add('show'));
   $('avatarBtn').addEventListener('click', () => { $('pName').value = prof.name; drawProfile(); $('profile').classList.add('show'); });
@@ -1580,6 +1759,8 @@ body.neon .pp{background:#18e4ff;color:#070714}
   ['goHome', 'winHome'].forEach(id => $(id).addEventListener('click', showHome));
   $('settings').addEventListener('click', e => { if (e.target === $('settings')) $('settings').classList.remove('show'); });
   function applyOpts() { document.body.classList.toggle('rm', !!O.rm); applyTheme(resolveTheme()); drawHearts(); }
+  // [SHARE-iOS] navigator.share / canShare({files}) est incertain dans une WKWebView. Plus fiable : JS envoie l'image (dataURL du canvas) + le texte au handler « share » ;
+  //   Swift : UIActivityViewController(activityItems: [UIImage, String], …). iPad : renseigner popoverPresentationController.sourceView/sourceRect, sinon crash.
   $('share').addEventListener('click', () => {
     const txt = shareTxt + '\n' + tr('Saurais-tu faire mieux ?') + '\n' + APP_URL;
     if (shareFile && navigator.canShare && navigator.canShare({ files: [shareFile] })) navigator.share({ files: [shareFile], text: txt }).catch(() => {});
@@ -1627,7 +1808,7 @@ body.neon .pp{background:#18e4ff;color:#070714}
   document.querySelectorAll('.chal').forEach((el, i) => el.addEventListener('click', () => toast('Fais le défi du jour ' + CH[i][0] + ' jours de suite : +' + CH[i][1] + ' indices (un jour manqué consomme un gel ❄️)')));
   drawHints();
   resize();
-  IAP.init();
+  Boot.run();   // page de chargement : IAP.init() est appelé par l'étape « iap »
   showHome();
   requestAnimationFrame(frame);
 })();
