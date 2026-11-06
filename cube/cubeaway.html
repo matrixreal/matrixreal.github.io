@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
@@ -70,7 +70,7 @@ body.neon #daily{box-shadow:0 0 22px rgba(122,60,255,.55)}
 #logo{flex:1;width:100%;display:flex;align-items:center;justify-content:center;text-align:center;min-height:0}
 #logoText{font-weight:900;font-size:clamp(34px,11vw,64px);color:var(--logo);letter-spacing:-1px;line-height:1.05}
 body.neon #logoText{text-shadow:0 0 12px #18e4ff,0 0 30px rgba(24,228,255,.55)}
-#logoImg{max-width:82%;max-height:100%;object-fit:contain}
+#logoImg{max-width:min(58%,250px);max-height:100%;object-fit:contain;top:clamp(19px,3.5vh,32px)}
 #progress{width:100%;box-sizing:border-box;display:flex;align-items:center;justify-content:space-between;gap:6px;padding:clamp(7px,1.3vh,11px) 12px;border-radius:22px;background:var(--hbar)}
 body.neon #progress{border:1px solid rgba(24,228,255,.35);box-shadow:0 0 18px rgba(24,228,255,.18) inset}
 #coins{display:flex;flex:1;justify-content:space-around;align-items:center}
@@ -91,6 +91,7 @@ body.neon #play{box-shadow:0 0 20px rgba(58,75,255,.65)}
 .card .lbl{margin:12px 0 6px;font-weight:800;font-size:13px;color:var(--ink);text-align:left}
 .card input{width:100%;box-sizing:border-box;margin:10px 0 0;padding:10px 14px;border:2px solid var(--blue);border-radius:14px;background:#fff;font-size:16px;font-weight:700;text-align:center;color:#1d2c3f;outline:none}
 .grid{display:flex;flex-wrap:wrap;gap:8px;justify-content:center}
+#pAvs,#pFrs{display:grid;grid-template-columns:repeat(5,minmax(0,46px));gap:10px clamp(6px,2.4vw,12px);justify-content:center}
 .card .opt{width:46px;height:46px;border:0;border-radius:50%;padding:0;margin:0;background:none;cursor:pointer;display:flex;align-items:center;justify-content:center}
 .opt.sel{outline:3px solid var(--blue);outline-offset:2px}
 body.neon .card input{background:#0b0d22;color:#e8f6ff}
@@ -152,8 +153,8 @@ body.neon #pen2{background:#14183a}body.neon #pen2 svg{stroke:#18e4ff}
 .card .mini{display:flex;gap:8px}
 .card .mini button{margin-top:8px;font-size:13px;padding:7px 10px}
 #next{font-size:16px;padding:10px 20px}
-#settings .card{position:relative}
-.card #closeset{position:absolute;top:10px;right:12px;width:34px;height:34px;margin:0;padding:0;border-radius:50%;background:transparent;color:var(--ink);font-size:20px;display:flex;align-items:center;justify-content:center}
+#settings .card,#shop .card{position:relative}
+.card #closeset,.card #closeshop{position:absolute;top:10px;right:12px;width:34px;height:34px;margin:0;padding:0;border-radius:50%;background:transparent;color:var(--ink);font-size:20px;display:flex;align-items:center;justify-content:center}
 #dRow{padding:22px 0 34px;margin:calc(clamp(12px,4vh,48px) - 16px) 0 -22px}
 #dRow #daily,.chal{border-radius:28px}
 #dRow{touch-action:pan-x;overscroll-behavior-x:contain}
@@ -209,7 +210,16 @@ body.rm .ov .card{transform:none;transition:none}
 body.neon #pPhoto svg{stroke:#18e4ff}
 .card #pClose{margin-top:26px}
 #settings{--sbg:#e8eefb;--srow:#ffffff;--stx:#1a2260;--sic:#4f68b0;--soff:#c7d3ea;--son:#4f5df2}
-body.neon #settings{--sbg:#12142e;--srow:#33364f;--stx:#d9dcf7;--sic:#a8aee0;--soff:#070714;--son:#4f5df2}
+body.neon #settings{--sbg:#12142e;--srow:#2a3070;--stx:#d9dcf7;--sic:#a8aee0;--soff:#070714;--son:#4f5df2}
+/* ===== MENU BOUTIQUE (achats intégrés) : mêmes variables que les réglages — squelette, le design définitif viendra ici ===== */
+#shop{--sbg:#e8eefb;--srow:#ffffff;--stx:#1a2260;--sic:#4f68b0;--soff:#c7d3ea;--son:#4f5df2}
+body.neon #shop{--sbg:#12142e;--srow:#2a3070;--stx:#d9dcf7;--sic:#a8aee0;--soff:#070714;--son:#4f5df2}
+#shop .card{background:var(--sbg);width:92vw;max-width:420px;padding:14px 12px 18px;text-align:left}
+#shop h2{color:var(--stx);text-align:center;margin:4px 0 14px}
+#shop #closeshop{color:var(--stx)}
+.pr .pi{font-size:24px;width:26px;text-align:center;line-height:1}
+.pp{background:var(--son);color:#fff;border-radius:16px;padding:6px 14px;font-weight:800;font-size:15px;min-width:64px;text-align:center}
+body.neon .pp{background:#18e4ff;color:#070714}
 #settings .card{background:var(--sbg);width:92vw;max-width:420px;padding:14px 12px 18px;text-align:left}
 #settings h2{color:var(--stx);text-align:center;margin:4px 0 14px}
 #settings #closeset{color:var(--stx)}
@@ -220,8 +230,9 @@ body.neon #settings{--sbg:#12142e;--srow:#33364f;--stx:#d9dcf7;--sic:#a8aee0;--s
 .sw{width:58px;height:32px;border-radius:16px;background:var(--soff);position:relative;transition:background .2s;flex:none}
 .sw::after{content:"";position:absolute;top:3px;left:3px;width:26px;height:26px;border-radius:50%;background:#fff;transition:transform .2s}
 .sw.on{background:var(--son)}.sw.on::after{transform:translateX(26px)}
-.lk{display:flex;align-items:center;gap:14px;padding:12px 18px;font-weight:700;font-size:14px}
+.lk{display:flex;align-items:center;gap:8px;padding:12px 18px;font-weight:700;font-size:14px}
 .lk a{color:var(--stx);text-decoration:none}
+.lk .dash{color:var(--stx);opacity:.6}
 .fly{position:fixed;z-index:30;font-style:normal;font-size:44px;line-height:1;margin:-22px 0 0 -22px;color:#ffc61a;text-shadow:0 2px 0 #e69a00;pointer-events:none;transition:transform .65s cubic-bezier(.5,0,.8,.4),opacity .65s}
 .bump{animation:bumpk .3s}
 @keyframes bumpk{50%{transform:scale(1.12)}}
@@ -282,7 +293,11 @@ body.neon #settings{--sbg:#12142e;--srow:#33364f;--stx:#d9dcf7;--sic:#a8aee0;--s
 <div id="win" class="ov"><div class="card wide"><h2 id="wTitle"></h2><div id="wStars"></div><div id="wStats"></div><p id="winMsg"></p><div id="wprogress"></div><button id="next">Niveau suivant</button><div class="mini"><button id="share" class="alt">Partager</button><button id="winHome" class="alt">Accueil</button></div></div><div id="conf"></div></div>
 <div id="lose" class="ov"><div class="card lc"><h2>Plus de vie !</h2><div class="lh"><span class="lp"><i>+</i>2</span><svg viewBox="0 0 24 24"><defs><linearGradient id="hg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#f5667a"/><stop offset="1" stop-color="#e8283f"/></linearGradient></defs><path d="M12 21s-8.500-5.300-8.500-11.300A4.700 4.700 0 0 1 12 7.200a4.700 4.700 0 0 1 8.500 2.500C20.500 15.700 12 21 12 21z" fill="#b91c30" transform="translate(0,1.100)"/><path d="M12 21s-8.500-5.300-8.500-11.300A4.700 4.700 0 0 1 12 7.200a4.700 4.700 0 0 1 8.500 2.500C20.500 15.700 12 21 12 21z" fill="url(#hg)"/></svg></div><button id="getLives"><span>Obtenir plus de vies</span><svg viewBox="0 0 24 24"><rect x="2" y="4" width="20" height="16" rx="3" fill="#2f80ed"/><path d="M10 9l5.500 3-5.500 3z" fill="#fff"/><path d="M3.500 6.500h1.500v1.500H3.500zM3.500 11h1.500v2H3.500zM3.500 16h1.500v1.500H3.500zM19 6.500h1.500v1.500H19zM19 11h1.500v2H19zM19 16h1.500v1.500H19z" fill="#fff"/></svg><span class="gb">2</span></button><div id="retry">Recommencer la partie</div></div></div>
 
-<div id="settings" class="ov"><div class="card wide sc"><h2>Réglages</h2><div class="sg"><div class="sr" id="rLang"><span class="si"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18"/></svg></span><span class="sl">Langue</span><span class="sv" id="langV">français</span><span class="chev">›</span></div><div class="sr" id="rVib"><span class="si"><svg viewBox="0 0 24 24"><path d="M2 8c2-2 4-2 6 0s4 2 6 0 4-2 6 0M2 15c2-2 4-2 6 0s4 2 6 0 4-2 6 0"/></svg></span><span class="sl">Vibrations</span><span class="sw" id="swVib"></span></div><div class="sr" id="rMus"><span class="si"><svg viewBox="0 0 24 24"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg></span><span class="sl">Musique</span><span class="sw" id="swMus"></span></div><div class="sr" id="rSfx"><span class="si"><svg viewBox="0 0 24 24"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.5 8.5a5 5 0 0 1 0 7M19 5a10 10 0 0 1 0 14"/></svg></span><span class="sl">Sons</span><span class="sw" id="swSfx"></span></div><div class="sr" id="rCb"><span class="si"><svg viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></span><span class="sl">Mode daltonien</span><span class="sw" id="swCb"></span></div><div class="sr" id="rBloom" style="display:none"><span class="si"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9L7 7M17 17l2.1 2.1M4.9 19.1L7 17M17 7l2.1-2.1"/></svg></span><span class="sl">Bloom</span><span class="sw" id="swBloom"></span></div><div class="sr" id="rNeon"><span class="si"><svg viewBox="0 0 24 24"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg></span><span class="sl">Mode néon</span><span class="sw" id="swNeon"></span></div></div><div class="sg"><div class="lk"><span class="si"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg></span><a href="https://horror6apps.github.io/privacy.html" target="_blank" rel="noopener">Confidentialité</a><a href="https://horror6apps.github.io/terms.html" target="_blank" rel="noopener">Conditions d'utilisation</a></div></div><button id="closeset" aria-label="Fermer">✕</button></div></div>
+<div id="settings" class="ov"><div class="card wide sc"><h2>Réglages</h2><div class="sg"><div class="sr" id="rLang"><span class="si"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18"/></svg></span><span class="sl">Langue</span><span class="sv" id="langV">français</span><span class="chev">›</span></div><div class="sr" id="rVib"><span class="si"><svg viewBox="0 0 24 24"><path d="M2 8c2-2 4-2 6 0s4 2 6 0 4-2 6 0M2 15c2-2 4-2 6 0s4 2 6 0 4-2 6 0"/></svg></span><span class="sl">Vibrations</span><span class="sw" id="swVib"></span></div><div class="sr" id="rMus"><span class="si"><svg viewBox="0 0 24 24"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg></span><span class="sl">Musique</span><span class="sw" id="swMus"></span></div><div class="sr" id="rSfx"><span class="si"><svg viewBox="0 0 24 24"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.5 8.5a5 5 0 0 1 0 7M19 5a10 10 0 0 1 0 14"/></svg></span><span class="sl">Sons</span><span class="sw" id="swSfx"></span></div><div class="sr" id="rCb"><span class="si"><svg viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></span><span class="sl">Mode daltonien</span><span class="sw" id="swCb"></span></div><div class="sr" id="rBloom" style="display:none"><span class="si"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9L7 7M17 17l2.1 2.1M4.9 19.1L7 17M17 7l2.1-2.1"/></svg></span><span class="sl">Bloom</span><span class="sw" id="swBloom"></span></div><div class="sr" id="rNeon"><span class="si"><svg viewBox="0 0 24 24"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg></span><span class="sl">Mode néon</span><span class="sw" id="swNeon"></span></div></div><!-- [IAP-iOS] achats : « Acheter des indices » ouvre la boutique (#shop) ; « Supprimer la publicité » et « Restaurer les achats » appellent IAP.buy / IAP.restore (voir le bloc ACHATS INTÉGRÉS dans le script) -->
+<div class="sg"><div class="sr" id="rBuy"><span class="si"><svg viewBox="0 0 24 24"><path d="M9 18h6M10 22h4M12 2a7 7 0 0 0-4 12.7c.6.5 1 1.2 1 2V17h6v-.3c0-.8.4-1.5 1-2A7 7 0 0 0 12 2z"/></svg></span><span class="sl">Acheter des indices</span><span class="chev">›</span></div><div class="sr" id="rNoAds"><span class="si"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M5.6 5.6l12.8 12.8"/></svg></span><span class="sl">Supprimer la publicité</span><span class="sv" id="noAdsV"></span></div><div class="sr" id="rRestore"><span class="si"><svg viewBox="0 0 24 24"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5"/></svg></span><span class="sl">Restaurer les achats</span></div></div>
+<div class="sg"><div class="lk"><span class="si"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg></span><a href="https://horror6apps.github.io/privacy.html" target="_blank" rel="noopener">Confidentialité</a><span class="dash">-</span><a href="https://horror6apps.github.io/terms.html" target="_blank" rel="noopener">Conditions d'utilisation</a></div></div><button id="closeset" aria-label="Fermer">✕</button></div></div>
+<!-- ===== MENU BOUTIQUE (achats intégrés) — [IAP-iOS] SQUELETTE : les lignes sont générées par renderShop() à partir de IAP_PRODUCTS ; le design final sera appliqué ici ===== -->
+<div id="shop" class="ov"><div class="card wide"><h2>Acheter des indices</h2><div class="sg" id="shopList"></div><button id="closeshop" aria-label="Fermer">✕</button></div></div>
 <div id="profile" class="ov"><div class="card wide"><h2>Profil</h2><span id="pAvatar" class="av"></span><div class="nrow"><input id="pName" maxlength="14" placeholder="Nom du joueur" autocomplete="off"><span id="pen2"><svg viewBox="0 0 24 24" fill="none" stroke="#4f68b0" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H6a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-5"/><path d="M18.5 2.5a2.1 2.1 0 0 1 3 3L12 15l-4 1 1-4z"/></svg></span><span id="pPhoto"><svg viewBox="0 0 24 24" fill="none" stroke="#4f68b0" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg></span><input type="file" id="pFile" accept="image/*" style="display:none"></div><div class="lbl">Avatar</div><div id="pAvs" class="grid"></div><div class="lbl">Cadre</div><div id="pFrs" class="grid"></div><button id="pClose">OK</button></div></div>
 
 <script src="three.min.js"></script>
@@ -320,6 +335,38 @@ body.neon #settings{--sbg:#12142e;--srow:#33364f;--stx:#d9dcf7;--sic:#a8aee0;--s
   const cube = new THREE.Group();
   scene.add(cube);
 
+  // ---------- fond néon : étoiles + nébuleuse en parallaxe (suivent doucement la rotation du cube) ----------
+  const bgFx = new THREE.Group(); bgFx.visible = false; camera.add(bgFx); scene.add(camera);
+  const bgLayers = [];
+  (function () {
+    const rd = rng(20261106);
+    [{ d: 1.5, n: 110, s: 2.4, o: 0.55, k: 0.10, c: 0x18e4ff }, { d: 2.0, n: 150, s: 1.9, o: 0.42, k: 0.06, c: 0x9b6bff }, { d: 2.8, n: 200, s: 1.5, o: 0.34, k: 0.03, c: 0xffffff }].forEach((L, i) => {
+      const pos = new Float32Array(L.n * 3), R = 0.364 * L.d * 2.3;
+      for (let j = 0; j < L.n; j++) { pos[j * 3] = (rd() * 2 - 1) * R; pos[j * 3 + 1] = (rd() * 2 - 1) * R; pos[j * 3 + 2] = -L.d; }
+      const g = new THREE.BufferGeometry(); g.setAttribute('position', new THREE.BufferAttribute(pos, 3));
+      const m = new THREE.PointsMaterial({ color: L.c, size: L.s, sizeAttenuation: false, transparent: true, opacity: L.o, depthWrite: false });
+      const pts = new THREE.Points(g, m); pts.renderOrder = -1; pts.frustumCulled = false;
+      const grp = new THREE.Group(); grp.add(pts); bgFx.add(grp); bgLayers.push({ grp, m, L, i });
+    });
+    const c = document.createElement('canvas'); c.width = c.height = 256; const x = c.getContext('2d');
+    [[90, 80, 110, 'rgba(122,60,255,.55)'], [180, 170, 100, 'rgba(24,228,255,.35)']].forEach(([cx, cy, r, col]) => { const gr = x.createRadialGradient(cx, cy, 0, cx, cy, r); gr.addColorStop(0, col); gr.addColorStop(1, 'rgba(0,0,0,0)'); x.fillStyle = gr; x.fillRect(0, 0, 256, 256); });
+    const neb = new THREE.Mesh(new THREE.PlaneGeometry(1, 1), new THREE.MeshBasicMaterial({ map: new THREE.CanvasTexture(c), transparent: true, opacity: 0.45, depthWrite: false }));
+    neb.position.z = -3.4; neb.scale.setScalar(5.5); neb.renderOrder = -2; neb.frustumCulled = false;
+    const grp = new THREE.Group(); grp.add(neb); bgFx.add(grp); bgLayers.push({ grp, m: null, L: { k: 0.015, o: 0 }, i: 3 });
+  })();
+  const _bv = new THREE.Vector3();
+  function updBg(now) {
+    bgFx.scale.setScalar(camera.position.z);   // le décor garde le même cadrage quelle que soit la taille du cube
+    _bv.set(0, 0, 1).applyQuaternion(cube.quaternion);
+    const t = now / 1000;
+    bgLayers.forEach(l => {
+      const k = O.rm ? 0 : l.L.k;
+      l.grp.position.set(-_bv.x * k * 1.6, -_bv.y * k * 1.6, 0);
+      l.grp.rotation.z = O.rm ? 0 : Math.sin(t * 0.05 + l.i) * 0.1;
+      if (l.m && !O.rm) l.m.opacity = l.L.o * (0.82 + 0.18 * Math.sin(t * 1.3 + l.i * 2.1));
+    });
+  }
+
   const V = a => new THREE.Vector3(a[0], a[1], a[2]);
   const FACES = [
     { n: [0, 0, 1],  u: [1, 0, 0],  v: [0, 1, 0] },
@@ -345,13 +392,16 @@ body.neon #settings{--sbg:#12142e;--srow:#33364f;--stx:#d9dcf7;--sic:#a8aee0;--s
 
   // ---------- effets, sons, vibrations ----------
   let fx = [], AC = null, soundOn = true, vibOn = true;
-  let O = { bloom: 0, theme: 'auto', lang: (navigator.language || 'fr').slice(0, 2) === 'fr' ? 'fr' : 'en', mus: 50, sfx: 100, sens: 100, inv: 0, cb: 0, rm: matchMedia('(prefers-reduced-motion: reduce)').matches ? 1 : 0, zen: 0 };
+  function detectLang() { return /^fr/i.test((navigator.languages && navigator.languages[0]) || navigator.language || '') ? 'fr' : 'en'; }   // le jeu existe en français et en anglais
+  let O = { v: 0, bloom: 0, theme: 'auto', lang: detectLang(), mus: 50, sfx: 100, sens: 100, inv: 0, cb: 0, rm: matchMedia('(prefers-reduced-motion: reduce)').matches ? 1 : 0, zen: 0 };
   try { Object.assign(O, JSON.parse(localStorage.getItem('cubeaway_opt'))); } catch (e) {}
   O.zen = 0; O.inv = 0; O.sens = 100; O.rm = matchMedia('(prefers-reduced-motion: reduce)').matches ? 1 : 0;
   const saveO = () => { try { localStorage.setItem('cubeaway_opt', JSON.stringify(O)); } catch (e) {} };
+  if ((O.v || 0) < 2) O.bloom = 0;                      // anciens réglages : bloom désactivé (une seule fois)
+  if ((O.v || 0) < 3) { O.v = 3; if (!O.langSet) O.lang = detectLang(); saveO(); }   // langue détectée tant que le joueur n'a pas choisi lui-même
   const glowEl = $('glow'), gctx = glowEl.getContext('2d'), g1 = document.createElement('canvas'), g2 = document.createElement('canvas');
   const c1 = g1.getContext('2d'), c2 = g2.getContext('2d');
-  let glowOn = false, gf = 0, shotCv = null, shotPend = false, edgeMeshes = [];
+  let glowOn = false, gf = 0, shotCv = null, shotPend = false, shotMin = 0, edgeMeshes = [];
   function glowSize() {
     const W = canvas.width, H = canvas.height;
     g1.width = Math.max(2, W >> 1); g1.height = Math.max(2, H >> 1); g2.width = Math.max(2, W >> 2); g2.height = Math.max(2, H >> 2);
@@ -382,6 +432,116 @@ body.neon #settings{--sbg:#12142e;--srow:#33364f;--stx:#d9dcf7;--sic:#a8aee0;--s
   };
   window.onRewardedVideoFinished = () => { const cb = window.__rewardCb; window.__rewardCb = null; if (cb) cb(); };   // natif : appeler à la fin de la vidéo
   window.setRewardedLoaded = v => { window.__rewardedLoaded = !!v; drawHints(); refreshLose(); };
+
+  // =====================================================================================================
+  //  ACHATS INTÉGRÉS (IAP) — pont JS ⇄ iOS natif (StoreKit 2, iOS 15+)
+  //  Cherche « [IAP-iOS] » dans ce fichier : c'est la liste de tout ce qui touche aux achats.
+  //  Dans le navigateur (aperçu) il n'y a pas de natif : les achats sont SIMULÉS (voir IAP.buy / IAP.restore).
+  //
+  //  CONTRAT AVEC LE NATIF — WKScriptMessageHandler nommé « iap »
+  //    (Swift)  webView.configuration.userContentController.add(self, name: "iap")
+  //
+  //    JS → natif :  webkit.messageHandlers.iap.postMessage({ action, … })
+  //      { action:'products', ids:[…] }  natif : try await Product.products(for: ids)
+  //                                      puis  evaluateJavaScript("iapProducts([{id:'…',price:'0,99 €'}, …])")   // price = product.displayPrice (déjà localisé)
+  //      { action:'buy', id }            natif : let r = try await product.purchase()
+  //                                        .success(.verified(t)) → iapResult({id, status:'purchased', txId:String(t.id)})   (ne PAS finir la transaction ici)
+  //                                        .userCancelled → status:'cancelled' · .pending → status:'pending' (Ask to Buy) · erreur → status:'failed'
+  //      { action:'finish', txId }       natif : await transaction.finish()   // JS a bien livré l'achat ; sinon StoreKit le re-propose au prochain lancement
+  //      { action:'restore' }            natif : try await AppStore.sync() puis iapRestored([ids possédés]) (voir Transaction.currentEntitlements)
+  //
+  //    natif → JS :  webView.evaluateJavaScript("iapProducts([...])")  (encode les données avec JSONSerialization)
+  //      iapProducts([{id, price}])  ·  iapResult({id, status, txId})  ·  iapRestored([ids])
+  //
+  //    À FAIRE côté Swift
+  //      1) Au démarrage : Task { for await r in Transaction.updates { … iapResult(...) } }  → achats « Ask to Buy », reçus hors de l'app, etc.
+  //      2) Au démarrage aussi : appeler iapRestored([...]) avec Transaction.currentEntitlements (non consommables encore valides) → réactive « sans pub » après réinstallation.
+  //      3) Créer dans App Store Connect les produits ci-dessous avec EXACTEMENT les mêmes identifiants (consommables pour les indices, non consommable pour « sans pub »).
+  //      4) Guideline App Review : garder visible un bouton « Restaurer les achats » (c'est le cas : réglages).
+  // =====================================================================================================
+
+  // [IAP-iOS] Catalogue : remplace les identifiants par ceux d'App Store Connect (ex. com.tonstudio.cubeaway.hints5).
+  //   type 'consumable'    → ajoute `hints` indices à chaque achat (peut être racheté)
+  //   type 'nonConsumable' → achat unique, à restaurer (ici : suppression de la publicité)
+  const IAP_PRODUCTS = [
+    { id: 'cubeaway.hints.5',   type: 'consumable',    hints: 5,  mockPrice: '0,99 €' },
+    { id: 'cubeaway.hints.15',  type: 'consumable',    hints: 15, mockPrice: '1,99 €' },
+    { id: 'cubeaway.hints.40',  type: 'consumable',    hints: 40, mockPrice: '3,99 €' },
+    { id: 'cubeaway.removeads', type: 'nonConsumable',            mockPrice: '2,99 €' }
+  ];
+  const IAP_NOADS_ID = 'cubeaway.removeads';
+
+  // [IAP-iOS] État « publicité supprimée ». Copie locale (cache) : la source de vérité reste StoreKit (Transaction.currentEntitlements → iapRestored).
+  //   Ce que ça désactive : à toi de choisir. Cette version n'a que des vidéos récompensées (volontaires), donc rien n'est coupé pour l'instant.
+  //   Dès que des interstitiels / bannières existent : côté natif, ne pas les afficher si l'achat est possédé ; côté JS, tester `adsRemoved`.
+  //   Option : si « sans pub » doit aussi rendre les indices/vies gratuits, modifier Ads.isLoaded() / Ads.show() pour appeler le callback directement.
+  let adsRemoved = false;
+  try { adsRemoved = localStorage.getItem('cubeaway_noads') === '1'; } catch (e) {}
+  function setAdsRemoved(v) { adsRemoved = !!v; try { localStorage.setItem('cubeaway_noads', adsRemoved ? '1' : '0'); } catch (e) {} updateIapUI(); }
+
+  const IAP = {
+    native: () => window.webkit && webkit.messageHandlers && webkit.messageHandlers.iap,
+    prices: {},                 // id → prix localisé reçu de StoreKit (« 0,99 € »)
+    done: [],                   // txId déjà livrés (anti-doublon : StoreKit peut renvoyer une transaction non finie)
+    restoring: false,           // vrai pendant un « Restaurer » demandé par le joueur (pour afficher le toast)
+    post(msg) { const mh = IAP.native(); if (mh) { mh.postMessage(msg); return true; } return false; },
+    price(id) { const p = IAP_PRODUCTS.find(x => x.id === id); return IAP.prices[id] || (IAP.native() ? '' : (p && p.mockPrice) || ''); },
+    init() {
+      try { IAP.done = JSON.parse(localStorage.getItem('cubeaway_iaptx')) || []; } catch (e) {}
+      updateIapUI();
+      IAP.loadProducts();       // [IAP-iOS] prix au lancement (le natif répond via iapProducts)
+    },
+    loadProducts() { IAP.post({ action: 'products', ids: IAP_PRODUCTS.map(p => p.id) }); },
+    // [IAP-iOS] ACHAT : le natif lance product.purchase() et répond via window.iapResult
+    buy(id) {
+      if (IAP.post({ action: 'buy', id })) return;
+      window.iapResult({ id, status: 'purchased', txId: 'mock-' + Date.now() });   // navigateur : achat simulé, tout de suite
+    },
+    // [IAP-iOS] RESTAURATION : le natif lance AppStore.sync() puis répond via window.iapRestored([ids possédés])
+    restore() {
+      IAP.restoring = true;
+      if (IAP.post({ action: 'restore' })) return;
+      window.iapRestored(adsRemoved ? [IAP_NOADS_ID] : []);                          // navigateur : simulation
+    }
+  };
+  // Livraison d'un achat (une seule fois par transaction)
+  function iapGrant(id, txId) {
+    if (txId) {
+      if (IAP.done.includes(txId)) { IAP.post({ action: 'finish', txId }); return; }   // déjà livré : on confirme juste au natif
+      IAP.done.push(txId); IAP.done = IAP.done.slice(-100);
+      try { localStorage.setItem('cubeaway_iaptx', JSON.stringify(IAP.done)); } catch (e) {}
+    }
+    const p = IAP_PRODUCTS.find(x => x.id === id); if (!p) return;
+    if (p.type === 'consumable') { hints += p.hints; drawHints(); toast('Achat réussi : +' + p.hints + ' indices'); }
+    else if (id === IAP_NOADS_ID) { setAdsRemoved(true); toast('Publicité supprimée ✓'); }
+    if (txId) IAP.post({ action: 'finish', txId });                                    // [IAP-iOS] le natif peut maintenant faire transaction.finish()
+  }
+  // ----- natif → JS -----
+  window.iapProducts = list => { (list || []).forEach(p => { IAP.prices[p.id] = p.price; }); updateIapUI(); renderShop(); };
+  window.iapResult = r => {   // r = { id, status: 'purchased' | 'cancelled' | 'pending' | 'failed', txId }
+    if (!r) return;
+    if (r.status === 'purchased') iapGrant(r.id, r.txId);
+    else if (r.status === 'cancelled') toast('Achat annulé');
+    else if (r.status === 'pending') toast("Achat en attente d'approbation");
+    else toast('Achat impossible pour le moment');
+  };
+  window.iapRestored = ids => {   // ids = identifiants possédés (non consommables). Appelé aussi au lancement avec Transaction.currentEntitlements.
+    ids = ids || [];
+    if (ids.includes(IAP_NOADS_ID)) setAdsRemoved(true);
+    if (IAP.restoring) { IAP.restoring = false; toast(ids.length ? 'Achats restaurés ✓' : 'Aucun achat à restaurer'); }
+  };
+  // ----- interface -----
+  function updateIapUI() { const v = $('noAdsV'); if (v) v.textContent = adsRemoved ? '✓' : IAP.price(IAP_NOADS_ID); }
+  // [IAP-iOS] Boutique : SQUELETTE (une ligne par pack d'indices). Le design définitif remplacera ce rendu ; la logique d'achat (IAP.buy) reste la même.
+  function renderShop() {
+    const box = $('shopList'); if (!box) return; box.innerHTML = '';
+    IAP_PRODUCTS.filter(p => p.type === 'consumable').forEach(p => {
+      const r = document.createElement('div'); r.className = 'sr pr';
+      r.innerHTML = '<span class="pi">💡</span><span class="sl">Pack de ' + p.hints + ' indices</span><span class="pp">' + (IAP.price(p.id) || '…') + '</span>';
+      r.onclick = () => IAP.buy(p.id);
+      box.appendChild(r);
+    });
+  }
   let boom = null;
   function explode() {
     if (O.rm) return false;
@@ -424,11 +584,12 @@ body.neon #settings{--sbg:#12142e;--srow:#33364f;--stx:#d9dcf7;--sic:#a8aee0;--s
     hr.render(hs, hcam);
   }
   // langue : dictionnaire FR → EN appliqué au texte affiché
-  const EN = { 'Défi quotidien': 'Daily challenge', 'Jouer': 'Play', 'Terminé ✓': 'Done ✓', 'Réussi ✓': 'Done ✓', '🔒 Niveau 1': '🔒 Level 1', 'Facile': 'Easy', 'Moyen': 'Medium', 'Difficile': 'Hard', 'Réglages': 'Settings', 'Musique': 'Music', 'Effets': 'Effects', 'Profil': 'Profile', 'Cadre': 'Frame', 'Plus de vies': 'Out of lives', 'Réessayer': 'Retry', 'Accueil': 'Home', 'Niveau suivant': 'Next level', 'Partager': 'Share', 'Temps': 'Time', 'Erreurs': 'Errors', 'Défi': 'Challenge', 'Réinitialiser (temporaire)': 'Reset (temporary)', 'Télécharge le jeu': 'Download the game', 'Plus de vie !': 'Out of lives!', 'Obtenir plus de vies': 'Get more lives', 'Recommencer la partie': 'Restart the game', 'Langue': 'Language', 'Musique': 'Music', 'Sons': 'Sounds', 'Mode daltonien': 'Colorblind mode', 'Mode néon': 'Neon mode', 'Confidentialité': 'Privacy', "Conditions d'utilisation": 'Terms of use', 'Saurais-tu faire mieux ?': 'Can you do better?', 'Résultat copié !': 'Result copied!',
+  const EN = { 'Défi quotidien': 'Daily challenge', 'Jouer': 'Play', 'Terminé ✓': 'Done ✓', 'Réussi ✓': 'Done ✓', '🔒 Niveau 1': '🔒 Level 1', 'Facile': 'Easy', 'Moyen': 'Medium', 'Difficile': 'Hard', 'Réglages': 'Settings', 'Acheter des indices': 'Buy tips', 'Supprimer la publicité': 'Remove ads', 'Restaurer les achats': 'Restore purchases', 'Déjà acheté ✓': 'Already purchased ✓', 'Publicité supprimée ✓': 'Ads removed ✓', 'Achats restaurés ✓': 'Purchases restored ✓', 'Aucun achat à restaurer': 'Nothing to restore', 'Achat annulé': 'Purchase cancelled', "Achat en attente d'approbation": 'Purchase pending approval', 'Achat impossible pour le moment': 'Purchase unavailable right now', 'Musique': 'Music', 'Effets': 'Effects', 'Profil': 'Profile', 'Cadre': 'Frame', 'Plus de vies': 'Out of lives', 'Réessayer': 'Retry', 'Accueil': 'Home', 'Niveau suivant': 'Next level', 'Partager': 'Share', 'Temps': 'Time', 'Erreurs': 'Errors', 'Défi': 'Challenge', 'Réinitialiser (temporaire)': 'Reset (temporary)', 'Télécharge le jeu': 'Download the game', 'Plus de vie !': 'Out of lives!', 'Obtenir plus de vies': 'Get more lives', 'Recommencer la partie': 'Restart the game', 'Langue': 'Language', 'Musique': 'Music', 'Sons': 'Sounds', 'Mode daltonien': 'Colorblind mode', 'Mode néon': 'Neon mode', 'Confidentialité': 'Privacy', "Conditions d'utilisation": 'Terms of use', 'Saurais-tu faire mieux ?': 'Can you do better?', 'Résultat copié !': 'Result copied!',
     'Félicitations': 'Congratulations', 'Bien joué': 'Well done', 'Pas mal': 'Not bad', 'Belle persévérance': 'Great perseverance', 'Tu y es arrivé': 'You did it', 'Victoire': 'Victory', 'Joli effort': 'Nice effort', 'Très bien joué': 'Very well played', 'Beau travail': 'Nice work', 'Bien vu': 'Good eye', 'Belle réflexion': 'Smart thinking', 'Impressionnant': 'Impressive', 'Parfait': 'Perfect', 'Magnifique': 'Magnificent', 'Brillant': 'Brilliant', 'Génial': 'Awesome', 'Sans faute': 'Flawless', 'Époustouflant': 'Stunning', 'Tu es un génie': 'You are a genius', 'Légendaire': 'Legendary',
     'Glisse du doigt pour faire tourner le cube': 'Swipe to rotate the cube', 'Touche une flèche libre pour la faire sortir': 'Tap a free arrow to send it out', "Rouge = flèche bloquée : libère d'abord celle qui la gêne (3 ❤️)": 'Red = blocked arrow: free the one in the way first (3 ❤️)', "Besoin d'aide ? Le bouton 💡 te montre une flèche libre": 'Need help? The 💡 button shows a free arrow',
     'Prochain défi demain : +2 indices à gagner': 'Next challenge tomorrow: win +2 hints', '🔒 Termine le niveau 1 pour débloquer le défi du jour': '🔒 Finish level 1 to unlock the daily challenge', 'Gel de série ❄️ : un jour manqué consomme un gel au lieu de remettre la série à zéro. +1 gel tous les 7 jours (max 2).': 'Streak freeze ❄️: a missed day uses a freeze instead of resetting your streak. +1 every 7 days (max 2).' };
-  const RX = [[/Fais le défi du jour (\d+) jours de suite : \+(\d+) indices.*$/, (m, a, b) => 'Win the daily challenge ' + a + ' days in a row: +' + b + ' hints (a missed day uses a freeze ❄️)'], [/Gagne le défi du jour : \+2 indices/, 'Win the daily challenge: +2 hints'],
+  const RX = [[/Pack de (\d+) indices/, 'Pack of $1 tips'], [/Achat réussi : /, 'Purchase complete: '],
+    [/Fais le défi du jour (\d+) jours de suite : \+(\d+) indices.*$/, (m, a, b) => 'Win the daily challenge ' + a + ' days in a row: +' + b + ' hints (a missed day uses a freeze ❄️)'], [/Gagne le défi du jour : \+2 indices/, 'Win the daily challenge: +2 hints'],
     [/Vibration : oui/, 'Vibration: on'], [/Vibration : non/, 'Vibration: off'], [/Bloom : oui/, 'Bloom: on'], [/Bloom : non/, 'Bloom: off'], [/Mode daltonien : oui/, 'Colorblind mode: on'], [/Mode daltonien : non/, 'Colorblind mode: off'], [/Thème : Auto/, 'Theme: Auto'], [/Thème : Clair/, 'Theme: Light'], [/Thème : Néon/, 'Theme: Neon'],
     [/Niveau : /, 'Level: '], [/Score : /, 'Score: '], [/Niveau/g, 'Level'], [/ jours de suite/, ' days in a row'], [/Défi du jour/g, 'Daily challenge'],
     [/\+(\d+) indices?/g, (m, n) => '+' + n + (n == 1 ? ' hint' : ' hints')], [/Série : (\d+) jours?/, (m, n) => 'Streak: ' + n + ' day' + (n == 1 ? '' : 's')], [/Cadeau : /, 'Gift: '], [/Gel utilisé : série sauvée/, 'Freeze used: streak saved'], [/\+1 gel de série/, '+1 streak freeze'],
@@ -530,6 +691,8 @@ body.neon #settings{--sbg:#12142e;--srow:#33364f;--stx:#d9dcf7;--sic:#a8aee0;--s
       if (p.alive && !p.bump) p.mat.color.set(hintObj && hintObj.p === p ? COL.hint : p.blocked ? COL.bad : p.base);
     });
     setSw('swNeon', name === 'neon');
+    bgFx.visible = name === 'neon';
+    if (screen === 'game' && remaining >= shotMin) shotPend = true;   // nouveau thème → nouvelle capture
   }
 
   // ---------- interface ----------
@@ -775,7 +938,7 @@ body.neon #settings{--sbg:#12142e;--srow:#33364f;--stx:#d9dcf7;--sic:#a8aee0;--s
   // ---------- niveau ----------
   function build() {
     won = false; failed = false; lives = 3; hintObj = null;
-    ['win', 'lose', 'settings'].forEach(id => $(id).classList.remove('show'));
+    ['win', 'lose', 'settings', 'shop'].forEach(id => $(id).classList.remove('show'));
     const L = mode === 'daily' ? daily.lvl : level;
     $('title').textContent = mode === 'daily' ? 'Défi du jour' : 'Niveau : ' + level;
     drawHearts(); drawHints(); updScore();
@@ -805,7 +968,7 @@ body.neon #settings{--sbg:#12142e;--srow:#33364f;--stx:#d9dcf7;--sic:#a8aee0;--s
       p.occ.forEach(o => occ[o.fi].set(o.key, p));
       remaining++;
     });
-    $('n').textContent = remaining;
+    $('n').textContent = remaining; shotMin = Math.ceil(remaining * 0.3);
     tm = 0; ts = 1; intro = O.rm ? 1 : 0; if (!O.rm) cube.scale.setScalar(0.01);
     tb.classList.remove('show'); if (mode === 'level' && level === 1 && tuto < 9) { tuto = 0; tutShow(0); }
     cube.quaternion.setFromEuler(new THREE.Euler(0.45, -0.6, 0));
@@ -994,6 +1157,7 @@ body.neon #settings{--sbg:#12142e;--srow:#33364f;--stx:#d9dcf7;--sic:#a8aee0;--s
     moving.push(p);
     remaining--;
     $('n').textContent = remaining;
+    if (remaining >= shotMin) shotPend = true;   // l'image de partage suit la partie (cube encore bien garni), pas le début du niveau
     pulseCount(); exitSound(); vib(Math.min(45, 12 + combo * 4)); tutEv('exit');
     if (remaining === 0 && !O.rm) { ts = 0.3; setTimeout(() => ts = 1, 450); }
   }
@@ -1174,6 +1338,7 @@ body.neon #settings{--sbg:#12142e;--srow:#33364f;--stx:#d9dcf7;--sic:#a8aee0;--s
     if (screen === 'home') homeStep(dt, now);
     if (screen === 'game') {
       if (glowOn && (gf++ & 1) === 0) { edgeMeshes.forEach(e => { e.visible = false; }); renderer.render(scene, camera); glowStep(); edgeMeshes.forEach(e => { e.visible = true; }); }   // le halo ignore les arêtes du cube
+      if (bgFx.visible) updBg(now);
       renderer.render(scene, camera);
       if (shotPend && intro >= 1 && !won) { shotPend = false; takeShot(); } }
     requestAnimationFrame(frame);
@@ -1214,7 +1379,7 @@ body.neon #settings{--sbg:#12142e;--srow:#33364f;--stx:#d9dcf7;--sic:#a8aee0;--s
     });
     fit(tr('Télécharge le jeu'), 1235, 44, 700, sub);
     fit(APP_URL.replace('https://', ''), 1295, 38, 600, ink);
-    c.toBlob(b => { if (b) shareFile = new File([b], 'cube-away.png', { type: 'image/png' }); }, 'image/png');
+    c.toBlob(b => { if (b) shareFile = new File([b], 'cube-away-' + (dl ? 'daily' : L0) + '-' + Date.now() + '.png', { type: 'image/png' }); }, 'image/png');
   }
   const fmt = t => Math.floor(t / 60) + ':' + pad2(t % 60);
   function showWin(msg) {
@@ -1349,7 +1514,7 @@ body.neon #settings{--sbg:#12142e;--srow:#33364f;--stx:#d9dcf7;--sic:#a8aee0;--s
   function showHome() {
     screen = 'home';
     document.body.classList.add('home');
-    ['win', 'lose', 'settings', 'profile'].forEach(id => $(id).classList.remove('show'));
+    ['win', 'lose', 'settings', 'shop', 'profile'].forEach(id => $(id).classList.remove('show'));
     updateHome();
   }
   function startGame(m) {
@@ -1370,10 +1535,16 @@ body.neon #settings{--sbg:#12142e;--srow:#33364f;--stx:#d9dcf7;--sic:#a8aee0;--s
   $('rSfx').addEventListener('click', () => { O.sfx = O.sfx > 0 ? 0 : 100; saveO(); syncSettings(); });
   $('rCb').addEventListener('click', () => { O.cb = O.cb ? 0 : 1; saveO(); syncSettings(); applyOpts(); });
   $('rBloom').addEventListener('click', () => { O.bloom = O.bloom ? 0 : 1; saveO(); applyTheme(resolveTheme()); });
-  $('rLang').addEventListener('click', () => { O.lang = O.lang === 'en' ? 'fr' : 'en'; saveO(); applyLang(); });
+  $('rLang').addEventListener('click', () => { O.lang = O.lang === 'en' ? 'fr' : 'en'; O.langSet = true; saveO(); applyLang(); });
   try { matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => { if (O.theme === 'auto') applyTheme(resolveTheme()); }); } catch (e) {}
   $('rVib').addEventListener('click', () => { vibOn = !vibOn; try { localStorage.setItem('cubeaway_vib', vibOn ? '1' : '0'); } catch (e) {} syncSettings(); if (vibOn) vib(20); });
   $('closeset').addEventListener('click', () => $('settings').classList.remove('show'));
+  // [IAP-iOS] boutons des achats (réglages + boutique)
+  $('rBuy').addEventListener('click', () => { renderShop(); $('shop').classList.add('show'); IAP.loadProducts(); });
+  $('closeshop').addEventListener('click', () => $('shop').classList.remove('show'));
+  $('shop').addEventListener('click', e => { if (e.target === $('shop')) $('shop').classList.remove('show'); });
+  $('rNoAds').addEventListener('click', () => { if (adsRemoved) toast('Déjà acheté ✓'); else IAP.buy(IAP_NOADS_ID); });
+  $('rRestore').addEventListener('click', () => IAP.restore());
   $('homeGear').innerHTML = $('gear').innerHTML;
   $('dIcon').insertAdjacentHTML('afterbegin', $('hint').querySelector('svg').outerHTML);
   if (LOGO_SRC) {
@@ -1456,6 +1627,7 @@ body.neon #settings{--sbg:#12142e;--srow:#33364f;--stx:#d9dcf7;--sic:#a8aee0;--s
   document.querySelectorAll('.chal').forEach((el, i) => el.addEventListener('click', () => toast('Fais le défi du jour ' + CH[i][0] + ' jours de suite : +' + CH[i][1] + ' indices (un jour manqué consomme un gel ❄️)')));
   drawHints();
   resize();
+  IAP.init();
   showHome();
   requestAnimationFrame(frame);
 })();
