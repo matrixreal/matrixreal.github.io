@@ -168,6 +168,13 @@ body.neon #pen2{background:#14183a}body.neon #pen2 svg{stroke:#18e4ff}
 .card .mini{display:flex;gap:8px}
 .card .mini button{margin-top:8px;font-size:13px;padding:7px 10px}
 #next{font-size:16px;padding:10px 20px}
+#gIcon{font-size:54px;line-height:1;margin:0 auto 8px}
+#nIcon{width:64px;height:64px;margin:0 auto 12px;border-radius:50%;background:var(--blue);display:flex;align-items:center;justify-content:center}
+#nIcon svg{width:34px;height:34px;fill:none;stroke:#fff;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;transform-origin:50% 10%}
+#notif.show #nIcon svg{animation:nring .9s ease .35s 2}
+@keyframes nring{0%,100%{transform:rotate(0)}20%{transform:rotate(14deg)}40%{transform:rotate(-12deg)}60%{transform:rotate(8deg)}80%{transform:rotate(-4deg)}}
+body.rm #nIcon svg{animation:none!important}
+#notif .card p{margin:0 0 6px}
 #settings .card,#shop .card{position:relative}
 .card #closeset,.card #closeshop{position:absolute;top:10px;right:12px;width:34px;height:34px;margin:0;padding:0;border-radius:50%;background:transparent;color:var(--ink);font-size:20px;display:flex;align-items:center;justify-content:center}
 #dRow{padding:22px 0 34px;margin:calc(clamp(12px,4vh,48px) - 16px) 0 -22px}
@@ -256,6 +263,25 @@ body.neon .pp{background:#18e4ff;color:#070714}
 #hint.video{background:#dfe4f2}
 #hint.video .hplay{display:flex}
 #hint.video #badge{display:none!important}
+#langs{z-index:12}   /* au-dessus des réglages */
+body.neon #langs .card{background:#12142e}   /* néon : mêmes couleurs que les réglages (lignes #2a3070) */
+body.neon #langs h2{color:#d9dcf7}
+body.neon #langX{background:transparent;border:1px solid #2a3070;color:#a8aee0}
+body.neon #langList button{background:transparent;border:1px solid #2a3070;color:#a8aee0}
+body.neon #langList button:not(.alt){background:#2a3070;border-color:#2a3070;color:#fff}
+#langList{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px}
+#langList button{margin:0;padding:11px 6px;font-size:15px;border-radius:16px}
+html[dir=rtl] #dRow,html[dir=rtl] #coins,html[dir=rtl] #wprogress,html[dir=rtl] #wStars,html[dir=rtl] #dots,html[dir=rtl] #hearts{direction:ltr}   /* arabe : ces rangées gardent l'ordre gauche → droite */
+#adBanner{position:fixed;left:50%;bottom:0;transform:translateX(-50%);width:min(100%,320px);height:50px;z-index:8;display:none;align-items:center;justify-content:center;background:#555;color:#fff;font-size:12px;opacity:.85;pointer-events:none}
+#adBanner.show{display:flex}
+body.upd #reset{display:none}   /* [PROD] le bouton temporaire est retiré avant la sortie */
+#upd{position:absolute;left:50%;top:calc(14px + env(safe-area-inset-top,0px));transform:translateX(-50%);z-index:3;display:none;align-items:center;gap:6px;width:calc(100% - 140px);max-width:300px;box-sizing:border-box;background:var(--bar);color:var(--navy);border-radius:16px;padding:5px 6px 5px 10px;font-size:11.5px;line-height:1.15;font-weight:700;box-shadow:0 3px 10px rgba(0,0,0,.18)}   /* en haut, entre le profil et les réglages : la bannière du bas ne le cache jamais */
+#upd span{flex:1;text-align:left}
+#upd.show{display:flex}
+#upd button{border:0;border-radius:13px;font-family:inherit;font-weight:800;cursor:pointer}
+#updGo{background:var(--play);color:#fff;font-size:12px;padding:6px 10px;white-space:nowrap}
+#updX{background:transparent;color:var(--navy);font-size:14px;padding:4px 5px;opacity:.7}
+body.boot #upd{opacity:0;pointer-events:none}
 #adMock{position:fixed;inset:0;z-index:99;background:rgba(0,0,0,.92);color:#fff;display:flex;align-items:center;justify-content:center;text-align:center;font-size:20px}
 #adMock span{font-size:56px;font-weight:900}
 #lose .card{background:#272a6e;width:min(86vw,340px);padding:26px 22px 24px;border-radius:32px;box-shadow:0 10px 0 #1d2054,0 0 30px rgba(0,0,0,.35)}
@@ -293,6 +319,8 @@ body.neon .pp{background:#18e4ff;color:#070714}
   </div>
   <button id="play">Niveau 1</button>
 </div>
+<!-- [UPDATE-iOS] message discret « nouvelle version » (voir le bloc MISE À JOUR dans le script) -->
+<div id="upd"><span>Nouvelle version disponible</span><button id="updGo">Mettre à jour</button><button id="updX" aria-label="Fermer">✕</button></div>
 <!-- [BOOT-iOS] barre de la page de chargement (pilotée par le module Boot, voir « PAGE DE CHARGEMENT » dans le script) -->
 <div id="bootWrap"><div id="bootTrack"><div id="bootFill"></div></div><div id="bootMsg">Chargement…</div></div></div>
 <div id="toast"></div><div id="praise"></div><div id="tuto"></div>
@@ -308,12 +336,20 @@ body.neon .pp{background:#18e4ff;color:#070714}
 </button>
 <!-- [PROD] bouton temporaire : à supprimer avant la sortie -->
 <button id="reset">Réinitialiser (temporaire)</button>
+<div id="adBanner">Bannière Appodeal (simulation)</div>
 <div id="ver">v25</div>
 <div id="win" class="ov"><div class="card wide"><h2 id="wTitle"></h2><div id="wStars"></div><div id="wStats"></div><p id="winMsg"></p><div id="wprogress"></div><button id="next">Niveau suivant</button><div class="mini"><button id="share" class="alt">Partager</button><button id="winHome" class="alt">Accueil</button></div></div><div id="conf"></div></div>
+<!-- [NOTIF-iOS] écran maison affiché AVANT la fenêtre système iOS (voir le bloc NOTIFICATIONS dans le script) -->
+<!-- [NOTIF-iOS] cadeau reçu par notification Firebase (giftReceived) -->
+<div id="gift" class="ov"><div class="card wide"><div id="gIcon">🎁</div><h2>Cadeau gagné !</h2><p id="gP"></p><button id="gOk">Super !</button></div></div>
+<div id="langs" class="ov"><div class="card wide"><h2>Langue</h2><div id="langList"></div><button id="langX" class="alt" aria-label="Fermer">✕</button></div></div>
+<div id="notif" class="ov"><div class="card wide"><div id="nIcon"><svg viewBox="0 0 24 24"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.700 21a2 2 0 0 1-3.400 0"/></svg></div><h2>Défi du jour débloqué !</h2><p>Reçois le défi du jour et protège ta série.</p><button id="nYes">Activer les notifications</button><button id="nLater" class="alt">Plus tard</button></div></div>
 <div id="lose" class="ov"><div class="card lc"><h2>Plus de vie !</h2><div class="lh"><span class="lp"><i>+</i>2</span><svg viewBox="0 0 24 24"><defs><linearGradient id="hg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#f5667a"/><stop offset="1" stop-color="#e8283f"/></linearGradient></defs><path d="M12 21s-8.500-5.300-8.500-11.300A4.700 4.700 0 0 1 12 7.200a4.700 4.700 0 0 1 8.500 2.500C20.500 15.700 12 21 12 21z" fill="#b91c30" transform="translate(0,1.100)"/><path d="M12 21s-8.500-5.300-8.500-11.300A4.700 4.700 0 0 1 12 7.200a4.700 4.700 0 0 1 8.500 2.500C20.500 15.700 12 21 12 21z" fill="url(#hg)"/></svg></div><button id="getLives"><span>Obtenir plus de vies</span><svg viewBox="0 0 24 24"><rect x="2" y="4" width="20" height="16" rx="3" fill="#2f80ed"/><path d="M10 9l5.500 3-5.500 3z" fill="#fff"/><path d="M3.500 6.500h1.500v1.500H3.500zM3.500 11h1.500v2H3.500zM3.500 16h1.500v1.500H3.500zM19 6.500h1.500v1.500H19zM19 11h1.500v2H19zM19 16h1.500v1.500H19z" fill="#fff"/></svg><span class="gb">2</span></button><div id="retry">Recommencer la partie</div></div></div>
 
 <div id="settings" class="ov"><div class="card wide sc"><h2>Réglages</h2><div class="sg"><div class="sr" id="rLang"><span class="si"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18"/></svg></span><span class="sl">Langue</span><span class="sv" id="langV">français</span><span class="chev">›</span></div><div class="sr" id="rVib"><span class="si"><svg viewBox="0 0 24 24"><path d="M2 8c2-2 4-2 6 0s4 2 6 0 4-2 6 0M2 15c2-2 4-2 6 0s4 2 6 0 4-2 6 0"/></svg></span><span class="sl">Vibrations</span><span class="sw" id="swVib"></span></div><div class="sr" id="rMus"><span class="si"><svg viewBox="0 0 24 24"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg></span><span class="sl">Musique</span><span class="sw" id="swMus"></span></div><div class="sr" id="rSfx"><span class="si"><svg viewBox="0 0 24 24"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.5 8.5a5 5 0 0 1 0 7M19 5a10 10 0 0 1 0 14"/></svg></span><span class="sl">Sons</span><span class="sw" id="swSfx"></span></div><div class="sr" id="rCb"><span class="si"><svg viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></span><span class="sl">Mode daltonien</span><span class="sw" id="swCb"></span></div><div class="sr" id="rBloom" style="display:none"><span class="si"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9L7 7M17 17l2.1 2.1M4.9 19.1L7 17M17 7l2.1-2.1"/></svg></span><span class="sl">Bloom</span><span class="sw" id="swBloom"></span></div><div class="sr" id="rNeon"><span class="si"><svg viewBox="0 0 24 24"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg></span><span class="sl">Mode néon</span><span class="sw" id="swNeon"></span></div></div><!-- [IAP-iOS] achats : « Acheter des indices » ouvre la boutique (#shop) ; « Supprimer la publicité » et « Restaurer les achats » appellent IAP.buy / IAP.restore (voir le bloc ACHATS INTÉGRÉS dans le script) -->
-<div class="sg"><div class="sr" id="rBuy"><span class="si"><svg viewBox="0 0 24 24"><path d="M9 18h6M10 22h4M12 2a7 7 0 0 0-4 12.7c.6.5 1 1.2 1 2V17h6v-.3c0-.8.4-1.5 1-2A7 7 0 0 0 12 2z"/></svg></span><span class="sl">Acheter des indices</span><span class="chev">›</span></div><div class="sr" id="rNoAds"><span class="si"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M5.6 5.6l12.8 12.8"/></svg></span><span class="sl">Supprimer la publicité</span><span class="sv" id="noAdsV"></span></div><div class="sr" id="rRestore"><span class="si"><svg viewBox="0 0 24 24"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5"/></svg></span><span class="sl">Restaurer les achats</span></div></div>
+<div class="sg"><div class="sr" id="rBuy"><span class="si"><svg viewBox="0 0 24 24"><path d="M9 18h6M10 22h4M12 2a7 7 0 0 0-4 12.7c.6.5 1 1.2 1 2V17h6v-.3c0-.8.4-1.5 1-2A7 7 0 0 0 12 2z"/></svg></span><span class="sl">Acheter des indices</span><span class="chev">›</span></div><div class="sr" id="rNoAds"><span class="si"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M5.6 5.6l12.8 12.8"/></svg></span><span class="sl">Supprimer la publicité</span><span class="sv" id="noAdsV"></span></div><div class="sr" id="rRestore"><span class="si"><svg viewBox="0 0 24 24"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5"/></svg></span><span class="sl">Restaurer les achats</span></div>
+<!-- [REVIEW-iOS] « Notez-nous » : ouvre la page d'avis de l'App Store (voir le bloc AVIS APP STORE dans le script) -->
+<div class="sr" id="rNotif"><span class="si"><svg viewBox="0 0 24 24"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.700 21a2 2 0 0 1-3.400 0"/></svg></span><span class="sl">Notifications</span><span class="sw" id="swNotif"></span></div><div class="sr" id="rRate"><span class="si"><svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></span><span class="sl">Notez-nous</span></div></div>
 <!-- [LINKS-iOS] Les liens Confidentialité et Conditions pointent vers horror6apps.github.io : mettre les URLs finales de l'app (la politique de confidentialité est exigée par l'App Store Connect). -->
 <div class="sg"><div class="lk"><span class="si"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg></span><a href="https://horror6apps.github.io/privacy.html" target="_blank" rel="noopener">Confidentialité</a><span class="dash">-</span><a href="https://horror6apps.github.io/terms.html" target="_blank" rel="noopener">Conditions d'utilisation</a></div></div><button id="closeset" aria-label="Fermer">✕</button></div></div>
 <!-- ===== MENU BOUTIQUE (achats intégrés) — [IAP-iOS] SQUELETTE : les lignes sont générées par renderShop() à partir de IAP_PRODUCTS ; le design final sera appliqué ici ===== -->
@@ -332,21 +368,26 @@ body.neon .pp{background:#18e4ff;color:#070714}
   //  AVANT LA PRODUCTION : supprimer tous les commentaires contenant « -iOS] », cet index, et les éléments [PROD] ci-dessous.
   //
   //  DÉJÀ PRÉPARÉS CÔTÉ JS (il reste le côté Swift) :
-  //    [BOOT-iOS]    page de chargement + consentement UMP / GDPR + ATT + init des SDK pub     → handler « boot »
+  //    [BOOT-iOS]    page de chargement + initialisation d'Appodeal (qui gère aussi UMP/GDPR et ATT) → handler « boot »
   //    [IAP-iOS]     achats intégrés StoreKit 2 : boutique, suppression de la pub, restauration → handler « iap »
   //    [ADS-iOS]     vidéo récompensée (indices, vies)                                         → handler « ads »
+  //    [ADS-iOS]     + bannière permanente (showBanner / hideBanner) et interstitiel en fin de partie (showInterstitial) : voir le bloc PUBLICITÉS PLEIN ÉCRAN
+  //    [GC-iOS]      authentification Game Center au lancement (handler « gc »)
+  //    [UPDATE-iOS]  nouvelle version de l'app : le natif interroge l'App Store, le jeu affiche un message discret (handler « update » + updateAvailable())
   //    [HAPTIC-iOS]  vibrations                                                                → handler « haptic »
   //    [SHARE-iOS]   partage du résultat (image + texte)                                       → handler « share » (à créer)
   //    [STORAGE-iOS] sauvegarde de la progression                                              → handler « storage » (à créer)
+  //    [NOTIF-iOS]   notifications : écran maison après la victoire du niveau 1, puis fenêtre système  → handler « notif » (à créer)
+  //    [NOTIF-iOS]   + rappels locaux (action « remind »/« cancel ») et cadeau Firebase (JS giftReceived) : voir le bloc NOTIFICATIONS
+  //    [REVIEW-iOS]  avis App Store : fenêtre intégrée (4e lancement, 3 étoiles dès le niveau 3) + « Notez-nous » → handler « review » (à créer)
   //    [AUDIO-iOS]   session audio (silencieux / musique de l'utilisateur)
   //    [ORIENT-iOS]  verrouillage de l'orientation
   //    [WEB-iOS]     ressources locales (three.min.js, logo.png) et chargement de la page
   //    [LINKS-iOS]   lien App Store, confidentialité, conditions
   //  À AJOUTER PLUS TARD (pas encore dans le code) :
-  //    [REVIEW-iOS]  demande d'avis : après un beau résultat (ex. 3 étoiles au niveau 10), le JS enverra « review » au natif ;
-  //                  Swift : #available(iOS 18) → AppStore.requestReview(in: scene), sinon SKStoreReviewController.requestReview(in: scene) (iOS 15 minimum)
-  //    [NOTIF-iOS]   notifications (Firebase Messaging) : écran maison APRÈS le 1er niveau, puis UNUserNotificationCenter.requestAuthorization
   //    [GC-iOS]      Game Center (classements, succès)
+  //    [PRIVACY-iOS] Appodeal ≥ 4.2.0 : si ConsentManager.shared.privacyOptionsRequirementStatus == .required (états US régulés, UE), ajouter dans les réglages une ligne
+  //                  « Paramètres de confidentialité » qui appelle ConsentManager.shared.showPrivacyOptionsForm(rootViewController:) — sur appui du joueur, jamais au lancement.
   //  [PROD] à retirer avant la sortie : bouton « Réinitialiser (temporaire) » (#reset) et numéro de version (#ver).
   // =====================================================================================================
   const $ = id => document.getElementById(id);
@@ -437,7 +478,11 @@ body.neon .pp{background:#18e4ff;color:#070714}
 
   // ---------- effets, sons, vibrations ----------
   let fx = [], AC = null, soundOn = true, vibOn = true;
-  function detectLang() { return /^fr/i.test((navigator.languages && navigator.languages[0]) || navigator.language || '') ? 'fr' : 'en'; }   // le jeu existe en français et en anglais
+  function detectLang() {   // langue de l'iPhone → une des 12 langues du jeu, sinon anglais
+    const c = String((navigator.languages && navigator.languages[0]) || navigator.language || '').toLowerCase().slice(0, 2);
+    const m = { nb: 'no', nn: 'no', no: 'no' }; const l = m[c] || c;
+    return ['en', 'fr', 'de', 'ja', 'ko', 'ar', 'no', 'it', 'ru', 'nl', 'es', 'pt'].includes(l) ? l : 'en';
+  }   // [WEB-iOS] 12 langues (voir le bloc LANGUES)
   let O = { v: 0, bloom: 0, theme: 'auto', lang: detectLang(), mus: 50, sfx: 100, sens: 100, inv: 0, cb: 0, rm: matchMedia('(prefers-reduced-motion: reduce)').matches ? 1 : 0, zen: 0 };
   // [STORAGE-iOS] Tout est dans localStorage (WKWebView) : iOS peut le purger si le stockage manque, et il n'est pas synchronisé entre appareils.
   //   Clés : cubeaway_opt (réglages), _level, _total, _hints, _streak, _daily, _profile, _sound, _vib, _tuto, _noads, _iaptx.
@@ -447,6 +492,7 @@ body.neon .pp{background:#18e4ff;color:#070714}
   O.zen = 0; O.inv = 0; O.sens = 100; O.rm = matchMedia('(prefers-reduced-motion: reduce)').matches ? 1 : 0;
   const saveO = () => { try { localStorage.setItem('cubeaway_opt', JSON.stringify(O)); } catch (e) {} };
   if ((O.v || 0) < 2) O.bloom = 0;                      // anciens réglages : bloom désactivé (une seule fois)
+  if (['en', 'fr', 'de', 'ja', 'ko', 'ar', 'no', 'it', 'ru', 'nl', 'es', 'pt'].indexOf(O.lang) < 0) O.lang = detectLang();
   if ((O.v || 0) < 3) { O.v = 3; if (!O.langSet) O.lang = detectLang(); saveO(); }   // langue détectée tant que le joueur n'a pas choisi lui-même
   const glowEl = $('glow'), gctx = glowEl.getContext('2d'), g1 = document.createElement('canvas'), g2 = document.createElement('canvas');
   const c1 = g1.getContext('2d'), c2 = g2.getContext('2d');
@@ -467,10 +513,14 @@ body.neon .pp{background:#18e4ff;color:#070714}
     c.getContext('2d').drawImage(canvas, (W - m) / 2, Math.max(0, (H - m) / 2 - H * 0.04), m, m, 0, 0, 700, 700);
     shotCv = c;
   }
-  // [ADS-iOS] Vidéo récompensée. JS → natif : webkit.messageHandlers.ads.postMessage('showRewarded') ; natif → JS (evaluateJavaScript) :
-  //   setRewardedLoaded(true|false)  à chaque changement d'état de la vidéo (Appodeal : callbacks de chargement)
-  //   onRewardedVideoFinished()      UNIQUEMENT quand la récompense est accordée (Appodeal : didReceiveReward / rewardedVideoDidFinish) — pas si le joueur ferme avant la fin
-  //   Penser à : couper le son du jeu pendant la vidéo et ne rien afficher si le consentement ne le permet pas (voir [BOOT-iOS]).
+  // [ADS-iOS] Vidéo récompensée (Appodeal iOS SDK 4.4.1). JS → natif : webkit.messageHandlers.ads.postMessage('showRewarded')
+  //   Swift : si Appodeal.isReadyForShow(with: .rewardedVideo) → Appodeal.showAd(.rewardedVideo, rootViewController: vc)
+  //   natif → JS (evaluateJavaScript), depuis AppodealRewardedVideoDelegate (Appodeal.setRewardedVideoDelegate(self)) :
+  //     setRewardedLoaded(true)    ← rewardedVideoDidLoadAdIsPrecache(_:)
+  //     setRewardedLoaded(false)   ← rewardedVideoDidFailToLoadAd() · rewardedVideoDidExpired() · juste après l'affichage (le cache se recharge tout seul : autocache actif par défaut)
+  //     onRewardedVideoFinished()  ← rewardedVideoDidFinish(_:name:) UNIQUEMENT (vidéo regardée en entier) ; pas si le joueur ferme avant la fin.
+  //                                  Ne pas l'appeler aussi depuis rewardedVideoWillDismissAndWasFullyWatched(_:) : la récompense serait donnée deux fois.
+  //   Penser à couper le son du jeu pendant la vidéo. Le consentement / ATT sont gérés par Appodeal (voir [BOOT-iOS]).
   const Ads = {
     native: () => window.webkit && webkit.messageHandlers && webkit.messageHandlers.ads,
     isLoaded() { return Ads.native() ? !!window.__rewardedLoaded : true; },   // natif : appeler setRewardedLoaded(true/false)
@@ -485,6 +535,84 @@ body.neon .pp{background:#18e4ff;color:#070714}
   };
   window.onRewardedVideoFinished = () => { const cb = window.__rewardCb; window.__rewardCb = null; if (cb) cb(); };   // natif : appeler à la fin de la vidéo
   window.setRewardedLoaded = v => { window.__rewardedLoaded = !!v; drawHints(); refreshLose(); };
+
+  // =====================================================================================================
+  //  PUBLICITÉS PLEIN ÉCRAN — bannière permanente + interstitiel en fin de partie                    Cherche « [ADS-iOS] »
+  //  Toutes ces pubs sont COUPÉES si l'achat « supprimer la publicité » est possédé (adsRemoved). Les vidéos récompensées restent (indices, vies).
+  //
+  //  JS → natif (handler « ads », messages texte comme showRewarded) :
+  //    'showBanner'       Appodeal.showAd(.bannerBottom, rootViewController: vc)  — appelé UNE fois, juste après l'initialisation d'Appodeal (fin de la page de chargement)
+  //                       La bannière reste affichée tout le temps (meilleur taux d'affichage). Elle se POSE PAR-DESSUS le contenu, en bas de l'écran :
+  //                       NE PAS redimensionner le WKWebView (aucun recalage de l'accueil ni du jeu, ni sur iPhone ni sur iPad). iPad : bannière 728×90 si Appodeal le permet.
+  //    'hideBanner'       Appodeal.hideBanner() — envoyé quand l'achat « sans pub » est confirmé ou restauré.
+  //    'showInterstitial' Appodeal.isReadyForShow(with: .interstitial) ? Appodeal.showAd(.interstitial, rootViewController: vc) : rien.
+  //                       « Afficher SI CHARGÉ » : jamais d'attente, jamais de chargement forcé (évite un display rate bas). Couper le son du jeu pendant l'affichage.
+  //  Initialiser Appodeal avec les types .rewardedVideo, .interstitial et .banner.
+  // =====================================================================================================
+    Object.assign(Ads, {
+    banner(on) {
+      if (on && adsRemoved) return;
+      const mh = Ads.native();
+      if (mh) { mh.postMessage(on ? 'showBanner' : 'hideBanner'); return; }
+      $('adBanner').classList.toggle('show', !!on);   // navigateur : simulation
+    },
+    interstitial() {   // affiche si chargé (le natif décide) ; navigateur : simulation de 2 secondes
+      if (adsRemoved) return false;
+      const mh = Ads.native();
+      if (mh) { mh.postMessage('showInterstitial'); return true; }
+      const m = document.createElement('div'); m.id = 'adMock';
+      m.innerHTML = '<div><b>Interstitiel</b><br>(simulation)<br><span id="adN">2</span></div>'; document.body.appendChild(m);
+      let n = 2; const iv = setInterval(() => { n--; if (n <= 0) { clearInterval(iv); m.remove(); } else $('adN').textContent = n; }, 1000);
+      return true;
+    }
+  });
+  const Inter = {
+    t: 0, chance: 0.5,   // 1 fin de partie sur 2 en moyenne (tirage au sort, pas de compteur)
+    // appelé à la victoire ; ms = fin du comptage du score. Jamais si l'écran de notifications ou l'avis App Store doivent s'afficher.
+    schedule(ctx, ms) {   // [ADS-iOS]
+      clearTimeout(Inter.t);
+      if (adsRemoved) return;
+      if (!ctx.daily && Notif.shouldAsk()) return;      // l'écran « Défi du jour débloqué ! » arrive juste après
+      if (Review.eligible(Object.assign({}, ctx))) return;   // la fenêtre d'avis arrive pendant cette victoire
+      if (Math.random() >= Inter.chance) return;        // 1 fois sur 2
+      Inter.t = setTimeout(() => { if (won && screen === 'game' && $('win').classList.contains('show') && !$('notif').classList.contains('show')) Ads.interstitial(); }, ms);
+    }
+  };
+
+  // =====================================================================================================
+  //  GAME CENTER — authentification au lancement                                                      Cherche « [GC-iOS] »
+  //  JS → natif (handler « gc ») : { action:'auth' } envoyé une fois, après Appodeal, SANS attendre la réponse (le joueur ne reste jamais bloqué sur le chargement).
+  //  Swift : GKLocalPlayer.local.authenticateHandler = { vc, error in if let vc { présenter vc } ; ... }
+  //          puis webView.evaluateJavaScript("gcAuth({ok:true})") ou gcAuth({ok:false}). (Classements / succès : plus tard.)
+  // =====================================================================================================
+  const GC = {
+    ok: false,
+    auth() { const mh = window.webkit && webkit.messageHandlers && webkit.messageHandlers.gc; if (mh) mh.postMessage({ action: 'auth' }); }   // navigateur : rien
+  };
+  window.gcAuth = r => { GC.ok = !!(r && r.ok); };
+
+  // =====================================================================================================
+  //  MISE À JOUR DE L'APP — message discret sur l'accueil                                          Cherche « [UPDATE-iOS] »
+  //  Natif → JS : updateAvailable('1.2.0')   appelé SEULEMENT si la version de l'App Store est plus récente que celle installée.
+  //  Swift (au lancement, au plus une fois par jour) :
+  //     GET https://itunes.apple.com/lookup?bundleId=<bundle id>&country=<pays>&t=<horodatage>   → results[0].version
+  //     installée = Bundle.main.infoDictionary?["CFBundleShortVersionString"] ; si store.compare(installée, options: .numeric) == .orderedDescending → evaluateJavaScript("updateAvailable('…')")
+  //     (la version apparaît dans l'API quelques heures après la mise en ligne.)
+  //  Bouton « Mettre à jour » : ouvre APP_URL (WKUIDelegate createWebViewWith… → UIApplication.shared.open(url)). Fermer / ignorer : plus de rappel avant 5 jours.
+  //  Règles : seulement sur l'accueil, jamais le jour où l'écran de notifications ou la fenêtre d'avis a été affiché.
+  // =====================================================================================================
+  const Update = {
+    SNOOZE: 5 * 864e5, v: '',
+    st: (() => { try { return JSON.parse(localStorage.getItem('cubeaway_update')) || {}; } catch (e) { return {}; } })(),   // { ver, until }
+    save() { try { localStorage.setItem('cubeaway_update', JSON.stringify(Update.st)); } catch (e) {} },
+    popToday() { try { return localStorage.getItem('cubeaway_popday') === todayKey(); } catch (e) { return false; } },   // un écran de notif/avis a déjà été montré aujourd'hui
+    can() { return !!Update.v && !Update.popToday() && !(Update.st.ver === Update.v && Date.now() < (Update.st.until || 0)); },
+    refresh() { const u = $('upd'), c = Update.can(); if (u) u.classList.toggle('show', c); document.body.classList.toggle('upd', c); },
+    snooze() { Update.st = { ver: Update.v, until: Date.now() + Update.SNOOZE }; Update.save(); Update.refresh(); },
+    open() { Update.snooze(); try { window.open(APP_URL, '_blank'); } catch (e) {} }
+  };
+  window.updateAvailable = v => { Update.v = String(v || ''); Update.refresh(); };
+
 
   // =====================================================================================================
   //  ACHATS INTÉGRÉS (IAP) — pont JS ⇄ iOS natif (StoreKit 2, iOS 15+)
@@ -530,7 +658,7 @@ body.neon .pp{background:#18e4ff;color:#070714}
   //   Option : si « sans pub » doit aussi rendre les indices/vies gratuits, modifier Ads.isLoaded() / Ads.show() pour appeler le callback directement.
   let adsRemoved = false;
   try { adsRemoved = localStorage.getItem('cubeaway_noads') === '1'; } catch (e) {}
-  function setAdsRemoved(v) { adsRemoved = !!v; try { localStorage.setItem('cubeaway_noads', adsRemoved ? '1' : '0'); } catch (e) {} updateIapUI(); }
+  function setAdsRemoved(v) { adsRemoved = !!v; try { localStorage.setItem('cubeaway_noads', adsRemoved ? '1' : '0'); } catch (e) {} updateIapUI(); if (adsRemoved) { Ads.banner(false); clearTimeout(Inter.t); } }   // [ADS-iOS] plus de bannière ni d'interstitiel
 
   const IAP = {
     native: () => window.webkit && webkit.messageHandlers && webkit.messageHandlers.iap,
@@ -598,25 +726,33 @@ body.neon .pp{background:#18e4ff;color:#070714}
   // =====================================================================================================
   //  PAGE DE CHARGEMENT + INITIALISATION                         Cherche « [BOOT-iOS] » pour chaque point à brancher
   //  Au lancement, l'accueil s'affiche SANS ses boutons (classe body.boot) : logo + cube animé + barre de progression, en clair ou en néon.
-  //  Pendant ce temps, BOOT_STEPS s'exécute étape par étape ; à la fin la classe est retirée et l'accueil apparaît en fondu.
-  //  Navigateur : pas de natif → les étapes natives sont simulées (≈ 300 ms chacune) pour voir la barre.
+  //  BOOT_STEPS s'exécute dans l'ordre : 1) assets  2) sdk  3) iap ; à la fin la classe est retirée et l'accueil apparaît en fondu.
+  //  Navigateur : pas de natif → l'étape « sdk » est simulée (≈ 300 ms) pour voir la barre.
+  //
+  //  CONSENTEMENT (UMP / GDPR) ET ATT : c'est Appodeal qui s'en charge (doc Appodeal iOS SDK 4.4.1 : « GDPR and CCPA » et « App Tracking Transparency »).
+  //    Il n'y a donc PAS d'étapes « ump » / « att » séparées. À l'initialisation du SDK, le Stack Consent Manager (basé sur Google UMP) demande le consentement
+  //    (formulaire affiché seulement dans les régions concernées, ex. UE) et la fenêtre ATT (iOS 14.5+) ; d'après la doc, l'ATT apparaît d'abord, puis le consentement.
+  //    À faire côté projet : activer les messages GDPR et ATT dans le compte AdMob (Privacy & messaging) ; Info.plist : NSUserTrackingUsageDescription ;
+  //    ajouter AppTrackingTransparency.framework ; dans App Store Connect (App Review Information) préciser que la demande ATT n'existe qu'à partir d'iOS 14.5.
   //
   //  CONTRAT AVEC LE NATIF — WKScriptMessageHandler nommé « boot »     (Swift) userContentController.add(self, name: "boot")
-  //    JS → natif :  webkit.messageHandlers.boot.postMessage({ step: 'ump' | 'att' | 'sdk' })      (une étape à la fois, dans cet ordre)
-  //    natif → JS :  webView.evaluateJavaScript("bootStepDone('ump', {canRequestAds:true})")        → l'étape suivante démarre
+  //    ORDRE DU CHARGEMENT : 1) « assets »  2) « iap » (achats possédés + prix)  3) « sdk » (Appodeal, consentement, ATT)  puis bannière + Game Center.
+  //    JS → natif :  webkit.messageHandlers.boot.postMessage({ step: 'sdk', types: ['rewardedVideo'] })   ou   types: ['rewardedVideo', 'banner', 'interstitial']
+  //                  « sans pub » possédé → vidéo récompensée SEULEMENT (aucune bannière ni interstitiel n'est initialisé) ; sinon les trois.
+  //    natif → JS :  webView.evaluateJavaScript("bootStepDone('sdk', {ok:true})")        → l'étape suivante démarre
   //    Si le natif ne répond pas, l'étape expire (délai `wait`) et le jeu démarre quand même.
   //
-  //  Étapes natives [BOOT-iOS] (ordre conseillé : consentement → suivi → SDK pub ; à valider avec la doc AdMob / Appodeal) :
-  //    'ump' : Google User Messaging Platform (AdMob) : GDPR / consentement.
-  //            requestConsentInfoUpdate(with:) puis ConsentForm.loadAndPresentIfRequired(from: viewController) (noms exacts selon la version du SDK UMP)
-  //            → répondre bootStepDone('ump', { canRequestAds: <ConsentInformation.shared.canRequestAds> })
-  //    'att' : App Tracking Transparency : ATTrackingManager.requestTrackingAuthorization { status in … }   (iOS 14+)
-  //            Info.plist : clé NSUserTrackingUsageDescription obligatoire ; la fenêtre ne s'affiche que si l'app est active (attendre applicationState == .active).
-  //            → répondre bootStepDone('att', { status: 'authorized' | 'denied' | 'restricted' | 'notDetermined' })
-  //    'sdk' : initialiser Appodeal (et les autres SDK pub) avec le consentement obtenu ; Firebase.configure() peut rester dans l'AppDelegate.
-  //            → répondre bootStepDone('sdk', { ok: true })
-  //    Les notifications push (Firebase Messaging) NE se demandent PAS ici : à demander plus tard, après le 1er niveau terminé.
-  //  Étapes web (rien à faire côté Swift) : 'assets' (logo + polices prêts) et 'iap' (prix de la boutique, voir ACHATS INTÉGRÉS).
+  //  Étape native [BOOT-iOS] « sdk » :
+  //      Appodeal.setInitializationDelegate(self)
+  //      let types: AppodealAdType = ($0.types contient « banner » ? [.rewardedVideo, .banner, .interstitial] : .rewardedVideo)   // d'après le message reçu
+  //      Appodeal.initialize(withApiKey: "APP_KEY", types: types)
+  //      Côté natif, lire Transaction.currentEntitlements AVANT d'envoyer iapRestored([...]) puis iapProducts([...]) : ainsi le jeu connaît l'achat « sans pub » avant l'étape « sdk ».
+  //      Si l'achat est fait pendant la partie : Appodeal ne se « désinitialise » pas → le jeu envoie 'hideBanner' et n'affiche plus d'interstitiel ; le changement est complet au lancement suivant.
+  //      func appodealSDKDidInitialize() { webView.evaluateJavaScript("bootStepDone('sdk', {ok:true})") }
+  //    Pendant cette étape, les fenêtres ATT puis consentement peuvent s'afficher par-dessus le jeu : le délai maximum de sécurité est de 15 s (si Appodeal n'a pas répondu, le jeu démarre quand même ; les fenêtres éventuellement encore ouvertes restent au-dessus).
+  //    À vérifier sur appareil : que appodealSDKDidInitialize arrive bien APRÈS ces fenêtres. Initialiser Appodeal UNE SEULE FOIS.
+  //    Firebase.configure() peut rester dans l'AppDelegate. Les notifications push NE se demandent PAS ici : voir [NOTIF-iOS] (après le 1er niveau).
+  //  Étapes web (rien à faire côté Swift) : « assets » (logo + polices prêts) et « iap » (prix de la boutique, voir ACHATS INTÉGRÉS).
   // =====================================================================================================
   function bootAssets() {   // attend le logo (chargé ou en erreur) et les polices ; sécurité : 4 s max
     const logo = new Promise(r => { const li = $('logoImg'); if (document.body.classList.contains('logoReady')) r(); else { li.addEventListener('load', () => r()); li.addEventListener('error', () => r()); } });
@@ -624,11 +760,9 @@ body.neon .pp{background:#18e4ff;color:#070714}
     return Promise.race([Promise.all([logo, fonts]), new Promise(r => setTimeout(r, 4000))]);
   }
   const BOOT_STEPS = [   // w = poids dans la barre ; wait = délai max (ms) d'attente de la réponse native
-    { id: 'assets', label: 'Chargement…',                   w: 2, run: bootAssets },
-    { id: 'ump',    label: 'Vérification du consentement…', w: 2, native: true, wait: 90000 },   // [BOOT-iOS] UMP / GDPR (délai long : le joueur lit et choisit)
-    { id: 'att',    label: 'Autorisation de suivi…',        w: 2, native: true, wait: 90000 },   // [BOOT-iOS] ATT (idem)
-    { id: 'sdk',    label: 'Initialisation…',               w: 2, native: true, wait: 12000 },   // [BOOT-iOS] Appodeal & co
-    { id: 'iap',    label: 'Préparation de la boutique…',   w: 1, run: () => { IAP.init(); return IAP.native() ? Boot.wait('iap', 4000) : Promise.resolve(); } }   // [IAP-iOS] prix StoreKit
+    { id: 'assets', label: 'Chargement…',                 w: 2, run: bootAssets },
+    { id: 'iap',    label: 'Préparation de la boutique…', w: 1, run: () => { IAP.init(); return IAP.native() ? Boot.wait('iap', 4000) : Promise.resolve(); } },   // [IAP-iOS] prix StoreKit + achats possédés : AVANT Appodeal, pour savoir quelles pubs initialiser
+    { id: 'sdk',    label: 'Initialisation…',             w: 4, native: true, wait: 15000 }   // [BOOT-iOS] Appodeal : init + consentement UMP/GDPR + ATT (délai maximum de sécurité : 15 s)
   ];
   const Boot = {
     done: false, pend: {}, info: {}, t0: performance.now(),
@@ -643,7 +777,7 @@ body.neon .pp{background:#18e4ff;color:#070714}
         $('bootMsg').textContent = st.label;
         Boot.bar((acc + st.w * 0.85) / total, true);                 // la barre avance doucement pendant l'étape
         try {
-          if (st.native && Boot.native()) { Boot.native().postMessage({ step: st.id }); await Boot.wait(st.id, st.wait); }   // [BOOT-iOS]
+          if (st.native && Boot.native()) { Boot.native().postMessage(st.id === 'sdk' ? { step: 'sdk', types: adsRemoved ? ['rewardedVideo'] : ['rewardedVideo', 'banner', 'interstitial'] } : { step: st.id }); await Boot.wait(st.id, st.wait); }   // [BOOT-iOS] [ADS-iOS] types d'Appodeal à initialiser : « sans pub » possédé → vidéo récompensée seulement   // [BOOT-iOS]
           else if (st.run) await st.run();
           else await new Promise(r => setTimeout(r, 300));           // navigateur : étape native simulée
         } catch (e) {}
@@ -651,14 +785,145 @@ body.neon .pp{background:#18e4ff;color:#070714}
       }
       const rest = 1100 - (performance.now() - Boot.t0);             // affichage minimal : évite un flash si tout va très vite
       if (rest > 0) await new Promise(r => setTimeout(r, rest));
-      document.body.classList.remove('boot'); Boot.done = true;
+      document.body.classList.remove('boot'); Boot.done = true; Update.refresh();
+      try { Ads.banner(true); GC.auth(); } catch (e) {}   // [ADS-iOS] [GC-iOS] APRÈS la page de chargement, avant l'accueil : bannière permanente (sauf « sans pub ») + Game Center, sans attendre
+      if (Notif.pendingGift) { const g = Notif.pendingGift; Notif.pendingGift = null; Notif.gift(g); }
     }
   };
   window.bootStepDone = (id, info) => Boot.resolve(id, info);       // appelé par le natif à la fin de chaque étape native
-  // ---------- fin de niveau (comme la vidéo de référence) : le cube se matérialise en petits cubes, marque une pause, puis explose vers la caméra ----------
+  // ---------- fin de niveau (comme la vidéo de référence) : une fois le cube vidé de ses flèches, IL EXPLOSE LUI-MÊME en petits cubes projetés vers la caméra ----------
+  //  Le cube du jeu (même taille, même orientation, même couleur de tuiles et d'arêtes que le thème) est remplacé à l'identique par des petits cubes ; courte pause tendue, puis explosion.
+
+  // =====================================================================================================
+  //  NOTIFICATIONS — écran maison, puis fenêtre système iOS                          Cherche « [NOTIF-iOS] »
+  //  Règles décidées :
+  //   • jamais au lancement ni pendant le chargement : la 1re demande vient APRÈS LA VICTOIRE DU NIVEAU 1, quand le joueur touche « Niveau suivant » (le défi du jour vient d'être débloqué) ;
+  //   • l'écran maison annonce le défi du jour ; la fenêtre système iOS ne s'ouvre QUE si le joueur touche « Activer les notifications » ;
+  //   • refus de la fenêtre système : on oublie, JAMAIS de renvoi vers les Réglages iOS ;
+  //   • « Plus tard » (ou toucher à côté) : on redemande très rarement — 2 fois au maximum, au moins 5 jours après, et seulement à la fin d'un niveau ;
+  //   • le défi du jour est débloqué dans tous les cas, avec ou sans notifications.
+  //  CONTRAT AVEC LE NATIF — WKScriptMessageHandler nommé « notif »            (Swift) userContentController.add(self, name: "notif")
+  //    JS → natif :  webkit.messageHandlers.notif.postMessage({ action: 'request' })        (UNIQUEMENT quand le joueur a accepté l'écran maison)
+  //      Swift : UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .badge, .sound]) ;
+  //              si accordé : UIApplication.shared.registerForRemoteNotifications() (+ jeton Firebase Messaging) ; puis evaluateJavaScript("notifResult('granted')") ou ('denied').
+  //    natif → JS :  notifStatus('authorized' | 'denied' | 'notDetermined') AU LANCEMENT (UNUserNotificationCenter.getNotificationSettings) :
+  //      si la décision est déjà prise (ex. réinstallation), le jeu ne propose plus rien.
+  //    Projet Xcode : capability « Push Notifications » + « Background Modes › Remote notifications » ; clé APNs ajoutée dans la console Firebase.
+  // =====================================================================================================
+  const Notif = {
+    MAX_ASKS: 3, GAP: 5 * 864e5,   // 1 demande + 2 relances maximum, au moins 5 jours entre deux
+    st: (() => { try { return JSON.parse(localStorage.getItem('cubeaway_notif')) || {}; } catch (e) { return {}; } })(),   // { asks, last, done }
+    save() { try { localStorage.setItem('cubeaway_notif', JSON.stringify(Notif.st)); } catch (e) {} },
+    shouldAsk() { const s = Notif.st; return !s.done && (s.asks || 0) < Notif.MAX_ASKS && level >= 2 && (!s.asks || Date.now() - s.last >= Notif.GAP); },
+    ask(go) {   // affiche l'écran maison ; go() = la suite (niveau suivant)
+      const s = Notif.st; s.asks = (s.asks || 0) + 1; s.last = Date.now(); Notif.save(); try { localStorage.setItem('cubeaway_popday', todayKey()); } catch (e) {}
+      Notif.go = go; $('notif').classList.add('show');
+    },
+    close(accepted) {
+      $('notif').classList.remove('show'); const go = Notif.go; Notif.go = null;
+      if (accepted) Notif.request();
+      if (go) go();
+    },
+    request() {   // [NOTIF-iOS] ouvre la fenêtre système (natif) ; navigateur : simulation
+      const mh = window.webkit && webkit.messageHandlers && webkit.messageHandlers.notif;
+      if (mh) { mh.postMessage({ action: 'request' }); return; }
+      Notif.st.done = true; Notif.st.granted = true; Notif.save(); toast('Notifications activées ✓');
+    }
+  };
+  // -----------------------------------------------------------------------------------------------------
+  //  3 TYPES DE NOTIFICATIONS
+  //   1) LOCALES (rappels défi / série) — planifiées par le JEU via le natif, uniquement si le joueur a accepté l'écran maison
+  //        JS → natif : postMessage({ action:'remind', items:[{ id:'r3', at:<ms epoch>, kind:'streak'|'daily', variant:0..2 }, …] })
+  //                     postMessage({ action:'cancel' })   (à chaque retour au jeu)
+  //        Swift : removeAllPendingNotificationRequests(), puis UNCalendarNotificationTrigger / UNTimeIntervalNotificationTrigger par item ;
+  //                textes dans Localizable.strings (String Catalog) : clé « remind.<kind>.<variant> » (3 variantes, 1 emoji max), langue = celle de l'iPhone.
+  //                Plafond global : 1–2 notifications par semaine ; si une notif Firebase arrive, repousser les rappels locaux de 24 h.
+  //   2) GÉNÉRALE (envoyée à la main via Firebase, sans identifiant) — le toucher ouvre simplement le jeu. Cibler par langue (topic « lang_fr », « lang_en »…).
+  //   3) CADEAU (Firebase, avec identifiant unique) — payload data : { "type":"gift", "id":"gift-2026-11-06", "hints":3, "expires":<ms epoch> }
+  //        Swift : userNotificationCenter(_:didReceive:) → lire id / hints / expires dans userInfo, puis (une fois la page chargée)
+  //                webView.evaluateJavaScript("giftReceived({id:'…', hints:3, expires:1730000000000})")
+  //        JS : giftReceived() refuse un id déjà utilisé ou expiré, sinon ajoute les indices et affiche « Cadeau gagné ! ».
+  //        Les indices ne sont donnés QUE quand le joueur touche la notification (jamais à la réception en arrière-plan).
+  // -----------------------------------------------------------------------------------------------------
+  Object.assign(Notif, {
+    HOUR: 18, DAYS: [3, 7],   // rappels à J+3 et J+7 d'absence, à 18 h locale
+    isOn() { return !!Notif.st.granted && !Notif.st.off; },
+    post(m) { const mh = window.webkit && webkit.messageHandlers && webkit.messageHandlers.notif; if (mh) mh.postMessage(m); else Notif.sim = m; },
+    plan() {   // à appeler quand le joueur quitte le jeu
+      if (!Notif.isOn()) return;
+      const now = new Date(), kind = streak().s > 0 ? 'streak' : 'daily';
+      const items = Notif.DAYS.map((d, i) => { const t = new Date(now.getFullYear(), now.getMonth(), now.getDate() + d, Notif.HOUR, 0, 0); return { id: 'r' + d, at: t.getTime(), kind, variant: (now.getDate() + i) % 3 }; });
+      Notif.post({ action: 'remind', items });
+    },
+    unplan() { Notif.post({ action: 'cancel' }); },   // le joueur est revenu : on annule, les rappels seront recalculés à la prochaine sortie
+    gifts: (() => { try { return JSON.parse(localStorage.getItem('cubeaway_gifts')) || []; } catch (e) { return []; } })(),
+    gift(g) {
+      if (!g || !g.id || !(g.hints > 0)) return 'invalid';
+      if (!Boot.done) { Notif.pendingGift = g; return 'queued'; }   // appel pendant le chargement : on attend la fin du boot
+      if (Notif.gifts.includes(g.id)) { toast('Cadeau déjà récupéré'); return 'dup'; }
+      if (g.expires && Date.now() > g.expires) { toast('Ce cadeau a expiré'); return 'expired'; }
+      Notif.gifts.push(g.id); Notif.gifts = Notif.gifts.slice(-50);
+      try { localStorage.setItem('cubeaway_gifts', JSON.stringify(Notif.gifts)); } catch (e) {}
+      hints += g.hints; drawHints(); $('gP').textContent = '+' + g.hints + (g.hints == 1 ? ' indice' : ' indices') + ' 🎁'; $('gift').classList.add('show');
+      return 'ok';
+    }
+  });
+  window.giftReceived = g => Notif.gift(g);   // [NOTIF-iOS] appelé par le natif quand le joueur touche une notification « cadeau »
+  window.notifResult = r => { Notif.st.done = true; if (r === 'granted') Notif.st.granted = true; Notif.save(); if (r === 'granted') toast('Notifications activées ✓'); };   // réponse à la fenêtre système : accordé ou refusé → on ne redemande plus, on n'envoie jamais vers les Réglages
+  window.notifStatus = r => { if (r && r !== 'notDetermined') { Notif.st.done = true; if (r === 'authorized') Notif.st.granted = true; Notif.save(); } };                      // décision déjà prise (ex. réinstallation)
+
+  // =====================================================================================================
+  //  AVIS APP STORE — fenêtre d'avis intégrée + « Notez-nous »                                 Cherche « [REVIEW-iOS] »
+  //  Contraintes d'Apple : le système affiche la fenêtre d'avis 3 fois par an au maximum par personne et ne dit JAMAIS si elle s'est affichée ni si le joueur a noté ;
+  //  pas de fenêtre d'avis personnalisée, pas de récompense liée à un avis (Guideline 5.6.1). Pour un bouton, on ouvre la page d'avis (« Notez-nous »), pas la fenêtre intégrée.
+  //  Règles décidées :
+  //   A) à partir du 4e lancement : à la 1re victoire (≥ 2 étoiles) de la session — pas au lancement — une seule fois ;
+  //   B) victoire à 3 étoiles à partir du niveau 3 ;
+  //   JAMAIS : après la victoire du niveau 1 (écran de notifications), à la même victoire qu'une demande de notifications, après une défaite, quand les indices sont finis,
+  //            pendant le chargement, en défi du jour ;
+  //   global : 3 demandes par an maximum, au moins 30 jours entre deux. « Notez-nous » (réglages) est toujours disponible ; dès qu'il est touché, on arrête les demandes automatiques.
+  //  CONTRAT AVEC LE NATIF — WKScriptMessageHandler nommé « review »                (Swift) userContentController.add(self, name: "review")
+  //    JS → natif :  webkit.messageHandlers.review.postMessage({ action: 'request' })    (aucune réponse du système)
+  //      Swift : if #available(iOS 18.0, *) { AppStore.requestReview(in: scene) } else { SKStoreReviewController.requestReview(in: scene) }     // iOS 15 minimum ; scene = UIWindowScene active
+  //    JS → natif :  webkit.messageHandlers.review.postMessage({ action: 'openStore' })
+  //      Swift : UIApplication.shared.open(URL(string: APP_URL + "?action=write-review")!)       // APP_URL : voir [LINKS-iOS]
+  //  La fenêtre intégrée n'apparaît jamais dans TestFlight : à tester avec une build de développement.
+  // =====================================================================================================
+  const Review = {
+    DAY: 864e5, MAX_PER_YEAR: 3, GAP_DAYS: 30,
+    st: (() => { try { return JSON.parse(localStorage.getItem('cubeaway_review')) || {}; } catch (e) { return {}; } })(),   // { launches, log: [dates], aDone, rated }
+    save() { try { localStorage.setItem('cubeaway_review', JSON.stringify(Review.st)); } catch (e) {} },
+    init() { Review.st.launches = (Review.st.launches || 0) + 1; Review.save(); },           // compte les lancements (une fois par ouverture de l'app)
+    eligible(ctx) {   // ctx = { stars, level (niveau terminé), daily }
+      const s = Review.st, now = Date.now();
+      if (s.rated || ctx.daily || ctx.level < 2) return false;                               // jamais après le niveau 1 ni en défi du jour
+      if (Notif.shouldAsk()) return false;                                                    // pas à la même victoire qu'une demande de notifications
+      const log = (s.log || []).filter(t => now - t < 365 * Review.DAY);
+      if (log.length >= Review.MAX_PER_YEAR || (log.length && now - log[log.length - 1] < Review.GAP_DAYS * Review.DAY)) return false;
+      ctx.kind = !s.aDone && (s.launches || 0) >= 4 && ctx.stars >= 2 ? 'launch' : ctx.stars === 3 && ctx.level >= 3 ? 'quality' : null;
+      return !!ctx.kind;
+    },
+    schedule(ctx, ms) {   // programmé à la fin de l'animation de victoire ; annulé si le joueur passe au niveau suivant avant
+      clearTimeout(Review.t);
+      if (!Review.eligible(ctx)) return;
+      Review.t = setTimeout(() => { if (won && screen === 'game' && !$('notif').classList.contains('show') && Review.eligible(ctx)) Review.request(ctx.kind); }, ms);
+    },
+    request(kind) {   // [REVIEW-iOS] fenêtre d'avis intégrée (le système décide de l'afficher ou non)
+      try { localStorage.setItem('cubeaway_popday', todayKey()); } catch (e) {}
+      const s = Review.st, now = Date.now();
+      s.log = (s.log || []).filter(t => now - t < 365 * Review.DAY); s.log.push(now); if (kind === 'launch') s.aDone = true; Review.save();
+      const mh = window.webkit && webkit.messageHandlers && webkit.messageHandlers.review;
+      if (mh) mh.postMessage({ action: 'request' }); else toast("Fenêtre d'avis iOS (simulation)");
+    },
+    openStore() {     // [REVIEW-iOS] « Notez-nous » : page d'avis de l'App Store ; on suppose que le joueur va noter → plus de demandes automatiques
+      Review.st.rated = true; Review.save();
+      const mh = window.webkit && webkit.messageHandlers && webkit.messageHandlers.review;
+      if (mh) { mh.postMessage({ action: 'openStore' }); return; }
+      try { window.open(APP_URL + '?action=write-review', '_blank'); } catch (e) {}
+    }
+  };
   let boom = null;
-  const BOOM_COL = [0x78ab2a, 0xe58d40, 0x4a9190], BOOM_W = [0.45, 0.28, 0.27];   // vert / orange / turquoise (couleurs de la vidéo)
-  const BOOM = { form: 0.5, hold: 0.4, burst: 1.35 };                              // durées (s) : matérialisation, pause, explosion
+  const BOOM = { hold: 0.35, burst: 1.35, speed: 2 };   // durées (s) : pause avant l'explosion, explosion
   function noiseBurst(dur, vol, f0, f1) {   // souffle d'explosion : bruit filtré dont la fréquence chute
     vol *= O.sfx / 100; const a = audio(); if (!a || !soundOn || vol < 0.0005) return;
     const len = Math.ceil(a.sampleRate * dur), buf = a.createBuffer(1, len, a.sampleRate), d = buf.getChannelData(0);
@@ -676,63 +941,65 @@ body.neon .pp{background:#18e4ff;color:#070714}
   function explode(word) {
     if (O.rm) return false;
     killBoom();
-    const D = Math.max(DX, DY, DZ), n = 8, u = D / n, cx = Math.max(2, Math.round(DX / u)), cy = Math.max(2, Math.round(DY / u)), cz = Math.max(2, Math.round(DZ / u));
-    const P = [], ci = [];
+    const D = Math.max(DX, DY, DZ), n = 4, u = D / n, cx = Math.max(2, Math.round(DX / u)), cy = Math.max(2, Math.round(DY / u)), cz = Math.max(2, Math.round(DZ / u));   // n = petits cubes par arête (4 → 56 cubes ; 5 → 98 ; 6 → 152 ; 8 → 296)
+    const P = [];
     for (let x = 0; x < cx; x++) for (let y = 0; y < cy; y++) for (let z = 0; z < cz; z++) {
       if (x > 0 && x < cx - 1 && y > 0 && y < cy - 1 && z > 0 && z < cz - 1) continue;   // seulement la surface (l'intérieur ne se voit pas)
       P.push(new THREE.Vector3((x + 0.5 - cx / 2) * u, (y + 0.5 - cy / 2) * u, (z + 0.5 - cz / 2) * u));
-      const r = Math.random(), blob = (Math.floor(x / 2) * 7 + Math.floor(y / 2) * 3 + Math.floor(z / 2) * 5) % 3;   // taches de couleur + un peu de hasard
-      ci.push(r < 0.3 ? (r < 0.1 ? 0 : r < 0.2 ? 1 : 2) : blob);
     }
-    const g = new THREE.BoxGeometry(1, 1, 1), shade = [0.9, 0.75, 1, 0.6, 0.85, 0.7], ca = new Float32Array(24 * 3);   // faces ombrées : effet 3D sans lumière
+    const g = new THREE.BoxGeometry(1, 1, 1), shade = theme === 'light' ? [1, 1, 1, 1, 1, 1] : [0.9, 0.75, 1, 0.6, 0.85, 0.7], ca = new Float32Array(24 * 3);   // clair : couleur du grand cube, sans ombrage ; néon : faces ombrées (effet 3D sans lumière)
     for (let f = 0; f < 6; f++) for (let v = 0; v < 4; v++) ca.set([shade[f], shade[f], shade[f]], (f * 4 + v) * 3);
     g.setAttribute('color', new THREE.BufferAttribute(ca, 3));
-    const cnt = [0, 0, 0], PK = ci.slice(), PJ = ci.map(k => cnt[k]++);                    // pièce i → mesh PK[i], instance PJ[i]
-    const mats = BOOM_COL.map(hex => new THREE.MeshBasicMaterial({ color: hex, vertexColors: true, transparent: true, opacity: 0.25 }));   // vert / orange / turquoise
-    const ims = mats.map((m, k) => { const im = new THREE.InstancedMesh(g, m, Math.max(1, cnt[k])); im.count = cnt[k]; im.frustumCulled = false; return im; });
-    const grp = new THREE.Group(); ims.forEach(im => grp.add(im));
+    const mf = new THREE.MeshBasicMaterial({ color: new THREE.Color(THEMES[theme].tile), vertexColors: true });          // corps : couleur des tuiles du thème
+    const ml = new THREE.MeshBasicMaterial({ color: THEMES[theme].edge, side: THREE.BackSide });                          // contour : couleur des arêtes du thème (cube un peu plus grand vu de dos)
+    const fill = new THREE.InstancedMesh(g, mf, P.length), line = new THREE.InstancedMesh(g, ml, P.length); fill.frustumCulled = line.frustumCulled = false;
+    const grp = new THREE.Group(); grp.add(line, fill);
     grp.position.copy(cube.position); grp.quaternion.copy(cube.quaternion); grp.scale.copy(cube.scale);
     scene.add(grp); cube.visible = false;
-    boom = { grp, ims, mats, mat: mats[0], PK, PJ, geo: g, P, u, D, t: 0, burst: false, q0: cube.quaternion.clone(), s0: cube.scale.x, word,
+    boom = { grp, fill, line, mats: [mf, ml], mat: mf, geo: g, P, u, D, t: 0, burst: false, q0: cube.quaternion.clone(), s0: cube.scale.x, word,
              Q: P.map(() => new THREE.Quaternion()), V: P.map(() => new THREE.Vector3()), A: P.map(() => new THREE.Vector3()), R: P.map(() => 0), S: P.map(() => 1), praise: 0 };
     updBoom(0);
-    tone(180, 900, 0.35, 'sawtooth', 0.05); tone(600, 1800, 0.3, 'sine', 0.06, 0.05); vib(15);   // « whoosh » de matérialisation
+    tone(120, 420, BOOM.hold, 'sawtooth', 0.04); vib(15);   // montée de tension avant l'explosion
     return true;
   }
-  const _bm = new THREE.Matrix4(), _bs = new THREE.Vector3(), _bq = new THREE.Quaternion(), _by = new THREE.Vector3(0, 1, 0), _bx = new THREE.Vector3(1, 0, 0);
+  const _bm = new THREE.Matrix4(), _bs = new THREE.Vector3(), _bq = new THREE.Quaternion(), _by = new THREE.Vector3(0, 1, 0);
+  function setPiece(b, i, pos, quat, size) {   // corps un peu plus petit que le contour : le contour dessine les arêtes des petits cubes
+    _bs.setScalar(size * 0.9); _bm.compose(pos, quat, _bs); b.fill.setMatrixAt(i, _bm);
+    _bs.setScalar(size); _bm.compose(pos, quat, _bs); b.line.setMatrixAt(i, _bm);
+  }
   function updBoom(dt) {
     if (!boom) return;
-    const b = boom, T1 = BOOM.form, T2 = T1 + BOOM.hold, T3 = T2 + BOOM.burst; b.t += dt; const t = b.t;
-    if (t < T2) {   // 1) matérialisation (cube translucide qui tourne et grossit) puis 2) pause : cube plein qui tourne lentement
-      const k = Math.min(1, t / T1), e = 1 - Math.pow(1 - k, 3), c1 = 1.70158, back = 1 + (c1 + 1) * Math.pow(k - 1, 3) + c1 * Math.pow(k - 1, 2);
-      b.mats.forEach(m => { m.opacity = 0.25 + 0.75 * e; m.transparent = k < 1; });
-      b.grp.scale.setScalar(b.s0 * (0.35 + 0.65 * back));
-      b.grp.quaternion.setFromAxisAngle(_by, -2.6 * (1 - e) + 0.7 * t).multiply(b.q0);
-      b.grp.quaternion.premultiply(_bq.setFromAxisAngle(_bx, Math.sin(t * 1.5) * 0.06));
-      for (let i = 0; i < b.P.length; i++) { _bs.setScalar(b.u * 0.97); _bm.compose(b.P[i], _bq.identity(), _bs); b.ims[b.PK[i]].setMatrixAt(b.PJ[i], _bm); }
-      b.ims.forEach(im => { im.instanceMatrix.needsUpdate = true; });
+    const b = boom, T2 = BOOM.hold, T3 = T2 + BOOM.burst; b.t += dt; const t = b.t;
+    if (t < T2) {   // 1) pause : le cube (devenu petits cubes) tremble et gonfle légèrement, comme s'il allait éclater
+      const k = t / T2;
+      b.grp.scale.setScalar(b.s0 * (1 + 0.06 * k * k));
+      b.grp.quaternion.setFromAxisAngle(_by, 0.5 * t).multiply(b.q0);
+      for (let i = 0; i < b.P.length; i++) {
+        _bs.set((Math.random() - 0.5) * 0.05 * k * b.u, (Math.random() - 0.5) * 0.05 * k * b.u, (Math.random() - 0.5) * 0.05 * k * b.u).add(b.P[i]);
+        setPiece(b, i, _bs.clone(), _bq.identity(), b.u);
+      }
+      b.fill.instanceMatrix.needsUpdate = b.line.instanceMatrix.needsUpdate = true;
       return;
     }
-    if (!b.burst) {   // 3) explosion : chaque petit cube part vers l'extérieur ET vers la caméra, en tournoyant
+    if (!b.burst) {   // 2) explosion : chaque petit cube part vers l'extérieur ET vers la caméra, en tournoyant
       b.burst = true; b.grp.updateMatrixWorld(true);
       const ctr = b.grp.position.clone(), gs = b.grp.scale.x, gq = b.grp.quaternion.clone();
       for (let i = 0; i < b.P.length; i++) {
         const wp = b.P[i].clone().applyMatrix4(b.grp.matrixWorld), dir = wp.clone().sub(ctr).normalize(), r = Math.random();
-        b.V[i].copy(dir).multiplyScalar(b.D * (0.5 + 1.4 * r)); b.V[i].z += b.D * (0.25 + 1.6 * Math.random() * Math.random());
+        b.V[i].copy(dir).multiplyScalar(b.D * BOOM.speed * (0.5 + 1.4 * r)); b.V[i].z += b.D * BOOM.speed * (0.25 + 1.6 * Math.random() * Math.random());   // BOOM.speed : vitesse de l'explosion (1 = normale, 2 = +100 %)
         b.A[i].set(Math.random() - 0.5, Math.random() - 0.5, Math.random() - 0.5).normalize(); b.R[i] = 3 + Math.random() * 8;
         b.Q[i].copy(gq); b.S[i] = b.u * gs * (0.75 + Math.random() * 0.5); b.P[i].copy(wp);
       }
       b.grp.position.set(0, 0, 0); b.grp.quaternion.identity(); b.grp.scale.setScalar(1);
-      b.mats.forEach(m => { m.opacity = 1; m.transparent = false; });
       noiseBurst(0.7, 0.3, 6000, 160); tone(140, 40, 0.5, 'sine', 0.3); tone(300, 60, 0.5, 'sawtooth', 0.08); vib(60);
     }
     const tb = t - T2;
     for (let i = 0; i < b.P.length; i++) {
       b.P[i].addScaledVector(b.V[i], dt);
       b.Q[i].premultiply(_bq.setFromAxisAngle(b.A[i], b.R[i] * dt));
-      _bs.setScalar(b.S[i]); _bm.compose(b.P[i], b.Q[i], _bs); b.ims[b.PK[i]].setMatrixAt(b.PJ[i], _bm);
+      setPiece(b, i, b.P[i], b.Q[i], b.S[i]);
     }
-    b.ims.forEach(im => { im.instanceMatrix.needsUpdate = true; });
+    b.fill.instanceMatrix.needsUpdate = b.line.instanceMatrix.needsUpdate = true;
     camera.position.x = tb < 0.35 ? Math.sin(tb * 90) * 0.012 * b.D * (1 - tb / 0.35) : 0;   // petite secousse
     if (!b.praise && tb > 0.05) { b.praise = 1; $('praise').textContent = b.word || ''; $('praise').classList.add('show'); }
     if (b.praise === 1 && tb > 0.6) { b.praise = 2; $('praise').classList.remove('show'); }
@@ -743,12 +1010,16 @@ body.neon .pp{background:#18e4ff;color:#070714}
   hr.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2)); hs.add(hg);
   const HOME_EDGE = { light: 0x6580c0 };   // arêtes du cube d'accueil / chargement : un peu plus foncées en mode clair (le néon garde la couleur du thème)
   const homeEdge = () => HOME_EDGE[theme] || THEMES[theme].edge;
-  let hbox = null, hedge = null, hw = 0, hh = 0;
+  let hbox = null, hedge = null, hbars = null, hbarMat = null, hw = 0, hh = 0;
+  function homeEdgeStyle() { const thick = theme === 'light'; hedge.visible = !thick; hbars.visible = thick; hedge.material.color.set(homeEdge()); hbarMat.color.set(homeEdge()); }   // clair : arêtes un peu plus épaisses (barres) ; néon : trait fin
   function hbuild() {
-    if (hbox) { hbox.material.map.dispose(); hbox.material.map = tileTexture(); hbox.material.needsUpdate = true; hedge.material.color.set(homeEdge()); return; }
+    if (hbox) { hbox.material.map.dispose(); hbox.material.map = tileTexture(); hbox.material.needsUpdate = true; homeEdgeStyle(); return; }
     hbox = new THREE.Mesh(new THREE.BoxGeometry(3, 3, 3), new THREE.MeshBasicMaterial({ map: tileTexture() }));
     hedge = new THREE.LineSegments(new THREE.EdgesGeometry(hbox.geometry), new THREE.LineBasicMaterial({ color: homeEdge() }));
-    hg.add(hbox, hedge);
+    hbars = new THREE.Group(); hbarMat = new THREE.MeshBasicMaterial({ color: homeEdge() });
+    const T = 0.05, h = 1.5, ub = new THREE.BoxGeometry(1, 1, 1);   // 12 barres le long des arêtes du cube de 3 × 3 × 3
+    for (const sx of [-1, 1]) for (const sy of [-1, 1]) [[3 + T, T, T, 0, sx * h, sy * h], [T, 3 + T, T, sx * h, 0, sy * h], [T, T, 3 + T, sx * h, sy * h, 0]].forEach(([w, hh2, d, x, y, z]) => { const m = new THREE.Mesh(ub, hbarMat); m.scale.set(w, hh2, d); m.position.set(x, y, z); hbars.add(m); });
+    hg.add(hbox, hedge, hbars); homeEdgeStyle();
   }
   function homeStep(dt, now) {
     if (!hbox) return;
@@ -757,27 +1028,161 @@ body.neon .pp{background:#18e4ff;color:#070714}
     hr.render(hs, hcam);
   }
   // langue : dictionnaire FR → EN appliqué au texte affiché
-  const EN = { 'Défi quotidien': 'Daily challenge', 'Jouer': 'Play', 'Terminé ✓': 'Done ✓', 'Réussi ✓': 'Done ✓', '🔒 Niveau 1': '🔒 Level 1', 'Facile': 'Easy', 'Moyen': 'Medium', 'Difficile': 'Hard', 'Réglages': 'Settings', 'Chargement…': 'Loading…', 'Vérification du consentement…': 'Checking consent…', 'Autorisation de suivi…': 'Tracking permission…', 'Initialisation…': 'Initializing…', 'Préparation de la boutique…': 'Preparing the shop…', 'Acheter des indices': 'Buy tips', 'Supprimer la publicité': 'Remove ads', 'Restaurer les achats': 'Restore purchases', 'Déjà acheté ✓': 'Already purchased ✓', 'Publicité supprimée ✓': 'Ads removed ✓', 'Achats restaurés ✓': 'Purchases restored ✓', 'Aucun achat à restaurer': 'Nothing to restore', 'Achat annulé': 'Purchase cancelled', "Achat en attente d'approbation": 'Purchase pending approval', 'Achat impossible pour le moment': 'Purchase unavailable right now', 'Musique': 'Music', 'Effets': 'Effects', 'Profil': 'Profile', 'Cadre': 'Frame', 'Plus de vies': 'Out of lives', 'Réessayer': 'Retry', 'Accueil': 'Home', 'Niveau suivant': 'Next level', 'Partager': 'Share', 'Temps': 'Time', 'Erreurs': 'Errors', 'Défi': 'Challenge', 'Réinitialiser (temporaire)': 'Reset (temporary)', 'Télécharge le jeu': 'Download the game', 'Plus de vie !': 'Out of lives!', 'Obtenir plus de vies': 'Get more lives', 'Recommencer la partie': 'Restart the game', 'Langue': 'Language', 'Musique': 'Music', 'Sons': 'Sounds', 'Mode daltonien': 'Colorblind mode', 'Mode néon': 'Neon mode', 'Confidentialité': 'Privacy', "Conditions d'utilisation": 'Terms of use', 'Saurais-tu faire mieux ?': 'Can you do better?', 'Résultat copié !': 'Result copied!',
-    'Félicitations': 'Congratulations', 'Bien joué': 'Well done', 'Pas mal': 'Not bad', 'Belle persévérance': 'Great perseverance', 'Tu y es arrivé': 'You did it', 'Victoire': 'Victory', 'Joli effort': 'Nice effort', 'Très bien joué': 'Very well played', 'Beau travail': 'Nice work', 'Bien vu': 'Good eye', 'Belle réflexion': 'Smart thinking', 'Impressionnant': 'Impressive', 'Parfait': 'Perfect', 'Magnifique': 'Magnificent', 'Brillant': 'Brilliant', 'Génial': 'Awesome', 'Sans faute': 'Flawless', 'Époustouflant': 'Stunning', 'Tu es un génie': 'You are a genius', 'Légendaire': 'Legendary',
-    'Glisse du doigt pour faire tourner le cube': 'Swipe to rotate the cube', 'Touche une flèche libre pour la faire sortir': 'Tap a free arrow to send it out', "Rouge = flèche bloquée : libère d'abord celle qui la gêne (3 ❤️)": 'Red = blocked arrow: free the one in the way first (3 ❤️)', "Besoin d'aide ? Le bouton 💡 te montre une flèche libre": 'Need help? The 💡 button shows a free arrow',
-    'Prochain défi demain : +2 indices à gagner': 'Next challenge tomorrow: win +2 hints', '🔒 Termine le niveau 1 pour débloquer le défi du jour': '🔒 Finish level 1 to unlock the daily challenge', 'Gel de série ❄️ : un jour manqué consomme un gel au lieu de remettre la série à zéro. +1 gel tous les 7 jours (max 2).': 'Streak freeze ❄️: a missed day uses a freeze instead of resetting your streak. +1 every 7 days (max 2).' };
-  const RX = [[/Pack de (\d+) indices/, 'Pack of $1 tips'], [/Achat réussi : /, 'Purchase complete: '],
-    [/Fais le défi du jour (\d+) jours de suite : \+(\d+) indices.*$/, (m, a, b) => 'Win the daily challenge ' + a + ' days in a row: +' + b + ' hints (a missed day uses a freeze ❄️)'], [/Gagne le défi du jour : \+2 indices/, 'Win the daily challenge: +2 hints'],
-    [/Vibration : oui/, 'Vibration: on'], [/Vibration : non/, 'Vibration: off'], [/Bloom : oui/, 'Bloom: on'], [/Bloom : non/, 'Bloom: off'], [/Mode daltonien : oui/, 'Colorblind mode: on'], [/Mode daltonien : non/, 'Colorblind mode: off'], [/Thème : Auto/, 'Theme: Auto'], [/Thème : Clair/, 'Theme: Light'], [/Thème : Néon/, 'Theme: Neon'],
-    [/Niveau : /, 'Level: '], [/Score : /, 'Score: '], [/Niveau/g, 'Level'], [/ jours de suite/, ' days in a row'], [/Défi du jour/g, 'Daily challenge'],
-    [/\+(\d+) indices?/g, (m, n) => '+' + n + (n == 1 ? ' hint' : ' hints')], [/Série : (\d+) jours?/, (m, n) => 'Streak: ' + n + ' day' + (n == 1 ? '' : 's')], [/Cadeau : /, 'Gift: '], [/Gel utilisé : série sauvée/, 'Freeze used: streak saved'], [/\+1 gel de série/, '+1 streak freeze'],
-    [/Étincelle/g, 'Spark'], [/Flamme/g, 'Flame'], [/Légende/g, 'Legend'], [/^(.+?), (.+) !$/, (m, w, n) => (EN[w] || w) + ', ' + n + '!']];
-  const trText = t => { const k = t.trim(); if (EN[k]) return t.replace(k, EN[k]); let r = t; RX.forEach(([a, b]) => { r = r.replace(a, b); }); return r; };
-  const tr = x => O.lang === 'en' ? trText(x) : x;
+  // =====================================================================================================
+  //  LANGUES (12) : anglais, français, allemand, japonais, coréen, arabe, norvégien, italien, russe, néerlandais, espagnol, portugais (Portugal)
+  //  Le texte du jeu est écrit en français ; chaque texte affiché est traduit à la volée (voir trText / MutationObserver).
+  //  Pour AJOUTER une langue : 1) l'ajouter dans LANGS / LNAME / LOC  2) ajouter une colonne dans TC, dans chaque ligne de TR et dans chaque motif de XR.
+  //  Une traduction manquante retombe sur l'anglais. L'arabe passe le jeu en écriture de droite à gauche (applyLang).
+  // =====================================================================================================
+  const LANGS = ["en","fr","de","ja","ko","ar","no","it","ru","nl","es","pt"], LNAME = {"en":"English","fr":"Français","de":"Deutsch","ja":"日本語","ko":"한국어","ar":"العربية","no":"Norsk","it":"Italiano","ru":"Русский","nl":"Nederlands","es":"Español","pt":"Português"}, LOC = {"en":"en-US","fr":"fr-FR","de":"de-DE","ja":"ja-JP","ko":"ko-KR","ar":"ar-u-nu-latn","no":"nb-NO","it":"it-IT","ru":"ru-RU","nl":"nl-NL","es":"es-ES","pt":"pt-BR"};
+  const TC = ['en','de','ja','ko','ar','no','it','ru','nl','es','pt'];   // ordre des colonnes de TR et XR
+  const PRAISE_FMT = {"en":"$W, $N!","de":"$W, $N!","ja":"$W、$N！","ko":"$W, $N!","ar":"$W، $N!","no":"$W, $N!","it":"$W, $N!","ru":"$W, $N!","nl":"$W, $N!","es":"$W, $N!","pt":"$W, $N!"};
+  const PLAYER = {"en":"Player","de":"Spieler","ja":"プレイヤー","ko":"플레이어","ar":"لاعب","no":"Spiller","it":"Giocatore","ru":"Игрок","nl":"Speler","es":"Jugador","pt":"Jogador"};   // nom par défaut du joueur
+  const TR = [   // [français, en, de, ja, ko, ar, no, it, ru, nl, es, pt]
+    ["Défi quotidien","Daily challenge","Tägliche Herausforderung","デイリーチャレンジ","일일 챌린지","التحدي اليومي","Daglig utfordring","Sfida giornaliera","Ежедневный вызов","Dagelijkse uitdaging","Desafío diario","Desafio diário"],
+    ["Jouer","Play","Spielen","プレイ","플레이","العب","Spill","Gioca","Играть","Spelen","Jugar","Jogar"],
+    ["Terminé ✓","Done ✓","Erledigt ✓","完了 ✓","완료 ✓","تم ✓","Fullført ✓","Fatto ✓","Готово ✓","Klaar ✓","Hecho ✓","Concluído ✓"],
+    ["Réussi ✓","Done ✓","Erledigt ✓","完了 ✓","완료 ✓","تم ✓","Fullført ✓","Fatto ✓","Готово ✓","Klaar ✓","Hecho ✓","Concluído ✓"],
+    ["🔒 Niveau 1","🔒 Level 1","🔒 Level 1","🔒 レベル1","🔒 레벨 1","🔒 المستوى 1","🔒 Nivå 1","🔒 Livello 1","🔒 Уровень 1","🔒 Level 1","🔒 Nivel 1","🔒 Nível 1"],
+    ["Facile","Easy","Leicht","簡単","쉬움","سهل","Lett","Facile","Легко","Makkelijk","Fácil","Fácil"],
+    ["Moyen","Medium","Mittel","普通","보통","متوسط","Middels","Medio","Средне","Gemiddeld","Medio","Médio"],
+    ["Difficile","Hard","Schwer","難しい","어려움","صعب","Vanskelig","Difficile","Сложно","Moeilijk","Difícil","Difícil"],
+    ["Réglages","Settings","Einstellungen","設定","설정","الإعدادات","Innstillinger","Impostazioni","Настройки","Instellingen","Ajustes","Definições"],
+    ["Notez-nous","Rate us","Bewerte uns","アプリを評価","평가하기","قيّمنا","Vurder oss","Valutaci","Оцените нас","Beoordeel ons","Valóranos","Avalie-nos"],
+    ["Nouvelle version disponible","New version available","Neue Version verfügbar","新しいバージョンがあります","새 버전이 있습니다","يتوفر إصدار جديد","Ny versjon tilgjengelig","Nuova versione disponibile","Доступна новая версия","Nieuwe versie beschikbaar","Nueva versión disponible","Nova versão disponível"],
+    ["Mettre à jour","Update","Aktualisieren","アップデート","업데이트","تحديث","Oppdater","Aggiorna","Обновить","Updaten","Actualizar","Atualizar"],
+    ["Cadeau gagné !","Gift won!","Geschenk erhalten!","ギフトをゲット！","선물 획득!","ربحت هدية!","Gave vunnet!","Regalo vinto!","Подарок получен!","Cadeau gewonnen!","¡Regalo conseguido!","Prenda ganha!"],
+    ["Super !","Great!","Super!","やった！","좋아요!","رائع!","Flott!","Fantastico!","Отлично!","Super!","¡Genial!","Ótimo!"],
+    ["Ce cadeau a expiré","This gift has expired","Dieses Geschenk ist abgelaufen","このギフトは期限切れです","이 선물은 만료되었습니다","انتهت صلاحية هذه الهدية","Denne gaven har utløpt","Questo regalo è scaduto","Срок действия подарка истёк","Dit cadeau is verlopen","Este regalo ha caducado","Esta prenda expirou"],
+    ["Cadeau déjà récupéré","Gift already claimed","Geschenk bereits eingelöst","ギフトは受け取り済みです","이미 받은 선물입니다","تم استلام الهدية مسبقًا","Gaven er allerede hentet","Regalo già riscattato","Подарок уже получен","Cadeau al opgehaald","Regalo ya reclamado","Prenda já resgatada"],
+    ["Notifications indisponibles sur cet appareil","Notifications unavailable on this device","Benachrichtigungen auf diesem Gerät nicht verfügbar","このデバイスでは通知を利用できません","이 기기에서는 알림을 사용할 수 없습니다","الإشعارات غير متاحة على هذا الجهاز","Varsler er ikke tilgjengelige på denne enheten","Notifiche non disponibili su questo dispositivo","Уведомления недоступны на этом устройстве","Meldingen zijn niet beschikbaar op dit apparaat","Notificaciones no disponibles en este dispositivo","Notificações indisponíveis neste dispositivo"],
+    ["Défi du jour débloqué !","Daily challenge unlocked!","Tägliche Herausforderung freigeschaltet!","デイリーチャレンジが解放されました！","일일 챌린지가 열렸어요!","تم فتح التحدي اليومي!","Daglig utfordring låst opp!","Sfida giornaliera sbloccata!","Ежедневный вызов открыт!","Dagelijkse uitdaging ontgrendeld!","¡Desafío diario desbloqueado!","Desafio diário desbloqueado!"],
+    ["Reçois le défi du jour et protège ta série.","Get the daily challenge and protect your streak.","Hol dir die tägliche Herausforderung und schütze deine Serie.","デイリーチャレンジを受け取って連続記録を守ろう。","일일 챌린지를 받고 연속 기록을 지키세요.","احصل على التحدي اليومي واحمِ سلسلتك.","Få den daglige utfordringen og beskytt serien din.","Ricevi la sfida giornaliera e proteggi la tua serie.","Получай ежедневный вызов и сохрани свою серию.","Ontvang de dagelijkse uitdaging en bescherm je reeks.","Recibe el desafío diario y protege tu racha.","Recebe o desafio diário e protege a tua sequência."],
+    ["Activer les notifications","Turn on notifications","Benachrichtigungen aktivieren","通知をオンにする","알림 켜기","تفعيل الإشعارات","Slå på varsler","Attiva le notifiche","Включить уведомления","Meldingen aanzetten","Activar notificaciones","Ativar notificações"],
+    ["Plus tard","Later","Später","あとで","나중에","لاحقًا","Senere","Più tardi","Позже","Later","Más tarde","Mais tarde"],
+    ["Notifications activées ✓","Notifications on ✓","Benachrichtigungen aktiviert ✓","通知をオンにしました ✓","알림이 켜졌어요 ✓","تم تفعيل الإشعارات ✓","Varsler slått på ✓","Notifiche attivate ✓","Уведомления включены ✓","Meldingen staan aan ✓","Notificaciones activadas ✓","Notificações ativadas ✓"],
+    ["Chargement…","Loading…","Lädt…","読み込み中…","로딩 중…","جارٍ التحميل…","Laster…","Caricamento…","Загрузка…","Laden…","Cargando…","A carregar…"],
+    ["Vérification du consentement…","Checking consent…","Einwilligung wird geprüft…","同意を確認中…","동의 확인 중…","جارٍ التحقق من الموافقة…","Sjekker samtykke…","Verifica del consenso…","Проверка согласия…","Toestemming controleren…","Comprobando consentimiento…","A verificar o consentimento…"],
+    ["Autorisation de suivi…","Tracking permission…","Tracking-Berechtigung…","トラッキングの許可…","추적 권한…","إذن التتبع…","Sporingstillatelse…","Autorizzazione al tracciamento…","Разрешение на отслеживание…","Toestemming voor tracking…","Permiso de seguimiento…","Permissão de rastreamento…"],
+    ["Initialisation…","Initializing…","Initialisierung…","初期化中…","초기화 중…","جارٍ التهيئة…","Initialiserer…","Inizializzazione…","Инициализация…","Initialiseren…","A inicializar…","A inicializar…"],
+    ["Préparation de la boutique…","Preparing the shop…","Shop wird vorbereitet…","ショップを準備中…","상점 준비 중…","جارٍ تجهيز المتجر…","Forbereder butikken…","Preparazione del negozio…","Подготовка магазина…","Winkel voorbereiden…","Preparando la tienda…","A preparar a loja…"],
+    ["Acheter des indices","Buy tips","Tipps kaufen","ヒントを購入","힌트 구매","شراء التلميحات","Kjøp tips","Acquista suggerimenti","Купить подсказки","Hints kopen","Comprar pistas","Comprar dicas"],
+    ["Supprimer la publicité","Remove ads","Werbung entfernen","広告を削除","광고 제거","إزالة الإعلانات","Fjern reklame","Rimuovi pubblicità","Отключить рекламу","Advertenties verwijderen","Quitar anuncios","Remover anúncios"],
+    ["Restaurer les achats","Restore purchases","Käufe wiederherstellen","購入を復元","구매 복원","استعادة المشتريات","Gjenopprett kjøp","Ripristina acquisti","Восстановить покупки","Aankopen herstellen","Restaurar compras","Restaurar compras"],
+    ["Déjà acheté ✓","Already purchased ✓","Bereits gekauft ✓","購入済み ✓","이미 구매함 ✓","تم الشراء مسبقًا ✓","Allerede kjøpt ✓","Già acquistato ✓","Уже куплено ✓","Al gekocht ✓","Ya comprado ✓","Já comprado ✓"],
+    ["Publicité supprimée ✓","Ads removed ✓","Werbung entfernt ✓","広告を削除しました ✓","광고가 제거되었습니다 ✓","تمت إزالة الإعلانات ✓","Reklame fjernet ✓","Pubblicità rimossa ✓","Реклама отключена ✓","Advertenties verwijderd ✓","Anuncios eliminados ✓","Anúncios removidos ✓"],
+    ["Achats restaurés ✓","Purchases restored ✓","Käufe wiederhergestellt ✓","購入を復元しました ✓","구매가 복원되었습니다 ✓","تمت استعادة المشتريات ✓","Kjøp gjenopprettet ✓","Acquisti ripristinati ✓","Покупки восстановлены ✓","Aankopen hersteld ✓","Compras restauradas ✓","Compras restauradas ✓"],
+    ["Aucun achat à restaurer","Nothing to restore","Nichts wiederherzustellen","復元する購入はありません","복원할 구매가 없습니다","لا توجد مشتريات لاستعادتها","Ingenting å gjenopprette","Nessun acquisto da ripristinare","Нечего восстанавливать","Niets om te herstellen","Nada que restaurar","Nada para restaurar"],
+    ["Achat annulé","Purchase cancelled","Kauf abgebrochen","購入がキャンセルされました","구매가 취소되었습니다","تم إلغاء الشراء","Kjøpet ble avbrutt","Acquisto annullato","Покупка отменена","Aankoop geannuleerd","Compra cancelada","Compra cancelada"],
+    ["Achat en attente d'approbation","Purchase pending approval","Kauf wartet auf Genehmigung","購入は承認待ちです","구매 승인 대기 중","الشراء بانتظار الموافقة","Kjøpet venter på godkjenning","Acquisto in attesa di approvazione","Покупка ожидает одобрения","Aankoop wacht op goedkeuring","Compra pendiente de aprobación","Compra a aguardar aprovação"],
+    ["Achat impossible pour le moment","Purchase unavailable right now","Kauf momentan nicht möglich","現在購入できません","지금은 구매할 수 없습니다","الشراء غير متاح حاليًا","Kjøp er ikke tilgjengelig akkurat nå","Acquisto non disponibile al momento","Покупка сейчас недоступна","Aankoop momenteel niet beschikbaar","Compra no disponible ahora mismo","Compra indisponível de momento"],
+    ["Musique","Music","Musik","ミュージック","음악","الموسيقى","Musikk","Musica","Музыка","Muziek","Música","Música"],
+    ["Effets","Effects","Effekte","効果音","효과음","المؤثرات","Effekter","Effetti","Эффекты","Effecten","Efectos","Efeitos"],
+    ["Profil","Profile","Profil","プロフィール","프로필","الملف الشخصي","Profil","Profilo","Профиль","Profiel","Perfil","Perfil"],
+    ["Cadre","Frame","Rahmen","フレーム","프레임","الإطار","Ramme","Cornice","Рамка","Frame","Marco","Moldura"],
+    ["Plus de vies","Out of lives","Keine Leben mehr","ライフなし","목숨 없음","لا مزيد من الأرواح","Tom for liv","Vite esaurite","Жизни закончились","Geen levens meer","Sin vidas","Sem vidas"],
+    ["Réessayer","Retry","Erneut versuchen","再試行","다시 시도","أعد المحاولة","Prøv igjen","Riprova","Повторить","Opnieuw","Reintentar","Tentar novamente"],
+    ["Accueil","Home","Start","ホーム","홈","الرئيسية","Hjem","Home","Главная","Start","Inicio","Início"],
+    ["Niveau suivant","Next level","Nächstes Level","次のレベル","다음 레벨","المستوى التالي","Neste nivå","Livello successivo","Следующий уровень","Volgend level","Siguiente nivel","Próximo nível"],
+    ["Partager","Share","Teilen","シェア","공유","مشاركة","Del","Condividi","Поделиться","Delen","Compartir","Partilhar"],
+    ["Temps","Time","Zeit","タイム","시간","الوقت","Tid","Tempo","Время","Tijd","Tiempo","Tempo"],
+    ["Erreurs","Errors","Fehler","ミス","실수","الأخطاء","Feil","Errori","Ошибки","Fouten","Errores","Erros"],
+    ["Défi","Challenge","Challenge","チャレンジ","챌린지","تحدٍّ","Utfordring","Sfida","Вызов","Uitdaging","Desafío","Desafio"],
+    ["Télécharge le jeu","Download the game","Lade das Spiel herunter","ゲームをダウンロード","게임 다운로드","نزّل اللعبة","Last ned spillet","Scarica il gioco","Скачай игру","Download het spel","Descarga el juego","Descarrega o jogo"],
+    ["Plus de vie !","Out of lives!","Keine Leben mehr!","ライフがなくなりました！","목숨이 없어요!","لا مزيد من الأرواح!","Tom for liv!","Vite esaurite!","Жизни закончились!","Geen levens meer!","¡Sin vidas!","Sem vidas!"],
+    ["Obtenir plus de vies","Get more lives","Mehr Leben holen","ライフを増やす","목숨 더 얻기","احصل على المزيد من الأرواح","Få flere liv","Ottieni altre vite","Получить ещё жизни","Meer levens krijgen","Conseguir más vidas","Obter mais vidas"],
+    ["Recommencer la partie","Restart the game","Spiel neu starten","ゲームをやり直す","게임 다시 시작","أعد اللعبة","Start spillet på nytt","Ricomincia la partita","Начать заново","Spel opnieuw starten","Reiniciar la partida","Recomeçar o jogo"],
+    ["Langue","Language","Sprache","言語","언어","اللغة","Språk","Lingua","Язык","Taal","Idioma","Idioma"],
+    ["Sons","Sounds","Töne","サウンド","사운드","الأصوات","Lyder","Suoni","Звуки","Geluiden","Sonidos","Sons"],
+    ["Mode daltonien","Colorblind mode","Farbenblindmodus","色覚サポート","색약 모드","وضع عمى الألوان","Fargeblindmodus","Modalità daltonici","Режим для дальтоников","Kleurenblindmodus","Modo daltónico","Modo daltónico"],
+    ["Mode néon","Neon mode","Neon-Modus","ネオンモード","네온 모드","وضع النيون","Neonmodus","Modalità neon","Неоновый режим","Neonmodus","Modo neón","Modo néon"],
+    ["Confidentialité","Privacy","Datenschutz","プライバシー","개인정보 처리방침","الخصوصية","Personvern","Privacy","Конфиденциальность","Privacy","Privacidad","Privacidade"],
+    ["Conditions d'utilisation","Terms of use","Nutzungsbedingungen","利用規約","이용 약관","شروط الاستخدام","Vilkår","Termini di utilizzo","Условия использования","Gebruiksvoorwaarden","Términos de uso","Termos de utilização"],
+    ["Saurais-tu faire mieux ?","Can you do better?","Schaffst du es besser?","もっとうまくできる？","더 잘할 수 있나요?","هل تستطيع أن تفعل أفضل؟","Klarer du bedre?","Sai fare di meglio?","А ты сможешь лучше?","Kun jij het beter?","¿Puedes hacerlo mejor?","Consegues fazer melhor?"],
+    ["Résultat copié !","Result copied!","Ergebnis kopiert!","結果をコピーしました！","결과가 복사되었습니다!","تم نسخ النتيجة!","Resultat kopiert!","Risultato copiato!","Результат скопирован!","Resultaat gekopieerd!","¡Resultado copiado!","Resultado copiado!"],
+    ["Score","Score","Punkte","スコア","점수","النقاط","Poeng","Punteggio","Счёт","Score","Puntuación","Pontuação"],
+    ["Vibrations","Vibrations","Vibration","振動","진동","الاهتزاز","Vibrasjon","Vibrazione","Вибрация","Trillingen","Vibración","Vibração"],
+    ["Notifications","Notifications","Benachrichtigungen","通知","알림","الإشعارات","Varsler","Notifiche","Уведомления","Meldingen","Notificaciones","Notificações"],
+    ["Avatar","Avatar","Avatar","アバター","아바타","الصورة الرمزية","Avatar","Avatar","Аватар","Avatar","Avatar","Avatar"],
+    ["Nom du joueur","Player name","Spielername","プレイヤー名","플레이어 이름","اسم اللاعب","Spillernavn","Nome giocatore","Имя игрока","Spelernaam","Nombre del jugador","Nome do jogador"],
+    ["Félicitations","Congratulations","Glückwunsch","おめでとう","축하해요","تهانينا","Gratulerer","Congratulazioni","Поздравляем","Gefeliciteerd","Felicidades","Parabéns"],
+    ["Bien joué","Well done","Gut gespielt","ナイスプレイ","잘했어요","أحسنت","Godt spilt","Ben fatto","Отлично сыграно","Goed gespeeld","Bien jugado","Muito bem"],
+    ["Pas mal","Not bad","Nicht schlecht","なかなか","나쁘지 않아요","ليس سيئًا","Ikke dårlig","Niente male","Неплохо","Niet slecht","Nada mal","Nada mal"],
+    ["Belle persévérance","Great perseverance","Tolle Ausdauer","粘り強い","대단한 끈기","مثابرة رائعة","Flott utholdenhet","Grande costanza","Отличная стойкость","Mooie volharding","Gran perseverancia","Ótima persistência"],
+    ["Tu y es arrivé","You did it","Geschafft","やったね","해냈어요","لقد نجحت","Du klarte det","Ce l'hai fatta","У тебя получилось","Het is gelukt","Lo lograste","Conseguiste"],
+    ["Victoire","Victory","Sieg","勝利","승리","نصر","Seier","Vittoria","Победа","Overwinning","Victoria","Vitória"],
+    ["Joli effort","Nice effort","Schöner Einsatz","いい頑張り","멋진 노력","جهد جميل","Fin innsats","Bell'impegno","Хорошая попытка","Mooie inzet","Buen esfuerzo","Bom esforço"],
+    ["Très bien joué","Very well played","Sehr gut gespielt","お見事","아주 잘했어요","لعب ممتاز","Veldig godt spilt","Giocato benissimo","Очень хорошо","Heel goed gespeeld","Muy bien jugado","Muito bem jogado"],
+    ["Beau travail","Nice work","Gute Arbeit","いい仕事","훌륭해요","عمل رائع","Bra jobba","Ottimo lavoro","Хорошая работа","Goed werk","Buen trabajo","Bom trabalho"],
+    ["Bien vu","Good eye","Gut erkannt","鋭い","날카로워요","ملاحظة جيدة","Godt sett","Bel colpo d'occhio","Меткий глаз","Scherp gezien","Buen ojo","Bom olho"],
+    ["Belle réflexion","Smart thinking","Clever gedacht","賢い考え","현명한 생각","تفكير ذكي","Smart tenkt","Bella riflessione","Умно придумано","Slim bedacht","Buena reflexión","Boa reflexão"],
+    ["Impressionnant","Impressive","Beeindruckend","すごい","인상적이에요","مبهر","Imponerende","Impressionante","Впечатляет","Indrukwekkend","Impresionante","Impressionante"],
+    ["Parfait","Perfect","Perfekt","パーフェクト","완벽해요","مثالي","Perfekt","Perfetto","Идеально","Perfect","Perfecto","Perfeito"],
+    ["Magnifique","Magnificent","Großartig","素晴らしい","멋져요","رائع","Praktfullt","Magnifico","Великолепно","Prachtig","Magnífico","Magnífico"],
+    ["Brillant","Brilliant","Brillant","見事","눈부셔요","باهر","Strålende","Brillante","Блестяще","Briljant","Brillante","Brilhante"],
+    ["Génial","Awesome","Genial","最高","최고예요","ممتاز","Genialt","Fantastico","Потрясающе","Geweldig","Genial","Genial"],
+    ["Sans faute","Flawless","Fehlerfrei","ノーミス","실수 없음","بلا أخطاء","Feilfritt","Senza errori","Без ошибок","Foutloos","Sin fallos","Sem erros"],
+    ["Époustouflant","Stunning","Atemberaubend","圧巻","놀라워요","مذهل","Oppsiktsvekkende","Strepitoso","Невероятно","Verbluffend","Asombroso","Espantoso"],
+    ["Tu es un génie","You are a genius","Du bist ein Genie","天才","천재예요","أنت عبقري","Du er et geni","Sei un genio","Ты гений","Je bent een genie","Eres un genio","És um génio"],
+    ["Légendaire","Legendary","Legendär","伝説級","전설이에요","أسطوري","Legendarisk","Leggendario","Легендарно","Legendarisch","Legendario","Lendário"],
+    ["Glisse du doigt pour faire tourner le cube","Swipe to rotate the cube","Wische, um den Würfel zu drehen","指でスワイプしてキューブを回そう","손가락으로 밀어 큐브를 돌려요","اسحب بإصبعك لتدوير المكعب","Sveip for å rotere kuben","Scorri con il dito per ruotare il cubo","Проведи пальцем, чтобы повернуть куб","Veeg om de kubus te draaien","Desliza el dedo para girar el cubo","Desliza o dedo para rodar o cubo"],
+    ["Touche une flèche libre pour la faire sortir","Tap a free arrow to send it out","Tippe auf einen freien Pfeil, um ihn herausfliegen zu lassen","動かせる矢印をタップして外に出そう","자유로운 화살표를 눌러 내보내요","المس سهمًا حرًّا ليخرج","Trykk på en fri pil for å sende den ut","Tocca una freccia libera per farla uscire","Нажми на свободную стрелку, чтобы выпустить её","Tik op een vrije pijl om hem eruit te sturen","Toca una flecha libre para hacerla salir","Toca numa seta livre para a fazer sair"],
+    ["Rouge = flèche bloquée : libère d'abord celle qui la gêne (3 ❤️)","Red = blocked arrow: free the one in the way first (3 ❤️)","Rot = blockierter Pfeil: Befreie zuerst den, der im Weg ist (3 ❤️)","赤＝動かせない矢印。まず邪魔している矢印を外そう（3 ❤️）","빨강 = 막힌 화살표: 먼저 방해하는 화살표를 빼내요 (3 ❤️)","الأحمر = سهم محجوب: حرّر أولًا السهم الذي يعترضه (3 ❤️)","Rød = blokkert pil: frigjør først den som står i veien (3 ❤️)","Rosso = freccia bloccata: libera prima quella che la ostacola (3 ❤️)","Красный = стрелка заблокирована: сначала освободи ту, что мешает (3 ❤️)","Rood = geblokkeerde pijl: bevrijd eerst degene die in de weg zit (3 ❤️)","Rojo = flecha bloqueada: libera primero la que estorba (3 ❤️)","Vermelho = seta bloqueada: liberta primeiro a que está a atrapalhar (3 ❤️)"],
+    ["Besoin d'aide ? Le bouton 💡 te montre une flèche libre","Need help? The 💡 button shows a free arrow","Hilfe nötig? Der 💡-Knopf zeigt dir einen freien Pfeil","困ったら？💡ボタンで動かせる矢印を教えるよ","도움이 필요하세요? 💡 버튼이 자유로운 화살표를 알려줘요","تحتاج مساعدة؟ زر 💡 يُريك سهمًا حرًّا","Trenger du hjelp? 💡-knappen viser deg en fri pil","Serve aiuto? Il pulsante 💡 ti mostra una freccia libera","Нужна помощь? Кнопка 💡 покажет свободную стрелку","Hulp nodig? De 💡-knop toont een vrije pijl","¿Necesitas ayuda? El botón 💡 te muestra una flecha libre","Precisas de ajuda? O botão 💡 mostra-te uma seta livre"],
+    ["Prochain défi demain : +2 indices à gagner","Next challenge tomorrow: win +2 hints","Nächste Herausforderung morgen: +2 Tipps zu gewinnen","次のチャレンジは明日：ヒント+2をゲット","다음 챌린지는 내일: 힌트 +2 획득","التحدي التالي غدًا: اربح +2 تلميحات","Neste utfordring i morgen: vinn +2 tips","Prossima sfida domani: +2 suggerimenti da vincere","Следующий вызов завтра: подсказки +2","Volgende uitdaging morgen: win +2 hints","Próximo desafío mañana: gana +2 pistas","Próximo desafio amanhã: ganha +2 dicas"],
+    ["🔒 Termine le niveau 1 pour débloquer le défi du jour","🔒 Finish level 1 to unlock the daily challenge","🔒 Schließe Level 1 ab, um die tägliche Herausforderung freizuschalten","🔒 レベル1をクリアしてデイリーチャレンジを解放","🔒 레벨 1을 클리어하면 일일 챌린지가 열려요","🔒 أكمل المستوى 1 لفتح التحدي اليومي","🔒 Fullfør nivå 1 for å låse opp den daglige utfordringen","🔒 Completa il livello 1 per sbloccare la sfida giornaliera","🔒 Пройди уровень 1, чтобы открыть ежедневный вызов","🔒 Voltooi level 1 om de dagelijkse uitdaging te ontgrendelen","🔒 Termina el nivel 1 para desbloquear el desafío diario","🔒 Conclui o nível 1 para desbloquear o desafio diário"],
+    ["Gel de série ❄️ : un jour manqué consomme un gel au lieu de remettre la série à zéro. +1 gel tous les 7 jours (max 2).","Streak freeze ❄️: a missed day uses a freeze instead of resetting your streak. +1 every 7 days (max 2).","Serienschutz ❄️: Ein verpasster Tag verbraucht einen Schutz, statt deine Serie auf null zu setzen. +1 alle 7 Tage (max. 2).","連続記録フリーズ ❄️：1日休んでもリセットされず、フリーズを1つ使います。7日ごとに+1（最大2）。","연속 기록 보호 ❄️: 하루를 놓치면 연속 기록이 초기화되는 대신 보호 1개가 사용돼요. 7일마다 +1 (최대 2).","تجميد السلسلة ❄️: اليوم الفائت يستهلك تجميدًا بدل إعادة السلسلة إلى الصفر. +1 كل 7 أيام (بحد أقصى 2).","Seriefrys ❄️: En tapt dag bruker en frys i stedet for å nullstille serien. +1 hver 7. dag (maks 2).","Congelamento serie ❄️: un giorno saltato consuma un congelamento invece di azzerare la serie. +1 ogni 7 giorni (max 2).","Заморозка серии ❄️: пропущенный день тратит одну заморозку вместо сброса серии. +1 каждые 7 дней (макс. 2).","Reeksbeschermer ❄️: een gemiste dag verbruikt een beschermer in plaats van je reeks te resetten. +1 elke 7 dagen (max. 2).","Congelación de racha ❄️: un día perdido consume una congelación en lugar de reiniciar tu racha. +1 cada 7 días (máx. 2).","Congelamento de sequência ❄️: um dia perdido consome um congelamento em vez de repor a sequência a zero. +1 a cada 7 dias (máx. 2)."],
+  ];
+  const SIM = {"Fenêtre d'avis iOS (simulation)":"iOS rating prompt (simulation)","Réinitialiser (temporaire)":"Reset (temporary)","Bannière Appodeal (simulation)":"Appodeal banner (simulation)","Interstitiel":"Interstitial","Vidéo récompensée":"Rewarded video","(simulation)":"(simulation)"};   // textes de simulation (navigateur) : anglais seulement
+  const XR = [   // motifs : [expression française, options, [en, de, ja, ko, ar, no, it, ru, nl, es, pt]] ; $1 $2 = groupes ; [$1:un/plusieurs] = pluriel
+    ["Pack de (\\d+) indices","",["Pack of $1 tips","Paket mit $1 Tipps","$1個のヒントパック","힌트 $1개 팩","حزمة $1 تلميحات","Pakke med $1 tips","Pacchetto da $1 suggerimenti","Набор: $1 подсказок","Pakket van $1 hints","Pack de $1 pistas","Pacote de $1 dicas"]],
+    ["Achat réussi : ","",["Purchase complete: ","Kauf abgeschlossen: ","購入完了：","구매 완료: ","تم الشراء: ","Kjøp fullført: ","Acquisto completato: ","Покупка завершена: ","Aankoop voltooid: ","Compra completada: ","Compra concluída: "]],
+    ["Fais le défi du jour (\\d+) jours de suite : \\+(\\d+) indices.*$","",["Win the daily challenge $1 days in a row: +$2 hints (a missed day uses a freeze ❄️)","Schließe die tägliche Herausforderung $1 Tage in Folge ab: +$2 Tipps (ein verpasster Tag verbraucht einen Schutz ❄️)","デイリーチャレンジを$1日連続でクリア：ヒント+$2（1日休むとフリーズを1つ使います ❄️）","일일 챌린지를 $1일 연속 클리어: 힌트 +$2 (하루를 놓치면 보호 1개 사용 ❄️)","أكمل التحدي اليومي $1 أيام متتالية: تلميحات +$2 (اليوم الفائت يستهلك تجميدًا ❄️)","Fullfør den daglige utfordringen $1 dager på rad: +$2 tips (en tapt dag bruker en frys ❄️)","Completa la sfida giornaliera per $1 giorni di fila: +$2 suggerimenti (un giorno saltato consuma un congelamento ❄️)","Проходи ежедневный вызов $1 дн. подряд — подсказки: +$2 (пропущенный день тратит заморозку ❄️)","Voltooi de dagelijkse uitdaging $1 dagen op rij: +$2 hints (een gemiste dag verbruikt een beschermer ❄️)","Completa el desafío diario $1 días seguidos: +$2 pistas (un día perdido consume una congelación ❄️)","Conclui o desafio diário $1 dias seguidos: +$2 dicas (um dia perdido consome um congelamento ❄️)"]],
+    ["Gagne le défi du jour : \\+2 indices","",["Win the daily challenge: +2 hints","Gewinne die tägliche Herausforderung: +2 Tipps","デイリーチャレンジに勝つ：ヒント+2","일일 챌린지 승리: 힌트 +2","اربح التحدي اليومي: تلميحات +2","Vinn den daglige utfordringen: +2 tips","Vinci la sfida giornaliera: +2 suggerimenti","Выиграй ежедневный вызов: подсказки +2","Win de dagelijkse uitdaging: +2 hints","Gana el desafío diario: +2 pistas","Vence o desafio diário: +2 dicas"]],
+    ["Termine le niveau (\\d+) pour gagner","",["Finish level $1 to win","Schließe Level $1 ab und gewinne","レベル$1をクリアで獲得：","레벨 $1 클리어 시 획득:","أكمل المستوى $1 لتربح","Fullfør nivå $1 for å vinne","Completa il livello $1 per vincere","Пройди уровень $1 и получи","Voltooi level $1 en win","Termina el nivel $1 para ganar","Conclui o nível $1 para ganhar"]],
+    ["Niveau : ","",["Level: ","Level: ","レベル：","레벨: ","المستوى: ","Nivå: ","Livello: ","Уровень: ","Level: ","Nivel: ","Nível: "]],
+    ["Score : ","",["Score: ","Punkte: ","スコア：","점수: ","النقاط: ","Poeng: ","Punteggio: ","Счёт: ","Score: ","Puntuación: ","Pontuação: "]],
+    ["Niveau","g",["Level","Level","レベル","레벨","المستوى","Nivå","Livello","Уровень","Level","Nivel","Nível"]],
+    [" jours de suite","",[" days in a row"," Tage in Folge","日連続","일 연속"," أيام متتالية"," dager på rad"," giorni di fila"," дн. подряд"," dagen op rij"," días seguidos"," dias seguidos"]],
+    ["Défi du jour","g",["Daily challenge","Tägliche Herausforderung","デイリーチャレンジ","일일 챌린지","التحدي اليومي","Daglig utfordring","Sfida giornaliera","Ежедневный вызов","Dagelijkse uitdaging","Desafío diario","Desafio diário"]],
+    ["\\+(\\d+) indices?","g",["+$1 [$1:hint/hints]","+$1 [$1:Tipp/Tipps]","+$1ヒント","+$1 힌트","تلميحات: +$1","+$1 tips","+$1 [$1:suggerimento/suggerimenti]","Подсказки: +$1","+$1 [$1:hint/hints]","+$1 [$1:pista/pistas]","+$1 [$1:dica/dicas]"]],
+    ["Série : (\\d+) jours?","",["Streak: $1 [$1:day/days]","Serie: $1 [$1:Tag/Tage]","連続記録：$1日","연속 기록: $1일","السلسلة (أيام): $1","Serie: $1 [$1:dag/dager]","Serie: $1 [$1:giorno/giorni]","Серия, дней: $1","Reeks: $1 [$1:dag/dagen]","Racha: $1 [$1:día/días]","Sequência: $1 [$1:dia/dias]"]],
+    ["Cadeau : ","",["Gift: ","Geschenk: ","ギフト：","선물: ","هدية: ","Gave: ","Regalo: ","Подарок: ","Cadeau: ","Regalo: ","Prenda: "]],
+    ["Gel utilisé : série sauvée","",["Freeze used: streak saved","Schutz genutzt: Serie gerettet","フリーズ使用：連続記録を守りました","보호 사용: 연속 기록 유지","تم استخدام التجميد: أُنقذت السلسلة","Frys brukt: serien er reddet","Congelamento usato: serie salvata","Заморозка использована: серия спасена","Beschermer gebruikt: reeks gered","Congelación usada: racha salvada","Congelamento usado: sequência salva"]],
+    ["\\+1 gel de série","",["+1 streak freeze","+1 Serienschutz","+1 フリーズ","+1 연속 기록 보호","+1 تجميد للسلسلة","+1 seriefrys","+1 congelamento serie","+1 заморозка серии","+1 reeksbeschermer","+1 congelación de racha","+1 congelamento de sequência"]],
+    ["Étincelle","g",["Spark","Funke","スパーク","스파크","شرارة","Gnist","Scintilla","Искра","Vonk","Chispa","Faísca"]],
+    ["Flamme","g",["Flame","Flamme","フレイム","불꽃","لهب","Flamme","Fiamma","Пламя","Vlam","Llama","Chama"]],
+    ["Légende","g",["Legend","Legende","レジェンド","전설","أسطورة","Legende","Leggenda","Легенда","Legende","Leyenda","Lenda"]],
+    ["Facile","g",["Easy","Leicht","簡単","쉬움","سهل","Lett","Facile","Легко","Makkelijk","Fácil","Fácil"]],
+    ["Moyen","g",["Medium","Mittel","普通","보통","متوسط","Middels","Medio","Средне","Gemiddeld","Medio","Médio"]],
+    ["Difficile","g",["Hard","Schwer","難しい","어려움","صعب","Vanskelig","Difficile","Сложно","Moeilijk","Difícil","Difícil"]],
+  ];
+  const DICT = {}, RXS = {};
+  TC.forEach((c, i) => { DICT[c] = Object.assign({}, SIM); TR.forEach(r => { DICT[c][r[0]] = r[i + 1] || r[1]; }); RXS[c] = XR.map(([s, f, t]) => [new RegExp(s, f), t[i] || t[0]]); });
+  const fill = (tpl, m) => tpl.replace(/\$(\d)/g, (x, i) => m[+i]).replace(/\[(\d+):([^\/\]]*)\/([^\]]*)\]/g, (x, n, a, b) => +n === 1 ? a : b);
+  const trText = t => {
+    const L = O.lang; if (L === 'fr' || !DICT[L]) return t;
+    const k = t.trim(), d = DICT[L]; if (d[k]) return t.replace(k, d[k]);
+    let r = t; RXS[L].forEach(([a, tpl]) => { r = r.replace(a, (...m) => fill(tpl, m)); });
+    return r.replace(/^(.+?), (.+) !$/, (m, w, n) => PRAISE_FMT[L].replace('$W', d[w] || w).replace('$N', n === 'Joueur' ? PLAYER[L] : n));   // « Bravo, Nom ! »
+  };
+  const tr = x => O.lang === 'fr' ? x : trText(x);
   const orig = new Map(), outp = new Map();
-  function trNode(n) { if (O.lang !== 'en' || outp.get(n) === n.data) return; const o = n.data, t = trText(o); orig.set(n, o); if (t !== o) n.data = t; outp.set(n, n.data); }
+  function trNode(n) { if (O.lang === 'fr' || outp.get(n) === n.data || /^(SCRIPT|STYLE)$/.test((n.parentNode || {}).nodeName)) return; const o = n.data, t = trText(o); orig.set(n, o); if (t !== o) n.data = t; outp.set(n, n.data); }
   function walk(root) { const w = document.createTreeWalker(root, NodeFilter.SHOW_TEXT); let n; while ((n = w.nextNode())) trNode(n); }
-  new MutationObserver(ms => { if (O.lang !== 'en') return; ms.forEach(m => { if (m.type === 'characterData') trNode(m.target); else m.addedNodes.forEach(a => { if (a.nodeType === 3) trNode(a); else if (a.nodeType === 1) walk(a); }); }); }).observe(document.body, { childList: true, subtree: true, characterData: true });
+  new MutationObserver(ms => { if (O.lang === 'fr') return; ms.forEach(m => { if (m.type === 'characterData') trNode(m.target); else m.addedNodes.forEach(a => { if (a.nodeType === 3) trNode(a); else if (a.nodeType === 1) walk(a); }); }); }).observe(document.body, { childList: true, subtree: true, characterData: true });
+  function buildLangs() {   // liste des langues (noms dans leur propre langue)
+    const L = $('langList'); if (!L) return; L.innerHTML = '';
+    LANGS.forEach(c => { const b = document.createElement('button'); b.textContent = LNAME[c]; b.dataset.lang = c; if (c !== O.lang) b.className = 'alt'; if (c === 'ar') b.dir = 'rtl';
+      b.addEventListener('click', () => { O.lang = c; O.langSet = true; saveO(); applyLang(); $('langs').classList.remove('show'); }); L.appendChild(b); });
+  }
   function applyLang() {
-    document.documentElement.lang = O.lang;
-    if (O.lang === 'en') walk(document.body); else { orig.forEach((o, n) => { if (n.isConnected && outp.get(n) === n.data) n.data = o; }); orig.clear(); outp.clear(); }
+    document.documentElement.lang = O.lang === 'no' ? 'nb' : O.lang;
+    document.documentElement.dir = O.lang === 'ar' ? 'rtl' : 'ltr';   // arabe : écriture de droite à gauche
+    orig.forEach((o, n) => { if (n.isConnected && outp.get(n) === n.data) n.data = o; }); orig.clear(); outp.clear();   // retour au français, puis traduction dans la langue choisie
+    if (O.lang !== 'fr') walk(document.body); else { orig.forEach((o, n) => { if (n.isConnected && outp.get(n) === n.data) n.data = o; }); orig.clear(); outp.clear(); }
     $('pName').placeholder = tr('Nom du joueur');
-    $('langV').textContent = O.lang === 'en' ? 'English' : 'français';
+    $('langV').textContent = LNAME[O.lang] || 'English'; buildLangs();
     updateHome();
   }
   const sysDark = () => matchMedia('(prefers-color-scheme: dark)').matches;
@@ -1116,13 +1521,13 @@ body.neon .pp{background:#18e4ff;color:#070714}
   // ---------- niveau ----------
   function build() {
     won = false; failed = false; lives = 3; hintObj = null;
-    ['win', 'lose', 'settings', 'shop'].forEach(id => $(id).classList.remove('show'));
+    ['win', 'lose', 'settings', 'shop', 'notif'].forEach(id => $(id).classList.remove('show'));
     const L = mode === 'daily' ? daily.lvl : level;
     $('title').textContent = mode === 'daily' ? 'Défi du jour' : 'Niveau : ' + level;
     drawHearts(); drawHints(); updScore();
     while (cube.children.length) { const o = cube.children[0]; cube.remove(o); disposeObj(o); }
     shotPend = true; shotCv = null;
-    cube.visible = true; killBoom();
+    cube.visible = true; killBoom(); clearTimeout(Review.t); clearTimeout(Inter.t);
     hits = []; all = []; moving = []; bumping = []; flashing = []; fx = []; remaining = 0; rot = null;
     N = Math.min(12, 5 + Math.floor(L / 2)); [DX, DY, DZ] = shapeFor(L, N); N = Math.max(DX, DY, DZ); M = N - 1;
     const dens = Math.min(0.95, Math.min(0.8, 0.4 + 0.08 * L) + Math.max(0, L - 5) * 0.005);
@@ -1567,7 +1972,7 @@ body.neon .pp{background:#18e4ff;color:#070714}
     const st = errs === 0 ? 3 : errs === 1 ? 2 : 1;
     const score = Math.max(100, Math.round(500 + 100 * (dl ? daily.lvl : L0) - 4 * t - 150 * errs));   // niveau, temps, erreurs
     const W = WORDS[st - 1]; let w; do { w = W[Math.floor(Math.random() * W.length)]; } while (w === lastW && W.length > 1); lastW = w;
-    const ex = explode(w), wd = ex ? Math.round((BOOM.form + BOOM.hold + 0.55) * 1000) : 250;   // le dialogue de victoire apparaît pendant l'explosion
+    const ex = explode(w), wd = ex ? Math.round((BOOM.hold + 0.7) * 1000) : 250;   // le dialogue de victoire apparaît pendant l'explosion
     $('wTitle').textContent = w + ', ' + prof.name + ' !';
     total += score; try { localStorage.setItem('cubeaway_total', String(total)); } catch (e) {} updScore();
     $('wStars').innerHTML = [0, 1, 2].map(i => '<span class="' + (i < st ? 'on' : 'off') + '" style="animation-delay:' + (wd / 1000 + 0.35 + i * 0.35) + 's">★</span>').join('');
@@ -1602,6 +2007,8 @@ body.neon .pp{background:#18e4ff;color:#070714}
     J.forEach(([f2, d]) => setTimeout(() => tone(f2, f2, st === 3 ? 0.35 : 0.3, st === 3 ? 'sine' : 'triangle', 0.1), wd + 450 + st * 350 + d * 1000));
     vib(st === 3 ? 'success' : st === 2 ? [30, 50, 30] : 40);
     setTimeout(() => $('win').classList.add('show'), wd);
+    Inter.schedule({ stars: st, level: L0, daily: dl }, wd + 2350);   // [ADS-iOS] interstitiel après le comptage du score (1 fois sur 2)
+    Review.schedule({ stars: st, level: L0, daily: dl }, wd + 2800);   // [REVIEW-iOS] après le « beau résultat », jamais après le niveau 1
   }
 
   // ---------- défi quotidien ----------
@@ -1669,6 +2076,7 @@ body.neon .pp{background:#18e4ff;color:#070714}
     clearTimeout(toastT); toastT = setTimeout(() => t.classList.remove('show'), 2200);
   }
   function updateHome() {
+    Update.refresh();
     $('play').textContent = 'Niveau ' + level;
     const s0 = segStart(level), e0 = segEnd(level);
     let h = '';
@@ -1676,7 +2084,7 @@ body.neon .pp{background:#18e4ff;color:#070714}
     $('coins').innerHTML = h;
     $('gift').classList.toggle('near', level === e0);
     const d = dailyInfo(), done = dailyDone(d.key);
-    $('dDate').textContent = new Date().toLocaleDateString(O.lang === 'en' ? 'en-US' : 'fr-FR', { day: 'numeric', month: 'long' });
+    $('dDate').textContent = new Date().toLocaleDateString(LOC[O.lang] || 'en-US', { day: 'numeric', month: 'long' });
     $('dDiff').textContent = '★'.repeat(d.diff + 1) + '☆'.repeat(2 - d.diff) + ' ' + DIFFS[d.diff];
     const lock = level < 2;
     $('dailyPlay').textContent = lock ? '🔒 Niveau 1' : done ? 'Terminé ✓' : 'Jouer';
@@ -1693,7 +2101,7 @@ body.neon .pp{background:#18e4ff;color:#070714}
   function showHome() {
     screen = 'home';
     document.body.classList.add('home');
-    ['win', 'lose', 'settings', 'shop', 'profile'].forEach(id => $(id).classList.remove('show'));
+    ['win', 'lose', 'settings', 'shop', 'notif', 'profile', 'langs'].forEach(id => $(id).classList.remove('show'));
     updateHome();
   }
   function startGame(m) {
@@ -1706,15 +2114,29 @@ body.neon .pp{background:#18e4ff;color:#070714}
   }
 
   function setSw(id, on) { $(id).classList.toggle('on', !!on); }
-  const syncSettings = () => { setSw('swVib', vibOn); setSw('swMus', O.mus > 0); setSw('swSfx', O.sfx > 0); setSw('swCb', O.cb); };
+  const syncSettings = () => { setSw('swVib', vibOn); setSw('swMus', O.mus > 0); setSw('swSfx', O.sfx > 0); setSw('swCb', O.cb); setSw('swNotif', Notif.isOn()); };
   $('hint').addEventListener('click', () => showHint());
   $('getLives').addEventListener('click', () => Ads.show(() => { lives = 2; failed = false; drawHearts(); $('lose').classList.remove('show'); }));
   $('rNeon').addEventListener('click', () => { O.theme = resolveTheme() === 'neon' ? 'light' : 'neon'; saveO(); applyTheme(resolveTheme()); });
   $('rMus').addEventListener('click', () => { O.mus = O.mus > 0 ? 0 : 50; saveO(); syncSettings(); });
   $('rSfx').addEventListener('click', () => { O.sfx = O.sfx > 0 ? 0 : 100; saveO(); syncSettings(); });
   $('rCb').addEventListener('click', () => { O.cb = O.cb ? 0 : 1; saveO(); syncSettings(); applyOpts(); });
+  $('rNotif').addEventListener('click', () => {   // bascule interne : ne renvoie JAMAIS vers les Réglages iOS
+    if (Notif.isOn()) { Notif.st.off = true; Notif.save(); Notif.unplan(); }
+    else if (Notif.st.done && !Notif.st.granted) { toast('Notifications indisponibles sur cet appareil'); }   // refusées dans la fenêtre système : on n'insiste pas
+    else if (!Notif.st.done) Notif.request();   // [NOTIF-iOS] jamais demandé : fenêtre système
+    else { Notif.st.off = false; Notif.save(); }
+    syncSettings();
+  });
+  { let lt = 0; const lg = $('logo'), go = () => { Update.st = {}; Update.save(); try { localStorage.removeItem('cubeaway_popday'); } catch (e) {} window.updateAvailable('1.1.0'); }, stop = () => clearTimeout(lt);   // [PROD] simulation du message de mise à jour : appui long (1 s) sur le logo, à l'accueil (à retirer)
+    lg.addEventListener('pointerdown', () => { stop(); lt = setTimeout(go, 1000); }); ['pointerup', 'pointerleave', 'pointercancel'].forEach(e => lg.addEventListener(e, stop)); }
+  $('updGo').addEventListener('click', () => Update.open());
+  $('updX').addEventListener('click', () => Update.snooze());
+  $('gOk').addEventListener('click', () => $('gift').classList.remove('show'));
   $('rBloom').addEventListener('click', () => { O.bloom = O.bloom ? 0 : 1; saveO(); applyTheme(resolveTheme()); });
-  $('rLang').addEventListener('click', () => { O.lang = O.lang === 'en' ? 'fr' : 'en'; O.langSet = true; saveO(); applyLang(); });
+  $('rLang').addEventListener('click', () => { buildLangs(); $('langs').classList.add('show'); });
+  $('langX').addEventListener('click', () => $('langs').classList.remove('show'));
+  $('langs').addEventListener('click', e => { if (e.target === $('langs')) $('langs').classList.remove('show'); });
   try { matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => { if (O.theme === 'auto') applyTheme(resolveTheme()); }); } catch (e) {}
   $('rVib').addEventListener('click', () => { vibOn = !vibOn; try { localStorage.setItem('cubeaway_vib', vibOn ? '1' : '0'); } catch (e) {} syncSettings(); if (vibOn) vib(20); });
   $('closeset').addEventListener('click', () => $('settings').classList.remove('show'));
@@ -1724,6 +2146,7 @@ body.neon .pp{background:#18e4ff;color:#070714}
   $('shop').addEventListener('click', e => { if (e.target === $('shop')) $('shop').classList.remove('show'); });
   $('rNoAds').addEventListener('click', () => { if (adsRemoved) toast('Déjà acheté ✓'); else IAP.buy(IAP_NOADS_ID); });
   $('rRestore').addEventListener('click', () => IAP.restore());
+  $('rRate').addEventListener('click', () => Review.openStore());   // [REVIEW-iOS]
   $('homeGear').innerHTML = $('gear').innerHTML;
   $('dIcon').insertAdjacentHTML('afterbegin', $('hint').querySelector('svg').outerHTML);
   if (LOGO_SRC) {
@@ -1742,7 +2165,8 @@ body.neon .pp{background:#18e4ff;color:#070714}
   $('dailyPlay').addEventListener('click', () => { if (level < 2) toast(LOCK_MSG); else if (dailyDone(dailyInfo().key)) toast(NEXT_MSG); else startGame('daily'); });
   $('gift').addEventListener('click', () => toast('🎁 Termine le niveau ' + segEnd(level) + ' pour gagner +1 indice'));
   $('daily').addEventListener('click', e => { if (!e.target.closest('#dailyPlay')) toast(level < 2 ? LOCK_MSG : dailyDone(dailyInfo().key) ? NEXT_MSG : 'Gagne le défi du jour : +2 indices'); });
-  document.addEventListener('visibilitychange', () => { if (screen === 'home') updateHome(); });
+  document.addEventListener('visibilitychange', () => { if (document.hidden) Notif.plan(); else { Notif.unplan(); if (screen === 'home') updateHome(); } });
+  if (location.hash === '#update') setTimeout(() => window.updateAvailable('1.1.0'), 2500);   // [PROD] simulation du message de mise à jour dans le navigateur (à retirer)   // [NOTIF-iOS] rappels locaux
 
   // bouton temporaire : tout réinitialiser (niveau 1, vies, indices, défi du jour)
   $('ver').remove();
@@ -1755,7 +2179,13 @@ body.neon .pp{background:#18e4ff;color:#070714}
   $('gear').addEventListener('click', () => $('settings').classList.add('show'));
   $('redo').addEventListener('click', build);
   $('retry').addEventListener('click', build);
-  $('next').addEventListener('click', () => { setZoom(1); build(); });
+  $('next').addEventListener('click', () => {
+    const go = () => { setZoom(1); build(); };
+    if (Notif.shouldAsk()) Notif.ask(go); else go();   // [NOTIF-iOS] écran maison après la victoire (règles dans le bloc NOTIFICATIONS)
+  });
+  $('nYes').addEventListener('click', () => Notif.close(true));
+  $('nLater').addEventListener('click', () => Notif.close(false));
+  $('notif').addEventListener('click', e => { if (e.target === $('notif')) Notif.close(false); });
   ['goHome', 'winHome'].forEach(id => $(id).addEventListener('click', showHome));
   $('settings').addEventListener('click', e => { if (e.target === $('settings')) $('settings').classList.remove('show'); });
   function applyOpts() { document.body.classList.toggle('rm', !!O.rm); applyTheme(resolveTheme()); drawHearts(); }
@@ -1808,6 +2238,7 @@ body.neon .pp{background:#18e4ff;color:#070714}
   document.querySelectorAll('.chal').forEach((el, i) => el.addEventListener('click', () => toast('Fais le défi du jour ' + CH[i][0] + ' jours de suite : +' + CH[i][1] + ' indices (un jour manqué consomme un gel ❄️)')));
   drawHints();
   resize();
+  Review.init();   // [REVIEW-iOS] compte ce lancement
   Boot.run();   // page de chargement : IAP.init() est appelé par l'étape « iap »
   showHome();
   requestAnimationFrame(frame);
