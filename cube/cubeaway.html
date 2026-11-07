@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
-<title>Cube Away</title>
+<title>Amaze Cube</title>
 <style>
 :root{--bg:#b7cce9;--bar:#dde4f7;--navy:#1a225a;--ink:#1d2c3f;--blue:#1c4ea3;--heart:#ff4941;--btn:#dbe5f6;--green:#4cc24c}
 html,body{margin:0;height:100%;overflow:hidden;background:var(--bg);font-family:"Trebuchet MS","Segoe UI",system-ui,sans-serif;-webkit-user-select:none;user-select:none;-webkit-tap-highlight-color:transparent}
@@ -1937,7 +1937,7 @@ body.boot #upd{opacity:0;pointer-events:none}
   let shareTxt = '', shareFile = null;
   // [LINKS-iOS] Remplacer idXXXXXXXXX par l'App ID réel (App Store Connect). Même lien pour « Noter l'app » : ajouter ?action=write-review.
   const APP_URL = 'https://apps.apple.com/app/idXXXXXXXXX';   // À REMPLACER par le lien App Store (App ID)
-  function makeShare(w, st, score, t, errs, dl, L0) {
+  function makeShare(w, st, score, t, errs, dl, L0, noLogo) {
     shareFile = null;
     const c = document.createElement('canvas'); c.width = 1080; c.height = 1350;
     const g = c.getContext('2d'), neon = theme === 'neon', F = '-apple-system, system-ui, "Helvetica Neue", sans-serif';
@@ -1947,7 +1947,9 @@ body.boot #upd{opacity:0;pointer-events:none}
     g.textAlign = 'center'; g.textBaseline = 'middle';
     const fit = (txt, y, size, wt, col) => { g.fillStyle = col; do { g.font = wt + ' ' + size + 'px ' + F; size -= 4; } while (g.measureText(txt).width > 960 && size > 20); g.fillText(txt, 540, y); };
     const rr = (x, y, w2, h, r) => { g.beginPath(); g.moveTo(x + r, y); g.arcTo(x + w2, y, x + w2, y + h, r); g.arcTo(x + w2, y + h, x, y + h, r); g.arcTo(x, y + h, x, y, r); g.arcTo(x, y, x + w2, y, r); g.closePath(); };
-    fit('Cube Away 🧊', 100, 84, 800, ink);
+    const li = $('logoImg');   // logo « Amaze Cube » en haut de l'image (texte de secours si le logo n'est pas chargé ou si le canvas est « tainted »)
+    if (!noLogo && li && li.complete && li.naturalWidth) { const lh = 150, lw = Math.min(860, lh * li.naturalWidth / li.naturalHeight); g.drawImage(li, 540 - lw / 2, 100 - lh / 2, lw, lh); }
+    else fit('Amaze Cube', 100, 84, 800, ink);
     const sx = 270, sy = 170, sz = 540;   // aperçu du jeu
     g.save(); rr(sx, sy, sz, sz, 48); g.clip();
     if (shotCv) g.drawImage(shotCv, sx, sy, sz, sz); else { g.fillStyle = neon ? '#0b0d22' : '#ffffff'; g.fillRect(sx, sy, sz, sz); }
@@ -1963,7 +1965,9 @@ body.boot #upd{opacity:0;pointer-events:none}
     });
     fit(tr('Télécharge le jeu'), 1235, 44, 700, sub);
     fit(APP_URL.replace('https://', ''), 1295, 38, 600, ink);
-    c.toBlob(b => { if (b) shareFile = new File([b], 'cube-away-' + (dl ? 'daily' : L0) + '-' + Date.now() + '.png', { type: 'image/png' }); }, 'image/png');
+    try {   // [WEB-iOS] une image chargée depuis un fichier local peut « teinter » le canvas (SecurityError) : on refait l'image sans le logo
+      c.toBlob(b => { if (b) shareFile = new File([b], 'amaze-cube-' + (dl ? 'daily' : L0) + '-' + Date.now() + '.png', { type: 'image/png' }); }, 'image/png');
+    } catch (e) { if (!noLogo) makeShare(w, st, score, t, errs, dl, L0, true); }
   }
   const fmt = t => Math.floor(t / 60) + ':' + pad2(t % 60);
   function showWin(msg) {
@@ -1998,7 +2002,7 @@ body.boot #upd{opacity:0;pointer-events:none}
       }
     }
     $('next').style.display = dl ? 'none' : 'block';
-    shareTxt = ['Cube Away 🧊 ' + (dl ? 'Défi du jour' : 'Niveau ' + L0), '★'.repeat(st) + '☆'.repeat(3 - st) + ' · ' + score + ' pts', '⏱ ' + fmt(t) + ' · ' + '❤️'.repeat(3 - errs) + '🖤'.repeat(errs)].join('\n'); shareTxt = tr(shareTxt);
+    shareTxt = ['Amaze Cube 🧊 ' + (dl ? 'Défi du jour' : 'Niveau ' + L0), '★'.repeat(st) + '☆'.repeat(3 - st) + ' · ' + score + ' pts', '⏱ ' + fmt(t) + ' · ' + '❤️'.repeat(3 - errs) + '🖤'.repeat(errs)].join('\n'); shareTxt = tr(shareTxt);
     makeShare(w, st, score, t, errs, dl, L0);
     const cf = $('conf'); cf.innerHTML = '';
     if (!O.rm) for (let i = 0; i < 40; i++) { const e = document.createElement('i'); e.style.cssText = 'left:' + Math.random() * 100 + '%;background:hsl(' + Math.random() * 360 + ',85%,60%);animation-delay:' + (wd / 1000 + Math.random() * 0.8) + 's'; cf.appendChild(e); }
